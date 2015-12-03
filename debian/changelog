@@ -1,0 +1,5 @@
+ngcp-asterisk-voicemail (11.13.1-1+0~mr4.2.0.0) unstable; urgency=low
+
+  * Initial version from asterisk 1:11.13.1~dsfg-2
+
+ -- Victor Seva <vseva@sipwise.com>  Thu, 03 Dec 2015 13:17:01 +0100

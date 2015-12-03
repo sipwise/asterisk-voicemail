@@ -1,0 +1,29 @@
+Source: ngcp-asterisk-voicemail
+Priority: optional
+Section: comm
+Maintainer: SipWise Team <development@sipwise.com>
+Build-Depends: asterisk-dev (= 1:11.13.1~dfsg-2),
+               debhelper (>= 9~),
+               libpcre3-dev,
+               unixodbc-dev
+Standards-Version: 3.9.6
+Homepage: http://sipwise.com/
+
+Package: ngcp-asterisk-voicemail-odbcstorage
+Architecture: any
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+         ${sourcedep:asterisk}
+Provides: asterisk-voicemail-storage
+Conflicts: asterisk-voicemail-storage
+Description: NGCP version ODBC voicemail storage support for the Asterisk PBX
+ Asterisk is an Open Source PBX and telephony toolkit.
+ .
+ This package includes an database-based voicemail storage: storing the
+ voicemail in a database accessed through the ODBC interface. While more
+ complex to set up, it may be useful in some settings.
+ .
+ This package includes patches from Sipwise
+ .
+ For more information about the Asterisk PBX, have a look at the Asterisk
+ package.

@@ -1,0 +1,17 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+# for usage with Built-Using
+sourcedep_asterisk_dev := \
+	$(shell dpkg-query \
+		--showformat 'asterisk (= $${source:Version})' \
+		--show asterisk-dev)
+
+%:
+	dh $@
+
+override_dh_gencontrol:
+	dh_gencontrol -- -Vsourcedep:asterisk='$(sourcedep_asterisk_dev)'
