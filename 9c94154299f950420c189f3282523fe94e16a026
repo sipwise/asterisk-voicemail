@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a4e6583_82940238",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2015-12-04T16:19:17Z",
+      "side": 1,
+      "message": "reduce the maintenance burden",
+      "revId": "9c94154299f950420c189f3282523fe94e16a026",
+      "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a4e6583_6299066e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2015-12-04T16:19:17Z",
+      "side": 1,
+      "message": "logically separated in patches",
+      "revId": "9c94154299f950420c189f3282523fe94e16a026",
+      "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a4e6583_22caee4f",
+        "filename": "debian/control",
+        "patchSetId": 6
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2015-12-04T16:19:17Z",
+      "side": 1,
+      "message": "So is the coupling needed? If this module requires the exact same version of asterisk it was build against then your previous solution should be reintroduced. It seems asterisk-dev only contains header files anyway. Otherwise I guess this is fine.",
+      "revId": "9c94154299f950420c189f3282523fe94e16a026",
+      "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
+      "unresolved": false
+    }
+  ]
+}
