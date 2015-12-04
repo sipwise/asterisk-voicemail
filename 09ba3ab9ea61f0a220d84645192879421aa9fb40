@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "5a4e6583_02cb7273",
+        "filename": "debian/control",
+        "patchSetId": 5
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2015-12-04T15:16:47Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5a4e6583_e24a9654",
+      "revId": "09ba3ab9ea61f0a220d84645192879421aa9fb40",
+      "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a4e6583_023ed2b8",
         "filename": "debian/control",
         "patchSetId": 5
@@ -30,6 +48,24 @@
       "writtenOn": "2015-12-04T13:23:14Z",
       "side": 1,
       "message": "What about using https://www.sipwise.com/ instead?",
+      "revId": "09ba3ab9ea61f0a220d84645192879421aa9fb40",
+      "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a4e6583_e2c73663",
+        "filename": "debian/control",
+        "patchSetId": 5
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2015-12-04T15:16:47Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5a4e6583_023ed2b8",
       "revId": "09ba3ab9ea61f0a220d84645192879421aa9fb40",
       "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "5a4e6583_c2c43a61",
+        "filename": "debian/control",
+        "patchSetId": 5
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2015-12-04T15:16:47Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5a4e6583_c2479a4a",
+      "revId": "09ba3ab9ea61f0a220d84645192879421aa9fb40",
+      "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a4e6583_a2749e9c",
         "filename": "debian/copyright",
         "patchSetId": 5
@@ -64,6 +118,24 @@
       "writtenOn": "2015-12-04T13:23:14Z",
       "side": 1,
       "message": "More specific matches go last. The first one should be Files: *.",
+      "revId": "09ba3ab9ea61f0a220d84645192879421aa9fb40",
+      "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a4e6583_a2a13eab",
+        "filename": "debian/copyright",
+        "patchSetId": 5
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2015-12-04T15:16:47Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5a4e6583_a2749e9c",
       "revId": "09ba3ab9ea61f0a220d84645192879421aa9fb40",
       "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
       "unresolved": false
@@ -98,6 +170,24 @@
       "writtenOn": "2015-12-04T13:23:14Z",
       "side": 1,
       "message": "While you are at it, you can switch the gnu url to https too.",
+      "revId": "09ba3ab9ea61f0a220d84645192879421aa9fb40",
+      "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a4e6583_42b04af4",
+        "filename": "debian/copyright",
+        "patchSetId": 5
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2015-12-04T15:16:47Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5a4e6583_626ea6cb",
       "revId": "09ba3ab9ea61f0a220d84645192879421aa9fb40",
       "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
       "unresolved": false
