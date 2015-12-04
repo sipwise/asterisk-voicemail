@@ -226,6 +226,24 @@
       "revId": "09ba3ab9ea61f0a220d84645192879421aa9fb40",
       "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a4e6583_22a30ea0",
+        "filename": "debian/patches/sipwise_vm_add_pcre_support.patch",
+        "patchSetId": 5
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2015-12-04T16:16:01Z",
+      "side": 1,
+      "message": "My point was that it seems to me the original format of the file was not used, and here there are spaces instead of tabs, which look inconsistent. Or am I misunderstanding something? In any case this is an existing problem and not something that should block this review, less so for a stylistic issue like this.",
+      "parentUuid": "5a4e6583_02ac92ec",
+      "revId": "09ba3ab9ea61f0a220d84645192879421aa9fb40",
+      "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
+      "unresolved": false
     }
   ]
 }
