@@ -1,0 +1,123 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a4e6583_e24a9654",
+        "filename": "debian/control",
+        "patchSetId": 5
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2015-12-04T13:23:14Z",
+      "side": 1,
+      "message": "All other packages use: Sipwise Development Team \u003csupport@sipwise.com\u003e ?",
+      "revId": "09ba3ab9ea61f0a220d84645192879421aa9fb40",
+      "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a4e6583_023ed2b8",
+        "filename": "debian/control",
+        "patchSetId": 5
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2015-12-04T13:23:14Z",
+      "side": 1,
+      "message": "What about using https://www.sipwise.com/ instead?",
+      "revId": "09ba3ab9ea61f0a220d84645192879421aa9fb40",
+      "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a4e6583_c2479a4a",
+        "filename": "debian/control",
+        "patchSetId": 5
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2015-12-04T13:23:14Z",
+      "side": 1,
+      "message": "Missing dot in sentence.",
+      "revId": "09ba3ab9ea61f0a220d84645192879421aa9fb40",
+      "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a4e6583_a2749e9c",
+        "filename": "debian/copyright",
+        "patchSetId": 5
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2015-12-04T13:23:14Z",
+      "side": 1,
+      "message": "More specific matches go last. The first one should be Files: *.",
+      "revId": "09ba3ab9ea61f0a220d84645192879421aa9fb40",
+      "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a4e6583_8279a295",
+        "filename": "debian/copyright",
+        "patchSetId": 5
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2015-12-04T13:23:14Z",
+      "side": 1,
+      "message": "It seems this is used on other packages, it would be nice to unify the format for this.",
+      "revId": "09ba3ab9ea61f0a220d84645192879421aa9fb40",
+      "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a4e6583_626ea6cb",
+        "filename": "debian/copyright",
+        "patchSetId": 5
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2015-12-04T13:23:14Z",
+      "side": 1,
+      "message": "While you are at it, you can switch the gnu url to https too.",
+      "revId": "09ba3ab9ea61f0a220d84645192879421aa9fb40",
+      "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a4e6583_4273aab1",
+        "filename": "debian/patches/sipwise_vm_add_pcre_support.patch",
+        "patchSetId": 5
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2015-12-04T13:23:14Z",
+      "side": 1,
+      "message": "Seems like the indentation on most of the patches is off, usage of spaces instead of tabs?",
+      "revId": "09ba3ab9ea61f0a220d84645192879421aa9fb40",
+      "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
+      "unresolved": false
+    }
+  ]
+}
