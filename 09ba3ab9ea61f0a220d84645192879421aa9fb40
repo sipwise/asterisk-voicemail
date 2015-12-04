@@ -118,6 +118,24 @@
       "revId": "09ba3ab9ea61f0a220d84645192879421aa9fb40",
       "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a4e6583_02ac92ec",
+        "filename": "debian/patches/sipwise_vm_add_pcre_support.patch",
+        "patchSetId": 5
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2015-12-04T13:35:30Z",
+      "side": 1,
+      "message": "ts\u003d4 sw\u003d4 et noai - is what is used by default but unfortunately asterisk original app_voicemail.c does not expand tabs into spaces, therefore the original format of their files was used.",
+      "parentUuid": "5a4e6583_4273aab1",
+      "revId": "09ba3ab9ea61f0a220d84645192879421aa9fb40",
+      "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
+      "unresolved": false
     }
   ]
 }
