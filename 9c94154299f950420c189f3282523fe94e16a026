@@ -50,6 +50,24 @@
       "revId": "9c94154299f950420c189f3282523fe94e16a026",
       "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a4e6583_025b7255",
+        "filename": "debian/control",
+        "patchSetId": 6
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2015-12-07T09:37:06Z",
+      "side": 1,
+      "message": "The coupling is not strictly needed.\n\nMy intencion was not to upgrade asterisk package unless we support it explicitly on this package\n\nYes, asterisk-dev is just headers, so no linking is done.",
+      "parentUuid": "5a4e6583_22caee4f",
+      "revId": "9c94154299f950420c189f3282523fe94e16a026",
+      "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
+      "unresolved": false
     }
   ]
 }
