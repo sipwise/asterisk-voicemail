@@ -6,7 +6,7 @@ Build-Depends: asterisk-dev (= 1:11.13.1~dfsg-2),
                debhelper (>= 9~),
                libpcre3-dev,
                unixodbc-dev
-Standards-Version: 3.9.6
+Standards-Version: 3.9.7
 Homepage: https://www.sipwise.com/
 
 Package: ngcp-asterisk-voicemail-odbcstorage
