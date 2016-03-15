@@ -4,3 +4,4 @@ sipwise_vm_romanian_syntax.patch
 sipwise_vm_find_user_by_alias.patch
 sipwise_vm_add_pcre_support.patch
 sipwise_vm_play_prompt_on_change_to_empty_folder.patch
+sipwise_vm_change_password_use_customer_id.diff
