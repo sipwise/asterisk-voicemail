@@ -1,3 +1,15 @@
+ngcp-asterisk-voicemail (11.13.1-1+0~mr4.4.0.0) unstable; urgency=medium
+
+  [ Michael Prokop ]
+  * [d12f1b6] MT#17699 Bump Standards-Version to 3.9.7
+
+  [ Kirill Solomko ]
+  * [f37244e] MT#18507 fix: use customer_id for realtime password change
+
+  [ Sipwise Jenkins Builder ]
+
+ -- Sipwise Jenkins Builder <jenkins@sipwise.com>  Mon, 21 Mar 2016 22:05:02 +0100
+
 ngcp-asterisk-voicemail (11.13.1-1+0~mr4.3.0.0) unstable; urgency=low
 
   [ Victor Seva ]
