@@ -70,26 +70,6 @@
  
  	/* Check Quota */
  	if  (box == 0)  {
-@@ -4015,8 +4025,8 @@
- 	char msgnumd[20];
- 	char msg_id[MSG_ID_LEN];
- 	struct odbc_obj *obj;
--	char *argv[] = { ddir, msgnumd, msg_id, dmailboxuser, dmailboxcontext, sdir, msgnums };
--	struct generic_prepare_struct gps = { .sql = sql, .argc = 7, .argv = argv };
-+	char *argv[] = { ddir, msgnumd, msg_id, dmailboxcontext, sdir, msgnums };
-+	struct generic_prepare_struct gps = { .sql = sql, .argc = 6, .argv = argv };
- 
- 	generate_msg_id(msg_id);
- 	delete_file(ddir, dmsg);
-@@ -4024,7 +4034,7 @@
- 	if (obj) {
- 		snprintf(msgnums, sizeof(msgnums), "%d", smsg);
- 		snprintf(msgnumd, sizeof(msgnumd), "%d", dmsg);
--		snprintf(sql, sizeof(sql), "INSERT INTO %s (dir, msgnum, msg_id, context, macrocontext, callerid, origtime, duration, recording, flag, mailboxuser, mailboxcontext) SELECT ?,?,?,context,macrocontext,callerid,origtime,duration,recording,flag,?,? FROM %s WHERE dir=? AND msgnum=?", odbc_table, odbc_table);
-+		snprintf(sql, sizeof(sql), "INSERT INTO %s (dir, msgnum, msg_id, context, macrocontext, callerid, origtime, duration, recording, flag, mailboxuser, mailboxcontext) SELECT ?,?,?,context,macrocontext,callerid,origtime,duration,recording,flag,? FROM %s WHERE dir=? AND msgnum=?", odbc_table, odbc_table);
- 		stmt = ast_odbc_prepare_and_execute(obj, generic_prepare, &gps);
- 		if (!stmt)
- 			ast_log(AST_LOG_WARNING, "SQL Execute error!\n[%s] (You probably don't have MySQL 4.1 or later installed)\n\n", sql);
 @@ -4672,7 +4682,8 @@
  	snprintf(num, sizeof(num), "%d", msgnum);
  	pbx_builtin_setvar_helper(ast, "VM_MSGNUM", num);
