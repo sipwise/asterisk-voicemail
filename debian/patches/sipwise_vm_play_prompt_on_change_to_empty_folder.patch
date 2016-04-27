@@ -1,6 +1,6 @@
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -11141,6 +11141,7 @@
+@@ -11137,6 +11137,7 @@
  	signed char record_gain = 0;
  	int play_auto = 0;
  	int play_folder = 0;
@@ -8,7 +8,7 @@
  	int in_urgent = 0;
  #ifdef IMAP_STORAGE
  	int deleted = 0;
-@@ -11401,6 +11402,7 @@
+@@ -11397,6 +11398,7 @@
  			cmd = vm_browse_messages(chan, &vms, vmu);
  			break;
  		case '2': /* Change folders */
@@ -16,7 +16,7 @@
  			ast_test_suite_event_notify("CHANGEFOLDER", "Message: browsing to a different folder");
  			if (useadsi)
  				adsi_folders(chan, 0, "Change to folder...");
-@@ -11817,6 +11819,16 @@
+@@ -11813,6 +11815,16 @@
  				adsi_status(chan, &vms);
  			break;
  		default:	/* Nothing */

@@ -142,7 +142,7 @@
  /*!
   * \brief Strips control and non 7-bit clean characters from input string.
   *
-@@ -7646,6 +7760,8 @@
+@@ -7642,6 +7756,8 @@
   * This is invoked from forward_message() when performing a forward operation (option 8 from main menu).
   * \return zero on success, -1 on error.
   */
@@ -151,7 +151,7 @@
  static int vm_forwardoptions(struct ast_channel *chan, struct ast_vm_user *vmu, char *curdir, int curmsg, char *vm_fmts,
  			char *context, signed char record_gain, long *duration, struct vm_state *vms, char *flag)
  {
-@@ -7806,6 +7922,7 @@
+@@ -7802,6 +7918,7 @@
  		cmd = 0;
  	return cmd;
  }
@@ -159,7 +159,7 @@
  
  static void queue_mwi_event(const char *box, int urgent, int new, int old)
  {
-@@ -7983,6 +8100,8 @@
+@@ -7979,6 +8096,8 @@
   *
   * \return zero on success, -1 on error.
   */
@@ -168,7 +168,7 @@
  static int forward_message(struct ast_channel *chan, char *context, struct vm_state *vms, struct ast_vm_user *sender, char *fmt, int is_new_message, signed char record_gain, int urgent)
  {
  #ifdef IMAP_STORAGE
-@@ -8299,6 +8418,7 @@
+@@ -8295,6 +8414,7 @@
  	}
  	return res ? res : cmd;
  }
@@ -176,7 +176,7 @@
  
  static int wait_file2(struct ast_channel *chan, struct vm_state *vms, char *file)
  {
-@@ -10711,6 +10831,11 @@
+@@ -10707,6 +10827,11 @@
  	int useadsi = 0, valid = 0, logretries = 0;
  	char password[AST_MAX_EXTENSION]="", *passptr;
  	struct ast_vm_user vmus, *vmu = NULL;
@@ -188,7 +188,7 @@
  
  	/* If ADSI is supported, setup login screen */
  	adsi_begin(chan, &useadsi);
-@@ -10721,6 +10846,22 @@
+@@ -10717,6 +10842,22 @@
  		return -1;
  	}
  
@@ -211,7 +211,7 @@
  	/* Authenticate them and get their mailbox/password */
  
  	while (!valid && (logretries < max_logins)) {
-@@ -10750,6 +10891,18 @@
+@@ -10746,6 +10887,18 @@
  		if (useadsi)
  			adsi_password(chan);
  
@@ -230,7 +230,7 @@
  		if (!ast_strlen_zero(prefix)) {
  			char fullusername[80] = "";
  			ast_copy_string(fullusername, prefix, sizeof(fullusername));
-@@ -13098,6 +13251,8 @@
+@@ -13094,6 +13247,8 @@
  	int x;
  	unsigned int tmpadsi[4];
  	char secretfn[PATH_MAX] = "";
@@ -239,7 +239,7 @@
  
  #ifdef IMAP_STORAGE
  	ast_copy_string(imapparentfolder, "\0", sizeof(imapparentfolder));
-@@ -13149,6 +13304,19 @@
+@@ -13145,6 +13300,19 @@
  			ast_copy_string(odbc_table, val, sizeof(odbc_table));
  		}
  #endif		
