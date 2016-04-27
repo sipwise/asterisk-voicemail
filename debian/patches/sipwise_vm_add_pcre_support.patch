@@ -230,7 +230,7 @@
  		if (!ast_strlen_zero(prefix)) {
  			char fullusername[80] = "";
  			ast_copy_string(fullusername, prefix, sizeof(fullusername));
-@@ -13098,6 +13251,8 @@
+@@ -13099,6 +13252,8 @@
  	int x;
  	unsigned int tmpadsi[4];
  	char secretfn[PATH_MAX] = "";
@@ -239,7 +239,7 @@
  
  #ifdef IMAP_STORAGE
  	ast_copy_string(imapparentfolder, "\0", sizeof(imapparentfolder));
-@@ -13149,6 +13304,19 @@
+@@ -13150,6 +13305,19 @@
  			ast_copy_string(odbc_table, val, sizeof(odbc_table));
  		}
  #endif		
