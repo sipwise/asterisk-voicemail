@@ -1,3 +1,13 @@
+ngcp-asterisk-voicemail (11.13.1-1+0~mr4.4.1.0) unstable; urgency=medium
+
+  [ Kirill Solomko ]
+  * [1e5ff45] MT#18633 fix copy_file() sql statement arguments
+  * [51ba23c] MT#18621 fix run_externotify arguments
+
+  [ Sipwise Jenkins Builder ]
+
+ -- Sipwise Jenkins Builder <jenkins@sipwise.com>  Mon, 23 May 2016 18:35:27 +0200
+
 ngcp-asterisk-voicemail (11.13.1-1+0~mr4.4.0.0) unstable; urgency=medium
 
   [ Michael Prokop ]
