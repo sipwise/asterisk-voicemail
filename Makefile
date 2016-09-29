@@ -15,7 +15,7 @@ CC?=gcc
 OPTIMIZE=-O2
 DEBUG=-g
 
-LIBS+=
+LIBS+=-lpcre
 CFLAGS+=-pipe -fPIC
 CFLAGS+=-Wall -Wextra -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations
 CFLAGS+=-D_REENTRANT -D_GNU_SOURCE -DODBC_STORAGE
