@@ -1,0 +1,24 @@
+--- a/apps/app_voicemail.c
++++ b/apps/app_voicemail.c
+@@ -1387,8 +1387,10 @@
+ 		ast_set2_flag(vmu, ast_true(value), VM_MESSAGEWRAP);	
+ 	} else if (!strcasecmp(var, "operator")) {
+ 		ast_set2_flag(vmu, ast_true(value), VM_OPERATOR);	
+-	} else if (!strcasecmp(var, "envelope")){
+-		ast_set2_flag(vmu, ast_true(value), VM_ENVELOPE);	
++// envelope variable is taken globally from voicemail.conf 
++// and currently ignored per user
++//	} else if (!strcasecmp(var, "envelope")){
++//		ast_set2_flag(vmu, ast_true(value), VM_ENVELOPE);	
+ 	} else if (!strcasecmp(var, "moveheard")){
+ 		ast_set2_flag(vmu, ast_true(value), VM_MOVEHEARD);
+ 	} else if (!strcasecmp(var, "sayduration")){
+@@ -14777,7 +14779,7 @@
+ 		context = ast_variable_retrieve(msg_cfg, "message", "macrocontext");
+ 	switch (option) {
+ 	case 3: /* Play message envelope */
+-		if (!res) {
++		if ((!res) && (ast_test_flag(vmu, VM_ENVELOPE))) {
+ 			res = play_message_datetime(chan, vmu, origtime, filename);
+ 		}
+ 		if (!res) {
