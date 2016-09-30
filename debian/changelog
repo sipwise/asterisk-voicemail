@@ -1,3 +1,13 @@
+ngcp-asterisk-voicemail (11.13.1-1+0~mr4.5.1.2) unstable; urgency=medium
+
+  [ Kirill Solomko ]
+  * [f6a3d75] TT#3978 play vm-unknown-caller for anonymous callerid
+  * [e2f58da] TT#3987 envelope playback behaviour change
+
+  [ Sipwise Jenkins Builder ]
+
+ -- Sipwise Jenkins Builder <jenkins@sipwise.com>  Fri, 30 Sep 2016 13:22:04 +0200
+
 ngcp-asterisk-voicemail (11.13.1-1+0~mr4.5.1.1) unstable; urgency=medium
 
   * New release.
