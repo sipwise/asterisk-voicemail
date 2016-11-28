@@ -1,0 +1,77 @@
+Index: asterisk-voicemail/apps/app_voicemail.c
+===================================================================
+--- asterisk-voicemail.orig/apps/app_voicemail.c	2016-11-28 14:36:02.403169477 +0100
++++ asterisk-voicemail/apps/app_voicemail.c	2016-11-28 14:37:26.835405750 +0100
+@@ -921,6 +921,7 @@
+ static char serveremail[80];
+ static char mailcmd[160];	/* Configurable mail cmd */
+ static char externnotify[160]; 
++static char externpager[160]; 
+ static struct ast_smdi_interface *smdi_iface = NULL;
+ static char vmfmts[80];
+ static double volgain;
+@@ -5434,6 +5435,22 @@
+ 	return 0;
+ }
+ 
++static void run_externpager(char *pager, char *dialed_num, char *cidnum, int duration, struct ast_vm_user *vmu)
++{
++	char arguments[255];
++
++	if (!ast_strlen_zero(externpager)) {
++        snprintf(arguments, sizeof(arguments), "%s %s %s %s %d &",
++            externpager, pager,  dialed_num, cidnum, duration);
++        //ast_debug(1, "Executing %s\n", arguments);
++	    ast_log(AST_LOG_WARNING, "Executing %s\n", arguments);
++        ast_safe_system(arguments);
++	} else {
++	    ast_log(AST_LOG_WARNING, "No externpager defined, skipping\n");
++    }
++}
++
++#if 0
+ static int sendpage(char *srcemail, char *pager, int msgnum, char *context, char *mailbox, const char *fromfolder, char *cidnum, char *cidname, int duration, struct ast_vm_user *vmu, const char *category, const char *flag)
+ {
+ 	char enc_cidnum[256], enc_cidname[256];
+@@ -5447,6 +5464,10 @@
+ 	FILE *p;
+ 	struct ast_str *str1 = ast_str_create(16), *str2 = ast_str_create(16);
+ 
++
++	ast_log(AST_LOG_WARNING, ">>>>>>>>>>>>>> sendpage called, srcemail=%s, pager=%s, msgnum=%d, context=%s, mailbox=%s, fromfolder=%s, cidnum=%s, cidname=%s, duration=%d, category=%s, flag=%s\n",
++        srcemail, pager, msgnum, context, mailbox, fromfolder, cidnum, cidname, duration, category, flag);
++
+ 	if (!str1 || !str2) {
+ 		ast_free(str1);
+ 		ast_free(str2);
+@@ -5579,6 +5600,7 @@
+ 	ast_free(str2);
+ 	return 0;
+ }
++#endif
+ 
+ /*!
+  * \brief Gets the current date and time, as formatted string.
+@@ -8026,7 +8048,8 @@
+ 	}
+ 
+ 	if (!ast_strlen_zero(vmu->pager)) {
+-		sendpage(myserveremail, vmu->pager, msgnum, vmu->context, vmu->mailbox, mbox(vmu, 0), cidnum, cidname, duration, vmu, category, flag);
++		//sendpage(myserveremail, vmu->pager, msgnum, vmu->context, vmu->mailbox, mbox(vmu, 0), cidnum, cidname, duration, vmu, category, flag);
++        run_externpager(vmu->pager, vmu->dialed_num, cidnum, duration, vmu);
+ 	}
+ 
+ 	if (ast_test_flag(vmu, VM_DELETE))
+@@ -13496,6 +13519,12 @@
+ 		} else {
+ 			externnotify[0] = '\0';
+ 		}
++		if ((val = ast_variable_retrieve(cfg, "general", "externpager"))) {
++			ast_copy_string(externpager, val, sizeof(externpager));
++			ast_debug(1, "found externpager: %s\n", externpager);
++		} else {
++			externpager[0] = '\0';
++		}
+ 
+ 		/* SMDI voicemail notification */
+ 		if ((val = ast_variable_retrieve(cfg, "general", "smdienable")) && ast_true(val)) {
