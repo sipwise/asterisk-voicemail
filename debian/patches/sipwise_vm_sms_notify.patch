@@ -1,0 +1,135 @@
+Index: asterisk-voicemail/apps/app_voicemail.c
+===================================================================
+--- asterisk-voicemail.orig/apps/app_voicemail.c	2016-11-28 17:15:44.910377545 +0100
++++ asterisk-voicemail/apps/app_voicemail.c	2016-11-28 17:16:03.794431895 +0100
+@@ -921,6 +921,7 @@
+ static char serveremail[80];
+ static char mailcmd[160];	/* Configurable mail cmd */
+ static char externnotify[160]; 
++static char externpager[160]; 
+ static struct ast_smdi_interface *smdi_iface = NULL;
+ static char vmfmts[80];
+ static double volgain;
+@@ -4850,6 +4851,20 @@
+ 	return 1;
+ }
+ 
++static void prep_pager_sub_vars(struct ast_channel *ast, struct ast_vm_user *vmu, char *cidnum, char *dur, char *date)
++{
++	struct ast_config *msg_cfg;
++	struct ast_flags config_flags = { CONFIG_FLAG_NOCACHE };
++
++	/* Prepare variables for substitution in pager body */
++	pbx_builtin_setvar_helper(ast, "VM_DUR", dur);
++    pbx_builtin_setvar_helper(ast, "VM_MAILBOX", vmu->dialed_num);
++	pbx_builtin_setvar_helper(ast, "VM_CIDNUM", (!ast_strlen_zero(cidnum) ? cidnum : "anonymous"));
++	pbx_builtin_setvar_helper(ast, "VM_DATE", date);
++
++	ast_config_destroy(msg_cfg);
++}
++
+ static void prep_email_sub_vars(struct ast_channel *ast, struct ast_vm_user *vmu, int msgnum, char *context, char *mailbox, const char *fromfolder, char *cidnum, char *cidname, char *dur, char *date, const char *category, const char *flag)
+ {
+ 	char callerid[256];
+@@ -5434,6 +5449,59 @@
+ 	return 0;
+ }
+ 
++static void run_externpager(char *pager, char *dialed_num, char *cidnum, int duration, struct ast_vm_user *vmu)
++{
++	char arguments[2048];
++	char date[256];
++	char from[256];
++    char body[1024];
++	char dur[PATH_MAX];
++	struct ast_tm tm;
++	struct ast_str *str1 = ast_str_create(16);
++	
++    if (!str1) {
++		return;
++	}
++
++	if (!ast_strlen_zero(externpager)) {
++	
++        if (!ast_strlen_zero(pagerfromstring)) {
++		    ast_copy_string(from, pagerfromstring, sizeof(from));
++        } else {
++		    ast_copy_string(from, "Sipwise Voicemail", sizeof(from));
++        }
++
++	    snprintf(dur, sizeof(dur), "%d:%02d", duration / 60, duration % 60);
++
++        ast_strftime(date, sizeof(date), "%a, %d %b %Y %H:%M:%S %z", vmu_tm(vmu, &tm));
++        ast_strftime_locale(date, sizeof(date), pagerdateformat, vmu_tm(vmu, &tm), S_OR(vmu->locale, NULL));
++
++        if (pagerbody) {
++            struct ast_channel *ast;
++            if ((ast = ast_dummy_channel_alloc())) {
++                prep_pager_sub_vars(ast, vmu, cidnum, dur, date);
++                ast_str_substitute_variables(&str1, 0, ast, pagerbody);
++                ast = ast_channel_unref(ast);
++                snprintf(body, sizeof(body), "%s", ast_str_buffer(str1));
++            } else {
++                ast_log(AST_LOG_WARNING, "Cannot allocate the channel for variables substitution\n");
++            }
++        } else {
++            snprintf(body, sizeof(body), "New %s long voicemail from %s in box %s, on %s",
++                    dur, cidnum, dialed_num, date);
++        }
++
++        snprintf(arguments, sizeof(arguments), "%s '%s' '%s' '%s' '%s' '%s' '%s' '%s' &",
++            externpager, from, pager,  dialed_num, cidnum, dur, date, body);
++	    ast_log(LOG_DEBUG, "Executing %s\n", arguments);
++        ast_safe_system(arguments);
++	} else {
++	    ast_log(LOG_DEBUG, "No externpager defined, skipping\n");
++    }
++	ast_free(str1);
++}
++
++#if 0
+ static int sendpage(char *srcemail, char *pager, int msgnum, char *context, char *mailbox, const char *fromfolder, char *cidnum, char *cidname, int duration, struct ast_vm_user *vmu, const char *category, const char *flag)
+ {
+ 	char enc_cidnum[256], enc_cidname[256];
+@@ -5447,6 +5515,10 @@
+ 	FILE *p;
+ 	struct ast_str *str1 = ast_str_create(16), *str2 = ast_str_create(16);
+ 
++
++	ast_log(AST_LOG_WARNING, ">>>>>>>>>>>>>> sendpage called, srcemail=%s, pager=%s, msgnum=%d, context=%s, mailbox=%s, fromfolder=%s, cidnum=%s, cidname=%s, duration=%d, category=%s, flag=%s\n",
++        srcemail, pager, msgnum, context, mailbox, fromfolder, cidnum, cidname, duration, category, flag);
++
+ 	if (!str1 || !str2) {
+ 		ast_free(str1);
+ 		ast_free(str2);
+@@ -5579,6 +5651,7 @@
+ 	ast_free(str2);
+ 	return 0;
+ }
++#endif
+ 
+ /*!
+  * \brief Gets the current date and time, as formatted string.
+@@ -8026,7 +8099,8 @@
+ 	}
+ 
+ 	if (!ast_strlen_zero(vmu->pager)) {
+-		sendpage(myserveremail, vmu->pager, msgnum, vmu->context, vmu->mailbox, mbox(vmu, 0), cidnum, cidname, duration, vmu, category, flag);
++		//sendpage(myserveremail, vmu->pager, msgnum, vmu->context, vmu->mailbox, mbox(vmu, 0), cidnum, cidname, duration, vmu, category, flag);
++        run_externpager(vmu->pager, vmu->dialed_num, cidnum, duration, vmu);
+ 	}
+ 
+ 	if (ast_test_flag(vmu, VM_DELETE))
+@@ -13496,6 +13570,12 @@
+ 		} else {
+ 			externnotify[0] = '\0';
+ 		}
++		if ((val = ast_variable_retrieve(cfg, "general", "externpager"))) {
++			ast_copy_string(externpager, val, sizeof(externpager));
++			ast_debug(1, "found externpager: %s\n", externpager);
++		} else {
++			externpager[0] = '\0';
++		}
+ 
+ 		/* SMDI voicemail notification */
+ 		if ((val = ast_variable_retrieve(cfg, "general", "smdienable")) && ast_true(val)) {
