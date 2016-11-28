@@ -5249,6 +5249,10 @@ static int sendpage(char *srcemail, char *pager, int msgnum, char *context, char
 	FILE *p;
 	struct ast_str *str1 = ast_str_create(16), *str2 = ast_str_create(16);
 
+
+	ast_log(AST_LOG_WARNING, ">>>>>>>>>>>>>> sendpage called, srcemail=%s, pager=%s, msgnum=%d, context=%s, mailbox=%s, fromfolder=%s, cidnum=%s, cidname=%s, duration=%d, category=%s, flag=%s\n",
+        srcemail, pager, msgnum, context, mailbox, fromfolder, cidnum, cidname, duration, category, flag);
+
 	if (!str1 || !str2) {
 		ast_free(str1);
 		ast_free(str2);
