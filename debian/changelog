@@ -1,3 +1,13 @@
+ngcp-asterisk-voicemail (13.13.1-1+0~mr5.1.0.0) unstable; urgency=medium
+
+  [ Victor Seva ]
+  * [1181193] New upstream version 13.13.1
+
+  [ Kirill Solomko ]
+  * [9245bee] TT#3660 port changes to new upstream version 13.13.1
+
+ -- Victor Seva <vseva@debian.org>  Thu, 26 Jan 2017 12:12:41 +0100
+
 ngcp-asterisk-voicemail (11.13.1+playback-1+0~mr5.1.0.0) unstable; urgency=medium
 
   [ Andreas Granig ]
