@@ -1,3 +1,16 @@
+ngcp-asterisk-voicemail (13.12.2-1+0~mr5.1.0.0) unstable; urgency=medium
+
+  [ Andreas Granig ]
+  * [71551d7] TT#6496 Add voicemail sms notifications.
+
+  [ Victor Seva ]
+  * [1defb70] New upstream version 13.12.2
+
+  [ Kirill Solomko ]
+  * [d5ef2fc] TT#3660 port app_voicemail to asterisk 13
+
+ -- Victor Seva <vseva@debian.org>  Fri, 23 Dec 2016 11:23:13 +0100
+
 ngcp-asterisk-voicemail (11.13.1-1+0~mr5.1.0.0) unstable; urgency=medium
 
   [ Alexander Lutay ]
