@@ -1,14 +1,14 @@
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -40,6 +40,7 @@
- /*** MODULEINFO
+@@ -50,6 +50,7 @@
+ 	<defaultenabled>yes</defaultenabled>
  	<use type="module">res_adsi</use>
  	<use type="module">res_smdi</use>
-+ <depend>pcre</depend>
++	<depend>pcre</depend>
  	<support_level>core</support_level>
   ***/
  
-@@ -136,6 +137,9 @@
+@@ -146,6 +147,9 @@ ASTERISK_FILE_VERSION(__FILE__, "$Revisi
  
  #define AST_MODULE "voicemail"
  
@@ -18,7 +18,7 @@
  /*** DOCUMENTATION
  	<application name="VoiceMail" language="en_US">
  		<synopsis>
-@@ -927,6 +931,8 @@
+@@ -980,6 +984,8 @@ static int skipms;
  static int maxlogins;
  static int minpassword;
  static int passwordlocation;
@@ -27,7 +27,7 @@
  
  /*! Poll mailboxes for changes since there is something external to
   *  app_voicemail that may change them. */
-@@ -1134,6 +1140,114 @@
+@@ -1223,6 +1229,114 @@ static int inprocess_count(const char *c
  static int __has_voicemail(const char *context, const char *mailbox, const char *folder, int shortcircuit);
  #endif
  
@@ -58,83 +58,83 @@
 +
 +static int findreplen(const char *rep, int nmat, const int *replen)
 +{
-+    int len = 0;
-+    int val;
-+    char *cp = (char *)rep;
-+    while(*cp) {
-+        if (*cp == '$' && isdigit(cp[1])) {
-+            val = strtoul(&cp[1], &cp, 10);
-+            if (val && val <= nmat + 1)
-+                len += replen[val -1];
-+            else
-+                fprintf(stderr, "repl %d out of range\n", val);
-+        } else {
-+            cp++;
-+            len++;
-+        }
-+    }
-+    return len;
++	int len = 0;
++	int val;
++	char *cp = (char *)rep;
++	while(*cp) {
++		if (*cp == '$' && isdigit(cp[1])) {
++			val = strtoul(&cp[1], &cp, 10);
++			if (val && val <= nmat + 1)
++				len += replen[val -1];
++			else
++				fprintf(stderr, "repl %d out of range\n", val);
++		} else {
++			cp++;
++			len++;
++		}
++	}
++	return len;
 +}
 +
 +static void doreplace(char *out, const char *rep,
 +    int nmat, int *replen, const char **repstr)
 +{
-+    int val;
-+    char *cp = (char *)rep;
-+    while(*cp) {
-+        if (*cp == '$' && isdigit(cp[1])) {
-+            val = strtoul(&cp[1], &cp, 10);
-+            if (val && val <= nmat + 1) {
-+                strncpy(out, repstr[val - 1], replen[val - 1]);
-+                out += replen[val -1];
-+            }
-+        } else {
-+            *out++ = *cp++;
-+        }
-+    }
++	int val;
++	char *cp = (char *)rep;
++	while(*cp) {
++		if (*cp == '$' && isdigit(cp[1])) {
++			val = strtoul(&cp[1], &cp, 10);
++			if (val && val <= nmat + 1) {
++				strncpy(out, repstr[val - 1], replen[val - 1]);
++				out += replen[val -1];
++			}
++		} else {
++			*out++ = *cp++;
++		}
++	}
 +}
 +
 +static char *edit(const char *str, int len, const char *rep,
 +    int nmat, const int *ovec)
 +{
-+    int i, slen, rlen;
-+    const int *mvec = ovec;
-+    char *res, *cp;
-+    int replen[MAXCAPTURE];
-+    const char *repstr[MAXCAPTURE];
-+    nmat--;
-+    ovec += 2;
-+    for (i = 0; i < nmat; i++) {
-+        replen[i] = ovec[i * 2 + 1] - ovec[i * 2];
-+        repstr[i] = &str[ovec[i * 2]];
-+    }
-+    slen = len;
-+    len -= mvec[1] - mvec[0];
-+    len += rlen = findreplen(rep, nmat, replen);
-+    cp = res = pcre_malloc(len + 1);
-+    if (mvec[0] > 0) {
-+        strncpy(cp, str, mvec[0]);
-+        cp += mvec[0];
-+    }
-+    doreplace(cp, rep, nmat, replen, repstr);
-+    cp += rlen;
-+    if (mvec[1] < slen)
-+        strcpy(cp, &str[mvec[1]]);
-+    res[len] = 0;
-+    return res;
++	int i, slen, rlen;
++	const int *mvec = ovec;
++	char *res, *cp;
++	int replen[MAXCAPTURE];
++	const char *repstr[MAXCAPTURE];
++	nmat--;
++	ovec += 2;
++	for (i = 0; i < nmat; i++) {
++		replen[i] = ovec[i * 2 + 1] - ovec[i * 2];
++		repstr[i] = &str[ovec[i * 2]];
++	}
++	slen = len;
++	len -= mvec[1] - mvec[0];
++	len += rlen = findreplen(rep, nmat, replen);
++	cp = res = pcre_malloc(len + 1);
++	if (mvec[0] > 0) {
++		strncpy(cp, str, mvec[0]);
++		cp += mvec[0];
++	}
++	doreplace(cp, rep, nmat, replen, repstr);
++	cp += rlen;
++	if (mvec[1] < slen)
++		strcpy(cp, &str[mvec[1]]);
++	res[len] = 0;
++	return res;
 +}
 +
 +static char *pcre_subst(const pcre *ppat, const pcre_extra *extra,
 +    const char *str, int len,
 +    int offset, int options, const char *rep)
 +{
-+    int nmat;
-+    int ovec[MAXCAPTURE * 3];
-+    nmat = pcre_exec(ppat, extra, str, len, offset, options,
-+        ovec, sizeof(ovec));
-+    if (nmat <= 0)
-+        return NULL;
-+    return(edit(str, len, rep, nmat, ovec));
++	int nmat;
++	int ovec[MAXCAPTURE * 3];
++	nmat = pcre_exec(ppat, extra, str, len, offset, options,
++		ovec, sizeof(ovec));
++	if (nmat <= 0)
++		return NULL;
++	return(edit(str, len, rep, nmat, ovec));
 +}
 +
 +/* end of pcre helper functions */
@@ -142,7 +142,7 @@
  /*!
   * \brief Strips control and non 7-bit clean characters from input string.
   *
-@@ -7646,6 +7760,8 @@
+@@ -7920,6 +8034,8 @@ static int get_folder2(struct ast_channe
   * This is invoked from forward_message() when performing a forward operation (option 8 from main menu).
   * \return zero on success, -1 on error.
   */
@@ -151,15 +151,15 @@
  static int vm_forwardoptions(struct ast_channel *chan, struct ast_vm_user *vmu, char *curdir, int curmsg, char *vm_fmts,
  			char *context, signed char record_gain, long *duration, struct vm_state *vms, char *flag)
  {
-@@ -7806,6 +7922,7 @@
+@@ -8080,6 +8196,7 @@ static int vm_forwardoptions(struct ast_
  		cmd = 0;
  	return cmd;
  }
 +#endif
  
- static void queue_mwi_event(const char *box, int urgent, int new, int old)
+ static void queue_mwi_event(const char *channel_id, const char *box, int urgent, int new, int old)
  {
-@@ -7983,6 +8100,8 @@
+@@ -8221,6 +8338,8 @@ static int notify_new_message(struct ast
   *
   * \return zero on success, -1 on error.
   */
@@ -168,7 +168,7 @@
  static int forward_message(struct ast_channel *chan, char *context, struct vm_state *vms, struct ast_vm_user *sender, char *fmt, int is_new_message, signed char record_gain, int urgent)
  {
  #ifdef IMAP_STORAGE
-@@ -8299,6 +8418,7 @@
+@@ -8558,6 +8677,7 @@ static int forward_message(struct ast_ch
  	}
  	return res ? res : cmd;
  }
@@ -176,92 +176,92 @@
  
  static int wait_file2(struct ast_channel *chan, struct vm_state *vms, char *file)
  {
-@@ -10711,6 +10831,11 @@
+@@ -11174,6 +11294,11 @@ static int vm_authenticate(struct ast_ch
  	int useadsi = 0, valid = 0, logretries = 0;
  	char password[AST_MAX_EXTENSION]="", *passptr;
  	struct ast_vm_user vmus, *vmu = NULL;
-+    const char *err;
-+    int erroffset;
-+    pcre_extra *extra = NULL;
-+    pcre *ppat = NULL;
-+    char *normalized_mailbox;
++	const char *err;
++	int erroffset;
++	pcre_extra *extra = NULL;
++	pcre *ppat = NULL;
++	char *normalized_mailbox;
  
  	/* If ADSI is supported, setup login screen */
  	adsi_begin(chan, &useadsi);
-@@ -10721,6 +10846,22 @@
+@@ -11184,6 +11309,22 @@ static int vm_authenticate(struct ast_ch
  		return -1;
  	}
  
-+    if(sw_normalize_user_match[0] != '\0' && sw_normalize_user_replace[0] != '\0') {
-+        // TODO: could be done once on start
-+        ppat = pcre_compile(sw_normalize_user_match, 0, &err, &erroffset, NULL);
-+        if(ppat == NULL) {
-+            ast_log(LOG_WARNING, "Couldn't compile user match regex '%s': %s at offset %d\n",
-+                sw_normalize_user_match, err, erroffset);
-+            return -1;
-+        }
-+        extra = pcre_study(ppat, 0, &err);
-+        if(err) {
-+            ast_log(LOG_WARNING, "Couldn't study regex '%s': %s\n",
-+                sw_normalize_user_match, err);
-+            return -1;
-+        }
-+    }
++	if(sw_normalize_user_match[0] != '\0' && sw_normalize_user_replace[0] != '\0') {
++		// TODO: could be done once on start
++		ppat = pcre_compile(sw_normalize_user_match, 0, &err, &erroffset, NULL);
++		if(ppat == NULL) {
++			ast_log(LOG_WARNING, "Couldn't compile user match regex '%s': %s at offset %d\n",
++				sw_normalize_user_match, err, erroffset);
++			return -1;
++		}
++		extra = pcre_study(ppat, 0, &err);
++		if(err) {
++			ast_log(LOG_WARNING, "Couldn't study regex '%s': %s\n",
++				sw_normalize_user_match, err);
++			return -1;
++		}
++	}
 +
  	/* Authenticate them and get their mailbox/password */
  
  	while (!valid && (logretries < max_logins)) {
-@@ -10750,6 +10891,18 @@
+@@ -11213,6 +11354,18 @@ static int vm_authenticate(struct ast_ch
  		if (useadsi)
  			adsi_password(chan);
  
-+        if(ppat && extra) {
-+            ast_log(LOG_NOTICE, "Trying to rewrite user input '%s' using s/%s/%s/\n",
-+                mailbox, sw_normalize_user_match, sw_normalize_user_replace);
-+            normalized_mailbox = pcre_subst(ppat, extra, mailbox, strlen(mailbox), 0, 0, sw_normalize_user_replace);
-+            if(normalized_mailbox) {
-+                ast_log(LOG_NOTICE, "Rewrote mailbox user input '%s' to %s\n",
-+                    mailbox, normalized_mailbox);
-+                ast_copy_string(mailbox, normalized_mailbox, mailbox_size);
-+                free(normalized_mailbox);
-+            }
-+        }
++		if(ppat && extra) {
++			ast_log(LOG_NOTICE, "Trying to rewrite user input '%s' using s/%s/%s/\n",
++				mailbox, sw_normalize_user_match, sw_normalize_user_replace);
++			normalized_mailbox = pcre_subst(ppat, extra, mailbox, strlen(mailbox), 0, 0, sw_normalize_user_replace);
++			if(normalized_mailbox) {
++				ast_log(LOG_NOTICE, "Rewrote mailbox user input '%s' to %s\n",
++					mailbox, normalized_mailbox);
++				ast_copy_string(mailbox, normalized_mailbox, mailbox_size);
++				free(normalized_mailbox);
++			}
++		}
 +
  		if (!ast_strlen_zero(prefix)) {
  			char fullusername[80] = "";
  			ast_copy_string(fullusername, prefix, sizeof(fullusername));
-@@ -13099,6 +13252,8 @@
- 	int x;
- 	unsigned int tmpadsi[4];
+@@ -13645,6 +13798,8 @@ static int actual_load_config(int reload
  	char secretfn[PATH_MAX] = "";
+ 	long tps_queue_low;
+ 	long tps_queue_high;
 +    const char *ast_sw_normalize_user_match = NULL;
 +    const char *ast_sw_normalize_user_replace = NULL;
  
  #ifdef IMAP_STORAGE
  	ast_copy_string(imapparentfolder, "\0", sizeof(imapparentfolder));
-@@ -13150,6 +13305,19 @@
+@@ -13696,6 +13851,19 @@ static int actual_load_config(int reload
  			ast_copy_string(odbc_table, val, sizeof(odbc_table));
  		}
  #endif		
 +
-+        /* sipwise sw_normalize_user_match/replace */
-+        if ((ast_sw_normalize_user_match = ast_variable_retrieve(cfg, "general", "sw_normalize_user_match"))) {
-+            ast_copy_string(sw_normalize_user_match, ast_sw_normalize_user_match, sizeof(sw_normalize_user_match));
-+        } else {
-+            sw_normalize_user_match[0] = '\0';
-+        }
-+        if ((ast_sw_normalize_user_replace = ast_variable_retrieve(cfg, "general", "sw_normalize_user_replace"))) {
-+            ast_copy_string(sw_normalize_user_replace, ast_sw_normalize_user_replace, sizeof(sw_normalize_user_replace));
-+        } else {
-+            sw_normalize_user_replace[0] = '\0';
-+        }
++		/* sipwise sw_normalize_user_match/replace */
++		if ((ast_sw_normalize_user_match = ast_variable_retrieve(cfg, "general", "sw_normalize_user_match"))) {
++			ast_copy_string(sw_normalize_user_match, ast_sw_normalize_user_match, sizeof(sw_normalize_user_match));
++		} else {
++			sw_normalize_user_match[0] = '\0';
++		}
++		if ((ast_sw_normalize_user_replace = ast_variable_retrieve(cfg, "general", "sw_normalize_user_replace"))) {
++			ast_copy_string(sw_normalize_user_replace, ast_sw_normalize_user_replace, sizeof(sw_normalize_user_replace));
++		} else {
++			sw_normalize_user_replace[0] = '\0';
++		}
 +
  		/* Mail command */
  		strcpy(mailcmd, SENDMAIL);
  		if ((val = ast_variable_retrieve(cfg, "general", "mailcmd")))
 --- a/Makefile
 +++ b/Makefile
-@@ -15,7 +15,7 @@
+@@ -15,7 +15,7 @@ CC?=gcc
  OPTIMIZE=-O2
  DEBUG=-g
  
