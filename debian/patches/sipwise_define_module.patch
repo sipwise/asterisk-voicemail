@@ -1,6 +1,6 @@
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -134,6 +134,8 @@
+@@ -144,6 +144,8 @@
  #include "asterisk/threadstorage.h"
  #endif
  
