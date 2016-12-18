@@ -1,8 +1,6 @@
-Index: asterisk-voicemail/apps/app_voicemail.c
-===================================================================
---- asterisk-voicemail.orig/apps/app_voicemail.c	2016-11-28 17:15:44.910377545 +0100
-+++ asterisk-voicemail/apps/app_voicemail.c	2016-11-28 17:16:03.794431895 +0100
-@@ -921,6 +921,7 @@
+--- a/apps/app_voicemail.c
++++ b/apps/app_voicemail.c
+@@ -976,6 +976,7 @@
  static char serveremail[80];
  static char mailcmd[160];	/* Configurable mail cmd */
  static char externnotify[160]; 
@@ -10,7 +8,7 @@ Index: asterisk-voicemail/apps/app_voicemail.c
  static struct ast_smdi_interface *smdi_iface = NULL;
  static char vmfmts[80];
  static double volgain;
-@@ -4850,6 +4851,20 @@
+@@ -5056,6 +5057,20 @@
  	return 1;
  }
  
@@ -31,7 +29,7 @@ Index: asterisk-voicemail/apps/app_voicemail.c
  static void prep_email_sub_vars(struct ast_channel *ast, struct ast_vm_user *vmu, int msgnum, char *context, char *mailbox, const char *fromfolder, char *cidnum, char *cidname, char *dur, char *date, const char *category, const char *flag)
  {
  	char callerid[256];
-@@ -5434,6 +5449,59 @@
+@@ -5650,6 +5665,59 @@
  	return 0;
  }
  
@@ -91,7 +89,7 @@ Index: asterisk-voicemail/apps/app_voicemail.c
  static int sendpage(char *srcemail, char *pager, int msgnum, char *context, char *mailbox, const char *fromfolder, char *cidnum, char *cidname, int duration, struct ast_vm_user *vmu, const char *category, const char *flag)
  {
  	char enc_cidnum[256], enc_cidname[256];
-@@ -5447,6 +5515,10 @@
+@@ -5663,6 +5731,10 @@
  	FILE *p;
  	struct ast_str *str1 = ast_str_create(16), *str2 = ast_str_create(16);
  
@@ -102,7 +100,7 @@ Index: asterisk-voicemail/apps/app_voicemail.c
  	if (!str1 || !str2) {
  		ast_free(str1);
  		ast_free(str2);
-@@ -5579,6 +5651,7 @@
+@@ -5795,6 +5867,7 @@
  	ast_free(str2);
  	return 0;
  }
@@ -110,7 +108,7 @@ Index: asterisk-voicemail/apps/app_voicemail.c
  
  /*!
   * \brief Gets the current date and time, as formatted string.
-@@ -8026,7 +8099,8 @@
+@@ -8291,7 +8364,8 @@
  	}
  
  	if (!ast_strlen_zero(vmu->pager)) {
@@ -120,7 +118,7 @@ Index: asterisk-voicemail/apps/app_voicemail.c
  	}
  
  	if (ast_test_flag(vmu, VM_DELETE))
-@@ -13496,6 +13570,12 @@
+@@ -14044,6 +14118,12 @@
  		} else {
  			externnotify[0] = '\0';
  		}
