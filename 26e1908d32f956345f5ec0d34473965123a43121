@@ -34,6 +34,24 @@
       "revId": "26e1908d32f956345f5ec0d34473965123a43121",
       "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba51214e_6338d7a0",
+        "filename": "debian/control",
+        "patchSetId": 6
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2016-12-20T22:36:49Z",
+      "side": 1,
+      "message": "We expect our packages to build without network, but we\u0027ve exceptions, quoting modules/jenkins/files/pbuilderrc from puppet-sipwise.git:\n\nif [ \"$JOB_NAME\" \u003d \"docker-deb-pkg-binaries\" ] || \\\n   [ \"$JOB_NAME\" \u003d \"repoapi-binaries\" ] || \\\n   [ \"$JOB_NAME\" \u003d \"ngcp-rtcengine-binaries\" ] || \\\n   [[ \"$JOB_NAME\" \u003d~ ^comx(-sip|-xmpp|-fileshare-service|)-binaries$ ]] ; then\n  USENETWORK\u003dyes\nfi\n\nWe for sure could make an exception for asterisk too, so that shouldn\u0027t hinder us.\n\nInteresting approach, for sure :)\n\nBTW, do you have any idea how to hardcode a specific version? Would something like \"asterisk-dev (\u003e\u003d 1:13.12.2~), asterisk-dev (\u003c\u003c 1:13.13)\" a) work + b) improve our situation from your PoV?",
+      "parentUuid": "ba51214e_23bffffc",
+      "revId": "26e1908d32f956345f5ec0d34473965123a43121",
+      "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
+      "unresolved": false
     }
   ]
 }
