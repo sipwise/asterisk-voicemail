@@ -16,6 +16,24 @@
       "revId": "26e1908d32f956345f5ec0d34473965123a43121",
       "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba51214e_23bffffc",
+        "filename": "debian/control",
+        "patchSetId": 6
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2016-12-20T22:27:14Z",
+      "side": 1,
+      "message": "Hmm actually I think there\u0027s a solution that might solve all of our problems?\n\nAFAIK we do not have the same restriction as in Debian that our builds cannot access the network right?\n\nSo, I\u0027d do the following. Remove the baseline .c files. And keep a set of quilt patch stacks for each upstream release we support. Then, during the build, I\u0027d do something like:\n\n  apt-get source asterisk\n  cp asterisk-*/app/app_voicemail.c . (or wherever the file might be in the upstream repo)\n  and the «quilt push -a» but configured to force 0 fuzz.\n\nThis should be pretty safe and fail whenever the patch does not apply any longer, then we can simply remove the hardcoded version, and let the builds fail whenever there\u0027s a new upstream version. If we consider the 0 fuzz patches still unsafe, we can refresh them with more than 3-lines of context say 10 or whatever.\n\nI think this would solve all the problems we discussed with Victor and Kirill.",
+      "parentUuid": "ba51214e_2391bf99",
+      "revId": "26e1908d32f956345f5ec0d34473965123a43121",
+      "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
+      "unresolved": false
     }
   ]
 }
