@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba51214e_2391bf99",
+        "filename": "debian/control",
+        "patchSetId": 6
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2016-12-20T21:44:58Z",
+      "side": 1,
+      "message": "Hm, I\u0027m not really happy about this hardcoded build-dependency, if there\u0027s just a minor update in Debian causing the version to 1:13.12.2~dfsg-3 it would require a change on our side too. Do we have any better options?",
+      "revId": "26e1908d32f956345f5ec0d34473965123a43121",
+      "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
+      "unresolved": false
+    }
+  ]
+}
