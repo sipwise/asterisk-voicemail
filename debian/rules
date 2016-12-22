@@ -4,5 +4,19 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
+UPVERSION:=$(shell dpkg-parsechangelog \
+	| sed -ne 's/^Version: \(\([0-9]\+\):\)\?\(.*\)-.*/\3/p')
+
 %:
 	dh $@
+
+export QUILT_PATCH_OPTS = -F0 -t
+
+override_dh_auto_build:
+	QUILT_PATCHES=patches-"$$UPVERSION" quilt --quiltrc=- push -a && \
+	dh_auto_build
+
+override_dh_auto_clean:
+	dh_clean
+	quilt --quiltrc=- pop -a
+	rm -rf .pc
