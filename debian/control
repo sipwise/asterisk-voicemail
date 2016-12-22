@@ -4,6 +4,7 @@ Section: comm
 Maintainer: Sipwise Development Team <support@sipwise.com>
 Build-Depends: asterisk-dev,
                debhelper (>= 9~),
+               quilt,
                libpcre3-dev,
                unixodbc-dev
 Standards-Version: 3.9.7
