@@ -1,4 +1,4 @@
-ngcp-asterisk-voicemail (11.13.1-1+0~mr5.1.0.0) unstable; urgency=medium
+ngcp-asterisk-voicemail (11.13.1+overlay-1+0~mr5.1.0.0) unstable; urgency=medium
 
   [ Alexander Lutay ]
   * [c83643d] MT#22619 Switch GitHub mirror from git transport to https
