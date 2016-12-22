@@ -6,3 +6,18 @@
 
 %:
 	dh $@
+
+export QUILT_PATCH_OPTS = -F0 -t
+
+override_dh_auto_build:
+	mkdir -p apps upstream && \
+	( cd upstream && apt-get source asterisk ) && \
+	MAJOR=$$(echo upstream/asterisk*.dsc|cut -d_ -f2|cut -d. -f-2) && \
+	cp upstream/asterisk-"$$MAJOR".*/apps/app_voicemail.c apps/ && \
+	QUILT_PATCHES=patches-"$$MAJOR" quilt --quiltrc=- push -a && \
+	dh_auto_build
+
+override_dh_auto_clean:
+	dh_clean
+	quilt --quiltrc=- pop -a
+	rm -rf .pc apps upstream
