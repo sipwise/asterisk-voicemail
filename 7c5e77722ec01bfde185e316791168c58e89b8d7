@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba51214e_633bad38",
+        "filename": "debian/control",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1000001
+      },
+      "writtenOn": "2016-12-27T09:57:33Z",
+      "side": 1,
+      "message": "as Mika pointed, maybe better \u003e\u003d here?",
+      "range": {
+        "startLine": 5,
+        "startChar": 29,
+        "endLine": 5,
+        "endChar": 31
+      },
+      "revId": "7c5e77722ec01bfde185e316791168c58e89b8d7",
+      "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
+      "unresolved": false
+    }
+  ]
+}
