@@ -1,3 +1,21 @@
+ngcp-asterisk-voicemail (13.12.2-1) unstable; urgency=medium
+
+  [ Andreas Granig ]
+  * [71551d7] TT#6496 Add voicemail sms notifications.
+
+  [ Michael Prokop ]
+  * [96e5a08] TT#6714 Don't hardcode Build-Depends version for
+    asterisk-dev
+  * [cc75f17] TT#6714 Refresh sipwise_vm_sms_notify.patch against v13.12.2
+
+  [ Victor Seva ]
+  * [cc713cd] New upstream version 13.12.2
+
+  [ Kirill Solomko ]
+  * [7b48ccf] TT#6714 port app_voicemail to asterisk 13
+
+ -- Michael Prokop <mprokop@sipwise.com>  Wed, 18 Jan 2017 15:29:03 +0100
+
 ngcp-asterisk-voicemail (11.13.1-1+0~mr5.1.0.0) unstable; urgency=medium
 
   [ Alexander Lutay ]
