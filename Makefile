@@ -28,7 +28,7 @@ all: _all
 	@echo " +               make install                   +"
 	@echo " +----------------------------------------------+"
 
-_all: apps/app_voicemail.so
+_all: apps/app_voicemail.so apps/app_playback.so
 
 apps/app_voicemail.o: apps/app_voicemail.c
 	$(CC) $(CFLAGS) $(DEBUG) $(OPTIMIZE) -c -o $@ $<
@@ -36,12 +36,20 @@ apps/app_voicemail.o: apps/app_voicemail.c
 apps/app_voicemail.so: apps/app_voicemail.o
 	$(CC) -shared -Xlinker -x -o $@ $< $(LIBS)
 
+apps/app_playback.o: apps/app_playback.c
+	$(CC) $(CFLAGS) $(DEBUG) $(OPTIMIZE) -c -o $@ $<
+
+apps/app_playback.so: apps/app_playback.o
+	$(CC) -shared -Xlinker -x -o $@ $< $(LIBS)
+
 clean:
-	rm -f apps/app_voicemail.o apps/app_voicemail.so
+	rm -f apps/app_voicemail.o apps/app_voicemail.so \
+		  apps/app_playback.o apps/app_playback.so
 
 install: _all
 	$(INSTALL) -m 755 -d $(DESTDIR)$(MODULES_DIR)
 	$(INSTALL) -m 755 apps/app_voicemail.so $(DESTDIR)$(MODULES_DIR)
+	$(INSTALL) -m 755 apps/app_playback.so $(DESTDIR)$(MODULES_DIR)
 	@echo " +---- apps/app_voicemail Installation Complete ------+"
 	@echo " +                                                    +"
 	@echo " + apps/app_voicemail has successfully been installed +"
