@@ -8,3 +8,5 @@ sipwise_vm_change_password_use_customer_id.diff
 sipwise_vm_play_anonymous.diff
 sipwise_vm_envelope_behaviour.diff
 sipwise_vm_sms_notify.patch
+sipwise_vm_zonemessages.patch
+sipwise_app_playback_timezone.patch
