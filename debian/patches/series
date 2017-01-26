@@ -1,3 +1,4 @@
+rename_playback.patch
 sipwise_define_module.patch
 sipwise_vm_uuid_mailbox.patch
 sipwise_vm_romanian_syntax.patch

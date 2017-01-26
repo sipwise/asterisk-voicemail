@@ -1,0 +1,12 @@
+--- a/Makefile
++++ b/Makefile
+@@ -49,7 +49,8 @@ clean:
+ install: _all
+ 	$(INSTALL) -m 755 -d $(DESTDIR)$(MODULES_DIR)
+ 	$(INSTALL) -m 755 apps/app_voicemail.so $(DESTDIR)$(MODULES_DIR)
+-	$(INSTALL) -m 755 apps/app_playback.so $(DESTDIR)$(MODULES_DIR)
++	mv apps/app_playback.so apps/app_ngcp_playback.so
++	$(INSTALL) -m 755 apps/app_ngcp_playback.so $(DESTDIR)$(MODULES_DIR)
+ 	@echo " +---- apps/app_voicemail Installation Complete ------+"
+ 	@echo " +                                                    +"
+ 	@echo " + apps/app_voicemail has successfully been installed +"
