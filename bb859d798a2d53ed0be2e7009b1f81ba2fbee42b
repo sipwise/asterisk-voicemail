@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_e8f40d89",
+        "filename": "debian/control",
+        "patchSetId": 4
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1000001
+      },
+      "writtenOn": "2017-01-26T14:57:27Z",
+      "side": 1,
+      "message": "should it stay here? IMHO nope",
+      "range": {
+        "startLine": 17,
+        "startChar": 10,
+        "endLine": 17,
+        "endChar": 36
+      },
+      "revId": "bb859d798a2d53ed0be2e7009b1f81ba2fbee42b",
+      "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
+      "unresolved": false
+    }
+  ]
+}
