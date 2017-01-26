@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_489f0160",
+        "filename": "debian/patches/series",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1000001
+      },
+      "writtenOn": "2017-01-26T14:43:49Z",
+      "side": 1,
+      "message": "all the patches had prefix sipwise_\njust $0.05",
+      "revId": "0aa846e45d739cad43e382630794b117d42f4a60",
+      "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
+      "unresolved": false
+    }
+  ]
+}
