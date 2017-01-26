@@ -15,7 +15,7 @@ Depends: asterisk,
          ${misc:Depends},
          ${shlibs:Depends}
 Provides: asterisk-voicemail-storage
-Conflicts: asterisk-voicemail-storage, ngcp-asterisk
+Conflicts: ngcp-asterisk
 Replaces: ngcp-asterisk
 Description: NGCP version ODBC voicemail storage support for the Asterisk PBX
  Asterisk is an Open Source PBX and telephony toolkit.
