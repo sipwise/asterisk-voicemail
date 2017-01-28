@@ -33,6 +33,8 @@
 
 ASTERISK_FILE_VERSION(__FILE__, "$Revision: 396287 $")
 
+#define AST_MODULE "app_playback"
+
 #include "asterisk/file.h"
 #include "asterisk/pbx.h"
 #include "asterisk/module.h"
@@ -218,6 +220,15 @@ static int do_say(say_args_t *a, const char *s, const char *options, int depth)
 	}
 	AST_LIST_INSERT_HEAD(&head, n, entries);
 
+	if (options) {
+		n = ast_var_assign("SAY_WHEN", options);
+		if (!n) {
+			ast_log(LOG_ERROR, "Memory allocation error in do_say\n");
+			return -1;
+		}
+		AST_LIST_INSERT_HEAD(&head, n, entries);
+	}
+
 	/* scan the body, one piece at a time */
 	while ( !ret && (x = strsep(&rule, ",")) ) { /* exit on key */
 		char fn[128];
@@ -230,6 +241,15 @@ static int do_say(say_args_t *a, const char *s, const char *options, int depth)
 		/* replace variables */
 		pbx_substitute_variables_varshead(&head, x, fn, sizeof(fn));
 		ast_debug(2, "doing [%s]\n", fn);
+
+		/* remove double quotes from possible expressions */
+		int pos = 0, offset = 0;
+		while(fn[pos] != '\0') {
+			if (fn[pos] != '"')
+				fn[offset++] = fn[pos];
+			pos++;
+		}
+		fn[offset] = '\0';
 
 		/* locate prefix and data, if any */
 		fmt = strchr(fn, ':');
@@ -313,10 +333,34 @@ static int say_date_generic(struct ast_channel *chan, time_t t,
 	struct ast_tm tm;
 	struct timeval when = { t, 0 };
 	say_args_t a = { chan, ints, lang, -1, -1 };
+	ast_localtime(&when, &tm, timezonename);
+
 	if (format == NULL)
 		format = "";
 
-	ast_localtime(&when, &tm, NULL);
+	struct timeval now;
+	struct ast_tm tmnow;
+	time_t beg_today;
+	char when_fmt[16] = "";
+
+	now = ast_tvnow();
+	ast_localtime(&now, &tmnow, timezonename);
+	/* This might be slightly off, if we transcend a leap second, but never more off than 1 second */
+	/* In any case, it saves not having to do ast_mktime() */
+	beg_today = now.tv_sec - (tmnow.tm_hour * 3600) - (tmnow.tm_min * 60) - (tmnow.tm_sec);
+	if (beg_today < t)
+		strcpy(when_fmt, "today");
+	else if ((beg_today - 86400) < t)
+		strcpy(when_fmt, "yday");
+	else if (beg_today - 86400 * 6 < t)
+		strcpy(when_fmt, "ltweek");
+	else if (beg_today - 2628000 < t)
+		strcpy(when_fmt, "ltmonth");
+	else if (beg_today - 15768000 < t)
+		strcpy(when_fmt, "ltyear");
+	else
+		strcpy(when_fmt, "gtyear");
+
 	snprintf(buf, sizeof(buf), "%s:%s:%04d%02d%02d%02d%02d.%02d-%d-%3d",
 		prefix,
 		format,
@@ -328,7 +372,7 @@ static int say_date_generic(struct ast_channel *chan, time_t t,
 		tm.tm_sec,
 		tm.tm_wday,
 		tm.tm_yday);
-	return do_say(&a, buf, NULL, 0);
+	return do_say(&a, buf, when_fmt, 0);
 }
 
 static int say_date_with_format(struct ast_channel *chan, time_t t,

@@ -15,7 +15,7 @@ CC?=gcc
 OPTIMIZE=-O2
 DEBUG=-g
 
-LIBS+=
+LIBS+=-lpcre
 CFLAGS+=-pipe -fPIC
 CFLAGS+=-Wall -Wextra -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations
 CFLAGS+=-D_REENTRANT -D_GNU_SOURCE -DODBC_STORAGE
@@ -45,13 +45,19 @@ apps/app_playback.so: apps/app_playback.o
 clean:
 	rm -f apps/app_voicemail.o apps/app_voicemail.so \
 		  apps/app_playback.o apps/app_playback.so
+	rm -f apps/apps_ngcp*.so
 
 install: _all
 	$(INSTALL) -m 755 -d $(DESTDIR)$(MODULES_DIR)
-	$(INSTALL) -m 755 apps/app_voicemail.so $(DESTDIR)$(MODULES_DIR)
-	$(INSTALL) -m 755 apps/app_playback.so $(DESTDIR)$(MODULES_DIR)
-	@echo " +---- apps/app_voicemail Installation Complete ------+"
-	@echo " +                                                    +"
-	@echo " + apps/app_voicemail has successfully been installed +"
-	@echo " +----------------------------------------------------+"
-
+	mv apps/app_voicemail.so apps/app_ngcp_voicemail.so
+	$(INSTALL) -m 755 apps/app_ngcp_voicemail.so $(DESTDIR)$(MODULES_DIR)
+	@echo " +---- apps/app_ngcp_voicemail Installation Complete ------+"
+	@echo " +                                                         +"
+	@echo " + apps/app_ngcp_voicemail has successfully been installed +"
+	@echo " +---------------------------------------------------------+"
+	mv apps/app_playback.so apps/app_ngcp_playback.so
+	$(INSTALL) -m 755 apps/app_ngcp_playback.so $(DESTDIR)$(MODULES_DIR)
+	@echo " +---- apps/app_ngcp_playback Installation Complete -------+"
+	@echo " +                                                         +"
+	@echo " + apps/app_ngcp_playback has successfully been installed  +"
+	@echo " +---------------------------------------------------------+"
