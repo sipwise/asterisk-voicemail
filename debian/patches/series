@@ -13,3 +13,4 @@ sipwise_vm_zonemessages.patch
 sipwise_app_playback_timezone.patch
 sipwise_vm_vmnotify_ext_format.patch
 sipwise_vm_ext_timezone.patch
+sipwise_vm_fix_compile_warnings.patch
