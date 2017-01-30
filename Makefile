@@ -18,6 +18,7 @@ DEBUG=-g
 LIBS+=
 CFLAGS+=-pipe -fPIC
 CFLAGS+=-Wall -Wextra -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations
+		-Wno-sign-compare -Wno-unused-parameter -Wno-unused-variable
 CFLAGS+=-D_REENTRANT -D_GNU_SOURCE -DODBC_STORAGE
 
 all: _all
