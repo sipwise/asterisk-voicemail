@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_c65dc24a",
+        "filename": "Makefile",
+        "patchSetId": 4
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2017-01-30T11:11:00Z",
+      "side": 1,
+      "message": "you can\u0027t change Makefile directly. Use a patch for it",
+      "revId": "00e555bf07ba494ddda58e30c438ef8ea8eeb11b",
+      "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
+      "unresolved": false
+    }
+  ]
+}
