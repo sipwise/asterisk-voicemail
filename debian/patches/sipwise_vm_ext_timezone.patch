@@ -26,7 +26,7 @@
  #ifdef IMAP_STORAGE
  		} else if (!strcasecmp(var->name, "imapuser")) {
  			ast_copy_string(retval->imapuser, var->value, sizeof(retval->imapuser));
-@@ -8090,6 +8095,57 @@
+@@ -8096,6 +8101,57 @@
  	return tz;
  }
  
@@ -84,7 +84,7 @@
  /*!
   * \brief Sends email notification that a user has a new voicemail waiting for them.
   * \param chan
-@@ -13404,6 +13460,8 @@
+@@ -13410,6 +13466,8 @@
  	char secretfn[PATH_MAX] = "";
      const char *ast_sw_normalize_user_match = NULL;
      const char *ast_sw_normalize_user_replace = NULL;
@@ -93,7 +93,7 @@
  
  #ifdef IMAP_STORAGE
  	ast_copy_string(imapparentfolder, "\0", sizeof(imapparentfolder));
-@@ -13468,6 +13526,13 @@
+@@ -13474,6 +13532,13 @@
              sw_normalize_user_replace[0] = '\0';
          }
  
