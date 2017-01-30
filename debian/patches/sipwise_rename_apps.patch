@@ -1,6 +1,6 @@
 --- a/Makefile
 +++ b/Makefile
-@@ -45,13 +45,19 @@ apps/app_playback.so: apps/app_playback.
+@@ -46,13 +46,19 @@
  clean:
  	rm -f apps/app_voicemail.o apps/app_voicemail.so \
  		  apps/app_playback.o apps/app_playback.so

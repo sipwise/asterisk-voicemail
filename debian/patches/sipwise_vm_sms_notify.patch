@@ -1,7 +1,5 @@
-Index: asterisk-voicemail/apps/app_voicemail.c
-===================================================================
---- asterisk-voicemail.orig/apps/app_voicemail.c	2016-11-28 17:15:44.910377545 +0100
-+++ asterisk-voicemail/apps/app_voicemail.c	2016-11-28 17:16:03.794431895 +0100
+--- a/apps/app_voicemail.c
++++ b/apps/app_voicemail.c
 @@ -921,6 +921,7 @@
  static char serveremail[80];
  static char mailcmd[160];	/* Configurable mail cmd */
