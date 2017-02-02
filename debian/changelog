@@ -1,3 +1,18 @@
+ngcp-asterisk-voicemail (11.13.1+playback-1+0~mr5.1.1.0) unstable; urgency=medium
+
+  [ Victor Seva ]
+  * [bb859d7] TT#9711 rename apps to app_ngcp_*
+
+  [ Kirill Solomko ]
+  * [1e429cd] TT#5810 say.conf and dynamic timezones support
+  * [7a03ac8] TT#6496 add extended arguments for vmnotify
+  * [48db377] TT#5824 load user timezone from an external table
+  * [b09dcbd] TT#9822 fix compiler warnings
+
+  [ Sipwise Jenkins Builder ]
+
+ -- Sipwise Jenkins Builder <jenkins@sipwise.com>  Fri, 03 Feb 2017 00:26:40 +0100
+
 ngcp-asterisk-voicemail (11.13.1+playback-1+0~mr5.1.0.0) unstable; urgency=medium
 
   [ Andreas Granig ]
