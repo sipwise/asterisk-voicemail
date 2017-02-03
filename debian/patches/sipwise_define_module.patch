@@ -1,14 +1,14 @@
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -134,6 +134,8 @@ ASTERISK_FILE_VERSION(__FILE__, "$Revisi
- #include "asterisk/threadstorage.h"
- #endif
- 
+@@ -103,6 +103,8 @@
+
+ ASTERISK_FILE_VERSION(__FILE__, "$Revision$")
+
 +#define AST_MODULE "voicemail"
 +
- /*** DOCUMENTATION
- 	<application name="VoiceMail" language="en_US">
- 		<synopsis>
+ #include "asterisk/paths.h"    /* use ast_config_AST_SPOOL_DIR */
+ #include <sys/time.h>
+ #include <sys/stat.h>
 --- a/apps/app_playback.c
 +++ b/apps/app_playback.c
 @@ -33,6 +33,8 @@
