@@ -1,19 +1,19 @@
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
 @@ -103,6 +103,8 @@
-
+ 
  ASTERISK_FILE_VERSION(__FILE__, "$Revision$")
-
+ 
 +#define AST_MODULE "voicemail"
 +
- #include "asterisk/paths.h"    /* use ast_config_AST_SPOOL_DIR */
+ #include "asterisk/paths.h"	/* use ast_config_AST_SPOOL_DIR */
  #include <sys/time.h>
  #include <sys/stat.h>
 --- a/apps/app_playback.c
 +++ b/apps/app_playback.c
 @@ -33,6 +33,8 @@
  
- ASTERISK_FILE_VERSION(__FILE__, "$Revision: 396287 $")
+ ASTERISK_FILE_VERSION(__FILE__, "$Revision$")
  
 +#define AST_MODULE "app_playback"
 +
