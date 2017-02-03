@@ -1,6 +1,6 @@
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -4860,16 +4860,11 @@ static int base_encode(char *filename, F
+@@ -4860,16 +4860,11 @@
  
  static void prep_pager_sub_vars(struct ast_channel *ast, struct ast_vm_user *vmu, char *cidnum, char *dur, char *date)
  {
@@ -17,7 +17,7 @@
  }
  
  static void prep_email_sub_vars(struct ast_channel *ast, struct ast_vm_user *vmu, int msgnum, char *context, char *mailbox, const char *fromfolder, char *cidnum, char *cidname, char *dur, char *date, const char *category, const char *flag)
-@@ -4918,7 +4913,7 @@ static void prep_email_sub_vars(struct a
+@@ -4918,7 +4913,7 @@
  	}
  
  	if ((origtime = ast_variable_retrieve(msg_cfg, "message", "origtime")) && sscanf(origtime, "%30d", &inttime) == 1) {
@@ -26,7 +26,7 @@
  		struct ast_tm tm;
  		ast_localtime(&tv, &tm, NULL);
  		ast_strftime_locale(origdate, sizeof(origdate), emaildateformat, &tm, S_OR(vmu->locale, NULL));
-@@ -5305,7 +5300,7 @@ static void make_email_file(FILE *p,
+@@ -5305,7 +5300,7 @@
  				/* You might be tempted to do origdate, except that a) it's in the wrong
  				 * format, and b) it's missing for IMAP recordings. */
  				if ((v = ast_variable_retrieve(msg_cfg, "message", "origtime")) && sscanf(v, "%30d", &inttime) == 1) {
@@ -37,13 +37,13 @@
  					ast_strftime_locale(origdate, sizeof(origdate), emaildateformat, &tm, S_OR(vmu->locale, NULL));
 --- a/Makefile
 +++ b/Makefile
-@@ -17,7 +17,8 @@ DEBUG=-g
+@@ -17,7 +17,8 @@
  
  LIBS+=-lpcre
  CFLAGS+=-pipe -fPIC
 -CFLAGS+=-Wall -Wextra -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations
 +CFLAGS+=-Wall -Wextra -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations \
-+		-Wno-sign-compare -Wno-unused-parameter -Wno-unused-variabl
++		-Wno-sign-compare -Wno-unused-parameter -Wno-unused-variable
  CFLAGS+=-D_REENTRANT -D_GNU_SOURCE -DODBC_STORAGE
  
  all: _all
