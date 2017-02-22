@@ -1,0 +1,7 @@
+Verified+1: Jenkins Jenkins
+Code-Review+2: Víctor Seva <vseva@sipwise.com>
+Submitted-by: Alexander Lutay <alutay@sipwise.com>
+Submitted-at: Wed, 22 Feb 2017 12:29:18 +0100
+Reviewed-on: http://gerrit.mgm.sipwise.com/11475
+Project: asterisk-voicemail
+Branch: refs/heads/mr4.4.2
