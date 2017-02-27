@@ -1,3 +1,12 @@
+ngcp-asterisk-voicemail (11.13.1-1+0~mr4.5.4.1) unstable; urgency=medium
+
+  [ Alexander Lutay ]
+  * [918abaa] TT#11438 Don't hardcode Build-Depends version for asterisk-dev
+
+  [ Sipwise Jenkins Builder ]
+
+ -- Sipwise Jenkins Builder <jenkins@sipwise.com>  Mon, 27 Feb 2017 21:21:50 +0100
+
 ngcp-asterisk-voicemail (11.13.1-1+0~mr4.5.4.0) unstable; urgency=medium
 
   * New release.
