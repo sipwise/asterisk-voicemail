@@ -1,3 +1,12 @@
+ngcp-asterisk-voicemail (11.13.1+playback-1+0~mr5.3.0.0) unstable; urgency=medium
+
+  [ Kirill Solomko ]
+  * [01b14bf] TT#9822 fix no-unused-variable
+
+  [ Sipwise Jenkins Builder ]
+
+ -- Sipwise Jenkins Builder <jenkins@sipwise.com>  Wed, 22 Mar 2017 10:45:33 +0100
+
 ngcp-asterisk-voicemail (11.13.1+playback-1+0~mr5.2.0.0) unstable; urgency=medium
 
   [ Victor Seva ]
