@@ -1,4 +1,4 @@
-ngcp-asterisk-voicemail (13.13.1-1+0~mr5.4.0) unstable; urgency=medium
+ngcp-asterisk-voicemail (13.13.1-1+0~mr5.4.0.0) unstable; urgency=medium
 
   [ Victor Seva ]
   * [1181193] New upstream version 13.13.1
@@ -12,7 +12,9 @@ ngcp-asterisk-voicemail (13.13.1-1+0~mr5.4.0) unstable; urgency=medium
   * [2906925] TT#3660 fix offsets
   * [1ecd2f3] TT#3660 port fix no-unused-variable
 
- -- Michael Prokop <mprokop@sipwise.com>  Thu, 18 May 2017 12:54:24 +0200
+  [ Alexander Lutay ]
+
+ -- Alexander Lutay <alutay@sipwise.com>  Thu, 18 May 2017 15:33:15 +0200
 
 ngcp-asterisk-voicemail (11.13.1+playback-1+0~mr5.1.0.0) unstable; urgency=medium
 
