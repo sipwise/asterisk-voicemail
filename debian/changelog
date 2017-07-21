@@ -1,4 +1,4 @@
-ngcp-asterisk-voicemail (13.13.1-1+0~mr5.4.0.0) unstable; urgency=medium
+ngcp-asterisk-voicemail (13.13.1-1+0~mr5.5.0.0) unstable; urgency=medium
 
   [ Victor Seva ]
   * [1181193] New upstream version 13.13.1
@@ -14,7 +14,7 @@ ngcp-asterisk-voicemail (13.13.1-1+0~mr5.4.0.0) unstable; urgency=medium
 
   [ Alexander Lutay ]
 
- -- Alexander Lutay <alutay@sipwise.com>  Thu, 18 May 2017 15:33:15 +0200
+ -- Alexander Lutay <alutay@sipwise.com>  Fri, 21 Jul 2017 14:33:52 +0200
 
 ngcp-asterisk-voicemail (11.13.1+playback-1+0~mr5.1.0.0) unstable; urgency=medium
 
