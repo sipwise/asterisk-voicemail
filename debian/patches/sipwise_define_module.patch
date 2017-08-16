@@ -1,22 +1,27 @@
+---
+ apps/app_playback.c  |    2 ++
+ apps/app_voicemail.c |    2 ++
+ 2 files changed, 4 insertions(+)
+
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -103,6 +103,8 @@
- 
- ASTERISK_FILE_VERSION(__FILE__, "$Revision$")
+@@ -80,6 +80,8 @@
+ </category>
+ ***/
  
 +#define AST_MODULE "voicemail"
 +
- #include "asterisk/paths.h"	/* use ast_config_AST_SPOOL_DIR */
- #include <sys/time.h>
- #include <sys/stat.h>
+ #include "asterisk.h"
+ 
+ #ifdef IMAP_STORAGE
 --- a/apps/app_playback.c
 +++ b/apps/app_playback.c
-@@ -33,6 +33,8 @@
- 
- ASTERISK_FILE_VERSION(__FILE__, "$Revision$")
+@@ -29,6 +29,8 @@
+ 	<support_level>core</support_level>
+  ***/
  
 +#define AST_MODULE "app_playback"
 +
- #include "asterisk/file.h"
- #include "asterisk/pbx.h"
- #include "asterisk/module.h"
+ #include "asterisk.h"
+ 
+ ASTERISK_FILE_VERSION(__FILE__, "$Revision$")
