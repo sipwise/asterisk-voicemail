@@ -3,6 +3,7 @@ Priority: optional
 Section: comm
 Maintainer: Sipwise Development Team <support@sipwise.com>
 Build-Depends: asterisk-dev,
+               quilt,
                debhelper (>= 9~),
                libpcre3-dev,
                unixodbc-dev
