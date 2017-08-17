@@ -1,0 +1,9 @@
+Verified+1: Jenkins Jenkins
+Code-Review+1: Michael Prokop <mprokop@sipwise.com>
+Code-Review+1: Alexander Lutay <alutay@sipwise.com>
+Code-Review+2: Kirill Solomko <ksolomko@sipwise.com>
+Submitted-by: Guillem Jover <gjover@sipwise.com>
+Submitted-at: Thu, 17 Aug 2017 11:53:54 +0200
+Reviewed-on: http://gerrit.mgm.sipwise.com/14935
+Project: asterisk-voicemail
+Branch: refs/heads/stretch/master
