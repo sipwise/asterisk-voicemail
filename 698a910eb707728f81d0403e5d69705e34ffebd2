@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1ae5cdf2_01522edd",
+        "filename": "debian/changelog",
+        "patchSetId": 4
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1000001
+      },
+      "writtenOn": "2017-08-17T07:49:41Z",
+      "side": 1,
+      "message": "mr5.5.0.0 please. it will be bumped automatically on branching. Otherwise we will brake numbering.",
+      "range": {
+        "startLine": 1,
+        "startChar": 35,
+        "endLine": 1,
+        "endChar": 44
+      },
+      "revId": "698a910eb707728f81d0403e5d69705e34ffebd2",
+      "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
+      "unresolved": false
+    }
+  ]
+}
