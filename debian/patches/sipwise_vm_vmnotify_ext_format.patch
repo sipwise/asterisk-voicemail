@@ -1,6 +1,6 @@
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -1079,6 +1079,8 @@
+@@ -1140,6 +1140,8 @@
  static int vm_msg_remove(const char *mailbox, const char *context, size_t num_msgs, const char *folder, const char *msgs[]);
  static int vm_msg_play(struct ast_channel *chan, const char *mailbox, const char *context, const char *folder, const char *msg_num, ast_vm_msg_play_cb cb);
  
@@ -9,7 +9,7 @@
  #ifdef TEST_FRAMEWORK
  static int vm_test_destroy_user(const char *context, const char *mailbox);
  static int vm_test_create_user(const char *context, const char *mailbox);
-@@ -5449,7 +5451,7 @@
+@@ -5663,7 +5665,7 @@
  	return 0;
  }
  
@@ -18,7 +18,7 @@
  {
  	char arguments[2048];
  	char date[256];
-@@ -5457,8 +5459,9 @@
+@@ -5671,8 +5673,9 @@
      char body[1024];
  	char dur[PATH_MAX];
  	struct ast_tm tm;
@@ -29,7 +29,7 @@
      if (!str1) {
  		return;
  	}
-@@ -5473,8 +5476,15 @@
+@@ -5687,8 +5690,15 @@
  
  	    snprintf(dur, sizeof(dur), "%d:%02d", duration / 60, duration % 60);
  
@@ -47,7 +47,7 @@
  
          if (pagerbody) {
              struct ast_channel *ast;
-@@ -6164,9 +6174,11 @@
+@@ -6388,9 +6398,11 @@
  	return res;
  }
  
@@ -61,7 +61,7 @@
  	char ext_context[256] = "";
  	char number[256] = "";
  	int newvoicemails = 0, oldvoicemails = 0, urgentvoicemails = 0;
-@@ -6206,10 +6218,20 @@
+@@ -6430,10 +6442,20 @@
  		} else if (ast_strlen_zero(number) || !strcmp(extension, number)) {
  			ast_log(AST_LOG_WARNING, "Missing user number to run externnotify on context '%s'\n", ext_context);
  		} else {
@@ -86,8 +86,8 @@
  			ast_debug(1, "Executing %s\n", arguments);
  			ast_safe_system(arguments);
  		}
-@@ -8022,6 +8044,58 @@
- 	ast_event_queue_and_cache(event);
+@@ -8285,6 +8307,58 @@
+ 	ast_publish_mwi_state_channel(mailbox, context, new + urgent, old, channel_id);
  }
  
 +static struct vm_zone * get_vmu_timezone(struct ast_vm_user *vmu)
@@ -145,7 +145,7 @@
  /*!
   * \brief Sends email notification that a user has a new voicemail waiting for them.
   * \param chan
-@@ -8042,6 +8116,8 @@
+@@ -8305,6 +8379,8 @@
  	int newmsgs = 0, oldmsgs = 0, urgentmsgs = 0;
  	const char *category;
  	char *myserveremail = serveremail;
@@ -154,7 +154,7 @@
  
  	ast_channel_lock(chan);
  	if ((category = pbx_builtin_getvar_helper(chan, "VM_CATEGORY"))) {
-@@ -8100,7 +8176,7 @@
+@@ -8363,7 +8439,7 @@
  
  	if (!ast_strlen_zero(vmu->pager)) {
  		//sendpage(myserveremail, vmu->pager, msgnum, vmu->context, vmu->mailbox, mbox(vmu, 0), cidnum, cidname, duration, vmu, category, flag);
@@ -163,25 +163,25 @@
  	}
  
  	if (ast_test_flag(vmu, VM_DELETE))
-@@ -8136,7 +8212,7 @@
- 			"Waiting: %d\r\n"
- 			"New: %d\r\n"
- 			"Old: %d\r\n", vmu->mailbox, vmu->context, ast_app_has_voicemail(ext_context, NULL), newmsgs, oldmsgs);
+@@ -8374,7 +8450,7 @@
+ 		ast_app_inboxcount2(ext_context, &urgentmsgs, &newmsgs, &oldmsgs);
+ 
+ 	queue_mwi_event(ast_channel_uniqueid(chan), ext_context, urgentmsgs, newmsgs, oldmsgs);
 -	run_externnotify(vmu->context, vmu->mailbox, flag, vmu->dialed_num);
 +	run_externnotify(vmu->context, vmu->mailbox, flag, vmu->dialed_num, msgnum, cidnum, &msg_time, duration, S_COR(tz, tz->timezone, ""));
  
  #ifdef IMAP_STORAGE
  	vm_delete(fn);  /* Delete the file, but not the IMAP message */
-@@ -8414,7 +8490,7 @@
+@@ -8677,7 +8753,7 @@
  						ast_log(AST_LOG_ERROR, "IMAP mailstream for %s is NULL\n", vmtmp->mailbox);
  					} else {
- 						copy_msg_result = STORE(vmstmp.curdir, vmtmp->mailbox, vmtmp->context, dstvms->curmsg, chan, vmtmp, fmt, duration, dstvms, urgent_str, msg_id);
+ 						copy_msg_result = STORE(vmstmp.curdir, vmtmp->mailbox, vmtmp->context, curmsg, chan, vmtmp, fmt, duration, dstvms, urgent_str, msg_id);
 -						run_externnotify(vmtmp->context, vmtmp->mailbox, urgent_str, vmtmp->dialed_num); 
 +						run_externnotify(vmtmp->context, vmtmp->mailbox, urgent_str, vmtmp->dialed_num, 0, NULL, NULL, 0, NULL); 
  					}
  				} else {
  					ast_log(AST_LOG_ERROR, "Could not find state information for mailbox %s\n", vmtmp->mailbox);
-@@ -8528,34 +8604,19 @@
+@@ -8787,34 +8863,19 @@
  static int play_message_datetime(struct ast_channel *chan, struct ast_vm_user *vmu, const char *origtime, const char *filename)
  {
  	int res = 0;
@@ -222,7 +222,7 @@
  
  /* No internal variable parsing for now, so we'll comment it out for the time being */
  #if 0
-@@ -8573,8 +8634,8 @@
+@@ -8832,8 +8893,8 @@
  
  	/* Can't think of how other diffs might be helpful, but I'm sure somebody will think of something. */
  #endif
@@ -233,30 +233,30 @@
  	} else if (!strncasecmp(ast_channel_language(chan), "de", 2)) {     /* GERMAN syntax */
  		res = ast_say_date_with_format(chan, t, AST_DIGIT_ANY, ast_channel_language(chan), "'vm-received' Q 'digits/at' HM", NULL);
  	} else if (!strncasecmp(ast_channel_language(chan), "gr", 2)) {     /* GREEK syntax */
-@@ -11953,7 +12014,7 @@
- 		***/
- 		ast_manager_event(chan, EVENT_FLAG_CALL, "MessageWaiting", "Mailbox: %s\r\nWaiting: %d\r\n", ext_context, has_voicemail(ext_context, NULL));
+@@ -12437,7 +12498,7 @@
+ 		int new = 0, old = 0, urgent = 0;
+ 		snprintf(ext_context, sizeof(ext_context), "%s@%s", vms.username, vmu->context);
  		/* Urgent flag not passwd to externnotify here */
 -		run_externnotify(vmu->context, vmu->mailbox, NULL, vmu->dialed_num);
 +		run_externnotify(vmu->context, vmu->mailbox, NULL, vmu->dialed_num, 0, NULL, NULL, 0, NULL);
  		ast_app_inboxcount2(ext_context, &urgent, &new, &old);
- 		queue_mwi_event(ext_context, urgent, new, old);
+ 		queue_mwi_event(ast_channel_uniqueid(chan), ext_context, urgent, new, old);
  	}
-@@ -12915,7 +12976,7 @@
+@@ -13412,7 +13473,7 @@
  		mwi_sub->old_old = old;
- 		queue_mwi_event(mwi_sub->mailbox, urgent, new, old);
+ 		queue_mwi_event(NULL, mwi_sub->mailbox, urgent, new, old);
  		// ksolomko: disabled as we do not have the number here
 -		//run_externnotify(NULL, mwi_sub->mailbox, NULL, mwi_sub->dialed_num);
 +		//run_externnotify(NULL, mwi_sub->mailbox, NULL, mwi_sub->dialed_num, 0, NULL, NULL, 0, NULL);
  	}
  }
  
-@@ -15642,7 +15703,7 @@
+@@ -16308,7 +16369,7 @@
  	char ext_context[1024];
  
  	snprintf(ext_context, sizeof(ext_context), "%s@%s", vmu->mailbox, vmu->context);
 -	run_externnotify(vmu->context, vmu->mailbox, NULL, vmu->dialed_num);
 +	run_externnotify(vmu->context, vmu->mailbox, NULL, vmu->dialed_num, 0, NULL, NULL, 0, NULL);
  	ast_app_inboxcount2(ext_context, &urgent, &new, &old);
- 	queue_mwi_event(ext_context, urgent, new, old);
+ 	queue_mwi_event(NULL, ext_context, urgent, new, old);
  }

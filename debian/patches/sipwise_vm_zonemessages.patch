@@ -1,6 +1,6 @@
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -8528,7 +8528,7 @@
+@@ -8787,7 +8787,7 @@
  static int play_message_datetime(struct ast_channel *chan, struct ast_vm_user *vmu, const char *origtime, const char *filename)
  {
  	int res = 0;
@@ -9,7 +9,7 @@
  	time_t t;
  
  	if (ast_get_time_t(origtime, &t, 0, NULL)) {
-@@ -8543,12 +8543,19 @@
+@@ -8802,12 +8802,19 @@
  		AST_LIST_LOCK(&zones);
  		AST_LIST_TRAVERSE(&zones, z, list) {
  			if (!strcmp(z->name, vmu->zonetag)) {
@@ -30,7 +30,7 @@
  
  /* No internal variable parsing for now, so we'll comment it out for the time being */
  #if 0
-@@ -8566,8 +8573,8 @@
+@@ -8825,8 +8832,8 @@
  
  	/* Can't think of how other diffs might be helpful, but I'm sure somebody will think of something. */
  #endif
@@ -41,7 +41,7 @@
  	} else if (!strncasecmp(ast_channel_language(chan), "de", 2)) {     /* GERMAN syntax */
  		res = ast_say_date_with_format(chan, t, AST_DIGIT_ANY, ast_channel_language(chan), "'vm-received' Q 'digits/at' HM", NULL);
  	} else if (!strncasecmp(ast_channel_language(chan), "gr", 2)) {     /* GREEK syntax */
-@@ -13980,17 +13987,14 @@
+@@ -14545,17 +14552,14 @@
  							char *msg_format, *tzone;
  							msg_format = ast_strdupa(var->value);
  							tzone = strsep(&msg_format, "|,");

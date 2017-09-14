@@ -1,6 +1,6 @@
 --- a/apps/app_playback.c
 +++ b/apps/app_playback.c
-@@ -220,6 +220,15 @@
+@@ -228,6 +228,15 @@
  	}
  	AST_LIST_INSERT_HEAD(&head, n, entries);
  
@@ -16,7 +16,7 @@
  	/* scan the body, one piece at a time */
  	while ( !ret && (x = strsep(&rule, ",")) ) { /* exit on key */
  		char fn[128];
-@@ -233,6 +242,15 @@
+@@ -241,6 +250,15 @@
  		pbx_substitute_variables_varshead(&head, x, fn, sizeof(fn));
  		ast_debug(2, "doing [%s]\n", fn);
  
@@ -32,7 +32,7 @@
  		/* locate prefix and data, if any */
  		fmt = strchr(fn, ':');
  		if (!fmt || fmt == fn)	{	/* regular filename */
-@@ -315,10 +333,34 @@
+@@ -323,10 +341,34 @@
  	struct ast_tm tm;
  	struct timeval when = { t, 0 };
  	say_args_t a = { chan, ints, lang, -1, -1 };
@@ -68,7 +68,7 @@
  	snprintf(buf, sizeof(buf), "%s:%s:%04d%02d%02d%02d%02d.%02d-%d-%3d",
  		prefix,
  		format,
-@@ -330,7 +372,7 @@
+@@ -338,7 +380,7 @@
  		tm.tm_sec,
  		tm.tm_wday,
  		tm.tm_yday);
