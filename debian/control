@@ -2,22 +2,27 @@ Source: ngcp-asterisk-voicemail
 Priority: optional
 Section: comm
 Maintainer: Sipwise Development Team <support@sipwise.com>
-Build-Depends: asterisk-dev,
-               quilt,
-               debhelper (>= 9~),
-               libpcre3-dev,
-               unixodbc-dev
-Standards-Version: 3.9.7
 Homepage: https://www.sipwise.com/
+Standards-Version: 3.9.8
+Build-Depends:
+ asterisk-dev,
+ quilt,
+ debhelper (>= 10~),
+ libpcre3-dev,
+ unixodbc-dev,
 
 Package: ngcp-asterisk-voicemail-odbcstorage
 Architecture: any
-Depends: asterisk,
-         ${misc:Depends},
-         ${shlibs:Depends}
-Provides: asterisk-voicemail-storage
-Conflicts: ngcp-asterisk
-Replaces: ngcp-asterisk
+Depends:
+ ${misc:Depends},
+ ${shlibs:Depends},
+ asterisk,
+Provides:
+ asterisk-voicemail-storage,
+Conflicts:
+ ngcp-asterisk,
+Replaces:
+ ngcp-asterisk,
 Description: NGCP version ODBC voicemail storage support for the Asterisk PBX
  Asterisk is an Open Source PBX and telephony toolkit.
  .
