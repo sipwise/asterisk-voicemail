@@ -1,0 +1,76 @@
+Index: asterisk-voicemail/apps/app_voicemail.c
+===================================================================
+--- asterisk-voicemail.orig/apps/app_voicemail.c
++++ asterisk-voicemail/apps/app_voicemail.c
+@@ -897,7 +897,7 @@ static char odbc_database[80];
+ static char odbc_table[80];
+ #define RETRIEVE(a,b,c,d) retrieve_file(a,b)
+ #define DISPOSE(a,b) remove_file(a,b)
+-#define STORE(a,b,c,d,e,f,g,h,i,j,k) store_file(a,b,c,d)
++#define STORE(a,b,c,d,e,f,g,h,i,j,k) store_file(a,b,c,d,e)
+ #define EXISTS(a,b,c,d) (message_exists(a,b))
+ #define RENAME(a,b,c,d,e,f,g,h) (rename_file(a,b,c,d,e,f))
+ #define COPY(a,b,c,d,e,f,g,h) (copy_file(a,b,c,d,e,f))
+@@ -4460,6 +4460,7 @@ struct insert_data {
+ 	const char *category;
+ 	const char *flag;
+ 	const char *msg_id;
++	const char *call_id;
+ };
+ 
+ static SQLHSTMT insert_data_cb(struct odbc_obj *obj, void *vdata)
+@@ -4490,6 +4491,7 @@ static SQLHSTMT insert_data_cb(struct od
+ 	if (!ast_strlen_zero(data->category)) {
+ 		SQLBindParameter(stmt, 13, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_CHAR, strlen(data->category), 0, (void *) data->category, 0, NULL);
+ 	}
++	SQLBindParameter(stmt, 12, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_CHAR, strlen(data->call_id), 0, (void *) data->call_id, 0, NULL);
+ 	res = SQLExecDirect(stmt, (unsigned char *) data->sql, SQL_NTS);
+ 	if ((res != SQL_SUCCESS) && (res != SQL_SUCCESS_WITH_INFO)) {
+ 		ast_log(AST_LOG_WARNING, "SQL Direct Execute failed!\n");
+@@ -4513,7 +4515,7 @@ static SQLHSTMT insert_data_cb(struct od
+  *
+  * \return the zero on success -1 on error.
+  */
+-static int store_file(const char *dir, const char *mailboxuser, const char *mailboxcontext, int msgnum)
++static int store_file(const char *dir, const char *mailboxuser, const char *mailboxcontext, int msgnum, struct ast_channel *chan)
+ {
+ 	int res = 0;
+ 	int fd = -1;
+@@ -4528,8 +4530,9 @@ static int store_file(const char *dir, c
+ 	char *c;
+ 	struct ast_config *cfg = NULL;
+ 	struct odbc_obj *obj;
++    const char *call_id;
+ 	struct insert_data idata = { .sql = sql, .msgnums = msgnums, .dir = dir, .mailboxuser = mailboxuser, .mailboxcontext = mailboxcontext,
+-		.context = "", .macrocontext = "", .callerid = "", .origtime = "", .duration = "", .category = "", .flag = "", .msg_id = "" };
++		.context = "", .macrocontext = "", .callerid = "", .origtime = "", .duration = "", .category = "", .flag = "", .msg_id = "", call_id = "" };
+ 	struct ast_flags config_flags = { CONFIG_FLAG_NOCACHE };
+ 
+ 	delete_file(dir, msgnum);
+@@ -4600,10 +4603,15 @@ static int store_file(const char *dir, c
+ 		idata.data = fdm;
+ 		idata.datalen = idata.indlen = fdlen;
+ 
++		if ((call_id = pbx_builtin_getvar_helper(chan, "SIPCALLID"))) {
++			if (!ast_strlen_zero(call_id))
++				idata.call_id = ast_strdupa(call_id);
++		}
++
+ 		if (!ast_strlen_zero(idata.category)) 
+-			snprintf(sql, sizeof(sql), "INSERT INTO %s (dir,msgnum,recording,context,macrocontext,callerid,origtime,duration,mailboxuser,mailboxcontext,flag,msg_id,category) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)", odbc_table); 
++			snprintf(sql, sizeof(sql), "INSERT INTO %s (dir,msgnum,recording,context,macrocontext,callerid,origtime,duration,mailboxuser,mailboxcontext,flag,msg_id,category,call_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", odbc_table); 
+ 		else
+-			snprintf(sql, sizeof(sql), "INSERT INTO %s (dir,msgnum,recording,context,macrocontext,callerid,origtime,duration,mailboxuser,mailboxcontext,flag,msg_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", odbc_table);
++			snprintf(sql, sizeof(sql), "INSERT INTO %s (dir,msgnum,recording,context,macrocontext,callerid,origtime,duration,mailboxuser,mailboxcontext,flag,msg_id,call_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)", odbc_table);
+ 
+ 		if ((stmt = ast_odbc_direct_execute(obj, insert_data_cb, &idata))) {
+ 			SQLFreeHandle (SQL_HANDLE_STMT, stmt);
+@@ -6972,7 +6980,7 @@ static int leave_voicemail(struct ast_ch
+ 			if (success == -1) {
+ 				/* We couldn't retrieve the file from the database, but we found it on the file system. Let's put it in the database. */
+ 				ast_debug(1, "Greeting not retrieved from database, but found in file storage. Inserting into database\n");
+-				store_file(prefile, vmu->mailbox, vmu->context, -1);
++				store_file(prefile, vmu->mailbox, vmu->context, -1, chan);
+ 			}
+ #endif
+ 		} else {
