@@ -1,0 +1,31 @@
+--- a/apps/app_voicemail.c
++++ b/apps/app_voicemail.c
+@@ -4529,8 +4529,9 @@
+ 	struct ast_config *cfg = NULL;
+ 	struct odbc_obj *obj;
+ 	struct insert_data idata = { .sql = sql, .msgnums = msgnums, .dir = dir, .mailboxuser = mailboxuser, .mailboxcontext = mailboxcontext,
+-		.context = "", .macrocontext = "", .callerid = "", .origtime = "", .duration = "", .category = "", .flag = "", .msg_id = "" };
++		.context = "", .macrocontext = "", .callerid = "", .origtime = "", .duration = "", .category = "", .flag = "", .msg_id = "", call_id = "" };
+ 	struct ast_flags config_flags = { CONFIG_FLAG_NOCACHE };
++    const char *call_id;
+ 
+ 	delete_file(dir, msgnum);
+ 	if (!(obj = ast_odbc_request_obj(odbc_database, 0))) {
+@@ -4600,10 +4601,15 @@
+ 		idata.data = fdm;
+ 		idata.datalen = idata.indlen = fdlen;
+ 
++		if ((call_id = pbx_builtin_getvar_helper(chan, "SIPCALLID"))) {
++			if (!ast_strlen_zero(call_id))
++				idata.call_id = ast_strdupa(call_id);
++		}
++
+ 		if (!ast_strlen_zero(idata.category)) 
+-			snprintf(sql, sizeof(sql), "INSERT INTO %s (dir,msgnum,recording,context,macrocontext,callerid,origtime,duration,mailboxuser,mailboxcontext,flag,msg_id,category) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)", odbc_table); 
++			snprintf(sql, sizeof(sql), "INSERT INTO %s (dir,msgnum,recording,context,macrocontext,callerid,origtime,duration,mailboxuser,mailboxcontext,flag,msg_id,category,call_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)", odbc_table); 
+ 		else
+-			snprintf(sql, sizeof(sql), "INSERT INTO %s (dir,msgnum,recording,context,macrocontext,callerid,origtime,duration,mailboxuser,mailboxcontext,flag,msg_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", odbc_table);
++			snprintf(sql, sizeof(sql), "INSERT INTO %s (dir,msgnum,recording,context,macrocontext,callerid,origtime,duration,mailboxuser,mailboxcontext,flag,msg_id,call_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", odbc_table);
+ 
+ 		if ((stmt = ast_odbc_direct_execute(obj, insert_data_cb, &idata))) {
+ 			SQLFreeHandle (SQL_HANDLE_STMT, stmt);
