@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baada198_332f78a3",
+        "filename": "debian/patches/sipwise_vm_add_callid.patch",
+        "patchSetId": 8
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1000013
+      },
+      "writtenOn": "2017-11-30T13:24:31Z",
+      "side": 1,
+      "message": "would rather use a counter for these, but thats cosmetic\n\nif this \"category\" is optional, i would introduce call_id as bind param 13, and moving category to optional 14th.",
+      "range": {
+        "startLine": 26,
+        "startChar": 26,
+        "endLine": 26,
+        "endChar": 28
+      },
+      "revId": "36a7d6130073491700a08bc96c22587017705428",
+      "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baada198_de12c357",
+        "filename": "debian/patches/sipwise_vm_add_callid.patch",
+        "patchSetId": 8
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1000013
+      },
+      "writtenOn": "2017-11-30T13:24:31Z",
+      "side": 1,
+      "message": "wat is this additional param used for?",
+      "range": {
+        "startLine": 75,
+        "startChar": 57,
+        "endLine": 75,
+        "endChar": 61
+      },
+      "revId": "36a7d6130073491700a08bc96c22587017705428",
+      "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
+      "unresolved": false
+    }
+  ]
+}
