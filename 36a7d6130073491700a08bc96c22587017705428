@@ -45,6 +45,30 @@
       "revId": "36a7d6130073491700a08bc96c22587017705428",
       "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baada198_9e576b02",
+        "filename": "debian/patches/sipwise_vm_add_callid.patch",
+        "patchSetId": 8
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1000013
+      },
+      "writtenOn": "2017-11-30T13:33:40Z",
+      "side": 1,
+      "message": "ok this seems to be for the faxserver/call_id part",
+      "parentUuid": "baada198_de12c357",
+      "range": {
+        "startLine": 75,
+        "startChar": 57,
+        "endLine": 75,
+        "endChar": 61
+      },
+      "revId": "36a7d6130073491700a08bc96c22587017705428",
+      "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
+      "unresolved": false
     }
   ]
 }
