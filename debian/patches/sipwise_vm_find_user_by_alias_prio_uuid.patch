@@ -1,0 +1,35 @@
+--- a/apps/app_voicemail.c
++++ b/apps/app_voicemail.c
+@@ -4154,26 +4154,26 @@
+ 	SQLHSTMT stmt = NULL;
+ 
+ 	obj = ast_odbc_request_obj(odbc_database, 0);
+-	stmt = ast_odbc_prepare_and_execute(obj, generic_prepare, &gps);
++	stmt = ast_odbc_prepare_and_execute(obj, generic_prepare, &gps_uuid);
+ 	if (!stmt) {
+-		ast_log(LOG_WARNING, "SQL Execute error!\n[%s]\n\n", sql);
++		ast_log(LOG_WARNING, "SQL Execute error!\n[%s]\n\n", sql_uuid);
+ 		ast_odbc_release_obj(obj);
+ 		return NULL;
+ 	}
+ 	res = SQLFetch(stmt);
+ 	if ((res != SQL_SUCCESS) && (res != SQL_SUCCESS_WITH_INFO)) {
+-		ast_log(LOG_NOTICE, "Failed to fetch mailbox for alias '%s', falling back to uuid search\n", alias);
++		ast_log(LOG_NOTICE, "Failed to fetch mailbox for uuid '%s', falling back to alias search\n", alias);
+ 		SQLFreeHandle (SQL_HANDLE_STMT, stmt);
+ 
+-		stmt = ast_odbc_prepare_and_execute(obj, generic_prepare, &gps_uuid);
++		stmt = ast_odbc_prepare_and_execute(obj, generic_prepare, &gps);
+ 		if (!stmt) {
+-			ast_log(LOG_WARNING, "SQL Execute error!\n[%s]\n\n", sql_uuid);
++			ast_log(LOG_WARNING, "SQL Execute error!\n[%s]\n\n", sql);
+ 			ast_odbc_release_obj(obj);
+ 			return NULL;
+ 		}
+ 		res = SQLFetch(stmt);
+ 		if ((res != SQL_SUCCESS) && (res != SQL_SUCCESS_WITH_INFO)) {
+-			ast_log(LOG_NOTICE, "Failed to fetch mailbox for alias '%s' via uuid\n", alias);
++			ast_log(LOG_NOTICE, "Failed to fetch mailbox for alias '%s'\n", alias);
+ 			SQLFreeHandle (SQL_HANDLE_STMT, stmt);
+ 
+ 			ast_odbc_release_obj(obj);
