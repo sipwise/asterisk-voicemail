@@ -1,0 +1,30 @@
+--- a/apps/app_voicemail.c
++++ b/apps/app_voicemail.c
+@@ -1816,9 +1816,15 @@
+ 			ast_copy_string(retval->mailbox, mailbox, sizeof(retval->mailbox));
+ 		}
+ 		if (!context && ast_test_flag((&globalflags), VM_SEARCH)) {
+-			var = ast_load_realtime("voicemail", "mailbox", mailbox, SENTINEL);
+-		} else {
+-			var = ast_load_realtime("voicemail", "mailbox", mailbox, "context", context, SENTINEL);
++            if (strstr(mailbox,"-"))
++                var = ast_load_realtime("voicemail", "customer_id", mailbox, SENTINEL);
++            else
++                var = ast_load_realtime("voicemail", "mailbox", mailbox, SENTINEL);
++		} else {
++            if (strstr(mailbox,"-"))
++                var = ast_load_realtime("voicemail", "customer_id", mailbox, "context", context, SENTINEL);
++            else
++                var = ast_load_realtime("voicemail", "mailbox", mailbox, "context", context, SENTINEL);
+ 		}
+ 		if (var) {
+ 			// ast_log (LOG_DEBUG,"call apply_options_full\n");
+@@ -4191,7 +4197,7 @@
+ 	ast_odbc_release_obj(obj);
+ 
+ 	ast_log(LOG_NOTICE, "Found mailbox '%s' for alias '%s'\n", mailbox, alias);
+-	return find_user_realtime(ivm, context, mailbox);
++	return find_user_realtime(ivm, context, alias);
+ }
+ #endif
+ 
