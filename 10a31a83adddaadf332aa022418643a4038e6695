@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a890539_506ed2ca",
+        "filename": "debian/patches/sipwise_vm_ast_load_realtime_use_uuid.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1000024
+      },
+      "writtenOn": "2018-01-18T14:18:14Z",
+      "side": 1,
+      "message": "As in case of the patch on \u0027master\u0027 branch, I think this is a typo and the string should be \"voicemail\".",
+      "range": {
+        "startLine": 24,
+        "startChar": 29,
+        "endLine": 24,
+        "endChar": 42
+      },
+      "revId": "10a31a83adddaadf332aa022418643a4038e6695",
+      "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
+      "unresolved": false
+    }
+  ]
+}
