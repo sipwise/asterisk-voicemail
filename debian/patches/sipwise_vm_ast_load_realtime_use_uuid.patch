@@ -21,7 +21,7 @@
  		} else {
 -			var = ast_load_realtime("voicemail", "mailbox", mailbox, "context", context, SENTINEL);
 +			if (by_uuid)
-+				var = ast_load_realtime("customer_id", "customer_id", mailbox, "context", context, SENTINEL);
++				var = ast_load_realtime("voicemail", "customer_id", mailbox, "context", context, SENTINEL);
 +			else
 +				var = ast_load_realtime("voicemail", "mailbox", mailbox, "context", context, SENTINEL);
  		}
