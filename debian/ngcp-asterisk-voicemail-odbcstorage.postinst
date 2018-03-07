@@ -1,0 +1,9 @@
+#!/bin/bash
+
+set -e
+
+USER=asterisk
+GROUP=asterisk
+LOGDIR=/var/log/asterisk
+
+chown -R $USER:$GROUP "$LOGDIR"
