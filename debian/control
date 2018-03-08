@@ -6,17 +6,17 @@ Homepage: https://www.sipwise.com/
 Standards-Version: 3.9.8
 Build-Depends:
  asterisk-dev,
- quilt,
  debhelper (>= 10~),
  libpcre3-dev,
+ quilt,
  unixodbc-dev,
 
 Package: ngcp-asterisk-voicemail-odbcstorage
 Architecture: any
 Depends:
+ asterisk,
  ${misc:Depends},
  ${shlibs:Depends},
- asterisk,
 Provides:
  asterisk-voicemail-storage,
 Conflicts:
