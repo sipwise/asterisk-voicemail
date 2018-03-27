@@ -1,3 +1,12 @@
+ngcp-asterisk-voicemail (11.13.1-1+0~mr4.5.9.0) unstable; urgency=medium
+
+  [ Kirill Solomko ]
+  * [07af352] TT#33364 add postinst to fix /var/log/asterisk permissions
+
+  [ Sipwise Jenkins Builder ]
+
+ -- Sipwise Jenkins Builder <jenkins@sipwise.com>  Tue, 27 Mar 2018 18:29:55 +0200
+
 ngcp-asterisk-voicemail (11.13.1-1+0~mr4.5.8.0) unstable; urgency=medium
 
   * New release.
