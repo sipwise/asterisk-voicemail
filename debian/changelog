@@ -1,3 +1,16 @@
+ngcp-asterisk-voicemail (13.14.1+0~mr5.5.5.0) unstable; urgency=medium
+
+  [ Kirill Solomko ]
+  * [1ebc828] TT#26807 find_user_by_alias() searches first by uuid and then by alias
+  * [3cb1d38] TT#30383 find_user_realtime() load user by uuid if present
+  * [e2f2c60] TT#30383 sipwise_vm_ast_load_realtime_use_uuid(): fix a typo
+  * [aa67430] TT#33362 fix odbc_update_msg_id odbc obj deadlock
+  * [ea1fe40] TT#33364 add postinst to fix /var/log/asterisk permissions
+
+  [ Sipwise Jenkins Builder ]
+
+ -- Sipwise Jenkins Builder <jenkins@sipwise.com>  Mon, 16 Apr 2018 16:03:21 +0200
+
 ngcp-asterisk-voicemail (13.14.1+0~mr5.5.4.0) unstable; urgency=medium
 
   * New release.
