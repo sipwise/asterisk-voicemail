@@ -1,3 +1,13 @@
+ngcp-asterisk-voicemail (13.14.1+0~mr6.1.2.1) unstable; urgency=medium
+
+  [ Kirill Solomko ]
+  * [72f9579] TT#33362 fix odbc_update_msg_id odbc obj deadlock
+  * [184b253] TT#33364 add postinst to fix /var/log/asterisk permissions
+
+  [ Sipwise Jenkins Builder ]
+
+ -- Sipwise Jenkins Builder <jenkins@sipwise.com>  Mon, 14 May 2018 22:59:56 +0200
+
 ngcp-asterisk-voicemail (13.14.1+0~mr6.1.2.0) unstable; urgency=medium
 
   * New release.
