@@ -1,0 +1,12 @@
+--- a/apps/app_voicemail.c
++++ b/apps/app_voicemail.c
+@@ -15051,7 +15051,9 @@
+ 			break;
+ 		}
+ 		open_mailbox(&vms, vmu, folder2mbox[i]);
++		#ifdef IMAP_STORAGE
+ 		STORE(tmp[i].dir, testmailbox, testcontext, 0, chan, vmu, "gsm", 600, &vms, strcmp(folders[i], "Urgent") ? "" : "Urgent", NULL);
++		#endif
+ 
+ 		/* hasvm-old, hasvm-urgent, hasvm-new, ic-old, ic-urgent, ic-new, ic2-old, ic2-urgent, ic2-new, mc-old, mc-urgent, mc-new */
+ 		for (j = 0; j < 3; j++) {
