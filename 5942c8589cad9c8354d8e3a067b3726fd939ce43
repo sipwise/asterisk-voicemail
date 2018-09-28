@@ -22,6 +22,23 @@
       "revId": "5942c8589cad9c8354d8e3a067b3726fd939ce43",
       "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9af37de9_712b9483",
+        "filename": "debian/patches/sipwise_vm_uuid_mailbox.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 555,
+      "author": {
+        "id": 1000008
+      },
+      "writtenOn": "2018-09-28T17:21:46Z",
+      "side": 1,
+      "message": "Are you sure this is correct? Seems to be that STORE() should be called regardless of whether IMAP_STORAGE is defined or not.",
+      "revId": "5942c8589cad9c8354d8e3a067b3726fd939ce43",
+      "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
+      "unresolved": false
     }
   ]
 }
