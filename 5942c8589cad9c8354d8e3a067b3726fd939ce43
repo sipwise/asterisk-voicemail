@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9af37de9_b11a1c6d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1000042
+      },
+      "writtenOn": "2018-09-28T17:00:25Z",
+      "side": 1,
+      "message": "Just out of curiosity, are you using a tool that makes the lines in commit messages of about ~50 columns wide?  Alex\u0027s commits are the same lately.",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 24
+      },
+      "revId": "5942c8589cad9c8354d8e3a067b3726fd939ce43",
+      "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
+      "unresolved": false
+    }
+  ]
+}
