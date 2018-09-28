@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "9af37de9_113b28d3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2018-09-28T19:37:59Z",
+      "side": 1,
+      "message": "No, just `:set ai tw\u003d65`, mainly due to being used to that. :)\n\nIf we agree on a specific line length/column width then I\u0027m more than happy to use that instead.",
+      "parentUuid": "9af37de9_b11a1c6d",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 24
+      },
+      "revId": "5942c8589cad9c8354d8e3a067b3726fd939ce43",
+      "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9af37de9_712b9483",
         "filename": "debian/patches/sipwise_vm_uuid_mailbox.patch",
         "patchSetId": 2
