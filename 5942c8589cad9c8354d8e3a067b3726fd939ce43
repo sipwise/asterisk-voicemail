@@ -99,6 +99,24 @@
       "revId": "5942c8589cad9c8354d8e3a067b3726fd939ce43",
       "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9af37de9_b148dc5c",
+        "filename": "debian/patches/sipwise_vm_uuid_mailbox.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 555,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2018-09-28T20:47:48Z",
+      "side": 1,
+      "message": "Ah sure, as you prefer. Re-doing it in a separate patch then.",
+      "parentUuid": "9af37de9_51577002",
+      "revId": "5942c8589cad9c8354d8e3a067b3726fd939ce43",
+      "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
+      "unresolved": false
     }
   ]
 }
