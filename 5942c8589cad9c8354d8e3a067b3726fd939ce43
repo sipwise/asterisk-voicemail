@@ -81,6 +81,24 @@
       "revId": "5942c8589cad9c8354d8e3a067b3726fd939ce43",
       "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9af37de9_51577002",
+        "filename": "debian/patches/sipwise_vm_uuid_mailbox.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 555,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2018-09-28T19:56:10Z",
+      "side": 1,
+      "message": "I can confirm that the patch is fully valid and the chan variable is defined and used only in IMAP_STORAGE in that AST_TEST_DEFINE scope. Should work fine.\n\nI would create a new patch for that though instead of changing the existing one as it is also not the quilt-alike behaviour.",
+      "parentUuid": "9af37de9_d13480df",
+      "revId": "5942c8589cad9c8354d8e3a067b3726fd939ce43",
+      "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
+      "unresolved": false
     }
   ]
 }
