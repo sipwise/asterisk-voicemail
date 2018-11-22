@@ -1,0 +1,51 @@
+--- a/apps/app_voicemail.c
++++ b/apps/app_voicemail.c
+@@ -4487,6 +4487,22 @@
+ 	struct insert_data *data = vdata;
+ 	int res;
+ 	SQLHSTMT stmt;
++	char sql[PATH_MAX];
++	char *argv[] = {};
++	struct generic_prepare_struct gps = { .sql = sql, .argc = 0, .argv = argv };
++
++	SQLSMALLINT msg_len = 0;
++	SQLCHAR sql_state[6], message[256];
++	SQLINTEGER native_error = 0;
++
++	snprintf(sql, sizeof(sql), "SELECT 1");
++	stmt = ast_odbc_prepare_and_execute(obj, generic_prepare, &gps);
++	if (!stmt) {
++		ast_log(AST_LOG_DEBUG, "SQL Server has gone away\n");
++		SQLFreeHandle(SQL_HANDLE_STMT, stmt);
++		return NULL;
++	}
++	SQLFreeHandle(SQL_HANDLE_STMT, stmt);
+ 
+ 	res = SQLAllocHandle(SQL_HANDLE_STMT, obj->con, &stmt);
+ 	if ((res != SQL_SUCCESS) && (res != SQL_SUCCESS_WITH_INFO)) {
+@@ -4512,7 +4528,8 @@
+ 	}
+ 	res = SQLExecDirect(stmt, (unsigned char *) data->sql, SQL_NTS);
+ 	if ((res != SQL_SUCCESS) && (res != SQL_SUCCESS_WITH_INFO)) {
+-		ast_log(AST_LOG_WARNING, "SQL Direct Execute failed!\n");
++		res = SQLGetDiagRec(SQL_HANDLE_STMT, stmt, 1, sql_state, &native_error, message, sizeof(message), &msg_len);
++		ast_log(AST_LOG_WARNING, "SQL Direct Execute failed: code: %d msg: %s!\n", (int)native_error, message);
+ 		SQLFreeHandle(SQL_HANDLE_STMT, stmt);
+ 		return NULL;
+ 	}
+@@ -4628,7 +4645,14 @@
+ 		if ((stmt = ast_odbc_direct_execute(obj, insert_data_cb, &idata))) {
+ 			SQLFreeHandle (SQL_HANDLE_STMT, stmt);
+ 		} else {
+-			ast_log(AST_LOG_WARNING, "SQL Execute error!\n[%s]\n\n", sql);
++			ast_log(AST_LOG_WARNING, "SQL Execute error!\n");
++/*
++			if (!ast_strlen_zero(idata.category)) {
++				ast_log(AST_LOG_WARNING, "INSERT INTO %s (dir,msgnum,recording,context,macrocontext,callerid,origtime,duration,mailboxuser,mailboxcontext,flag,msg_id,category) VALUES (%s,%s,<recording>,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", odbc_table, idata.dir, idata.msgnums, idata.context, idata.macrocontext, idata.callerid, idata.origtime, idata.duration, idata.mailboxuser, idata.mailboxcontext, idata.flag, idata.msg_id, idata.category);
++			} else {
++				ast_log(AST_LOG_WARNING, "INSERT INTO %s (dir,msgnum,recording,context,macrocontext,callerid,origtime,duration,mailboxuser,mailboxcontext,flag,msg_id) VALUES (%s,%s,<recording>,%s,%s,%s,%s,%s,%s,%s,%s,%s)", odbc_table, idata.dir, idata.msgnums, idata.context, idata.macrocontext, idata.callerid, idata.origtime, idata.duration, idata.mailboxuser, idata.mailboxcontext, idata.flag, idata.msg_id);
++			}
++*/
+ 			res = -1;
+ 		}
+ 	} while (0);
