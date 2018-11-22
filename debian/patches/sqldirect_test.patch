@@ -1,0 +1,35 @@
+--- a/apps/app_voicemail.c
++++ b/apps/app_voicemail.c
+@@ -4488,6 +4488,10 @@
+ 	int res;
+ 	SQLHSTMT stmt;
+ 
++	SQLSMALLINT msg_len = 0;
++	SQLCHAR sql_state[6], message[256];
++	SQLINTEGER native_error = 0;
++
+ 	res = SQLAllocHandle(SQL_HANDLE_STMT, obj->con, &stmt);
+ 	if ((res != SQL_SUCCESS) && (res != SQL_SUCCESS_WITH_INFO)) {
+ 		ast_log(AST_LOG_WARNING, "SQL Alloc Handle failed!\n");
+@@ -4512,7 +4516,8 @@
+ 	}
+ 	res = SQLExecDirect(stmt, (unsigned char *) data->sql, SQL_NTS);
+ 	if ((res != SQL_SUCCESS) && (res != SQL_SUCCESS_WITH_INFO)) {
+-		ast_log(AST_LOG_WARNING, "SQL Direct Execute failed!\n");
++		res = SQLGetDiagRec(SQL_HANDLE_STMT, stmt, 1, sql_state, &native_error, message, countof(message), &msg_len);
++		ast_log(AST_LOG_WARNING, "SQL Direct Execute failed: code: %d msg: %s!\n", (int)native_error, (char)message);
+ 		SQLFreeHandle(SQL_HANDLE_STMT, stmt);
+ 		return NULL;
+ 	}
+@@ -4629,6 +4634,11 @@
+ 			SQLFreeHandle (SQL_HANDLE_STMT, stmt);
+ 		} else {
+ 			ast_log(AST_LOG_WARNING, "SQL Execute error!\n[%s]\n\n", sql);
++			if (!ast_strlen_zero(idata.category)) {
++				ast_log(AST_LOG_WARNING, "INSERT INTO %s (dir,msgnum,recording,context,macrocontext,callerid,origtime,duration,mailboxuser,mailboxcontext,flag,msg_id,category) VALUES (%s,%s,<recording>,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", odbc_table, idata.dir, idata.msgnums, idata.context, idata.macrocontext, idata.callerid, idata.origtime, idata.duration, idata.mailboxuser, idata.mailboxcontext, idata.flag, idata.msg_id, idata.category);
++			} else {
++				ast_log(AST_LOG_WARNING, "INSERT INTO %s (dir,msgnum,recording,context,macrocontext,callerid,origtime,duration,mailboxuser,mailboxcontext,flag,msg_id,category) VALUES (%s,%s,<recording>,%s,%s,%s,%s,%s,%s,%s,%s,%s)", odbc_table, idata.dir, idata.msgnums, idata.context, idata.macrocontext, idata.callerid, idata.origtime, idata.duration, idata.mailboxuser, idata.mailboxcontext, idata.flag, idata.msg_id);
++			}
+ 			res = -1;
+ 		}
+ 	} while (0);
