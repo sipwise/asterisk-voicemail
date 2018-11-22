@@ -1,0 +1,12 @@
+--- a/apps/app_voicemail.c
++++ b/apps/app_voicemail.c
+@@ -4512,7 +4512,8 @@
+ 	}
+ 	res = SQLExecDirect(stmt, (unsigned char *) data->sql, SQL_NTS);
+ 	if ((res != SQL_SUCCESS) && (res != SQL_SUCCESS_WITH_INFO)) {
+-		ast_log(AST_LOG_WARNING, "SQL Direct Execute failed!\n");
++		res = SQLGetDiagRec(SQL_HANDLE_STMT, stmt, 1, sql_state, &native_error, message, countof(message), &msg_len);
++		ast_log(AST_LOG_WARNING, "SQL Direct Execute failed: code: %d msg: %s!\n", (int)native_error, (char)message);
+ 		SQLFreeHandle(SQL_HANDLE_STMT, stmt);
+ 		return NULL;
+ 	}
