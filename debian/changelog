@@ -1,3 +1,12 @@
+ngcp-asterisk-voicemail (13.14.1+0~mr6.5.3.2) unstable; urgency=medium
+
+  [ Kirill Solomko ]
+  * [579cf68] TT#44177 fix store_file ODBC object connection
+
+  [ Sipwise Jenkins Builder ]
+
+ -- Sipwise Jenkins Builder <jenkins@sipwise.com>  Thu, 31 Jan 2019 15:11:25 +0100
+
 ngcp-asterisk-voicemail (13.14.1+0~mr6.5.3.1) unstable; urgency=medium
 
   * New release.
