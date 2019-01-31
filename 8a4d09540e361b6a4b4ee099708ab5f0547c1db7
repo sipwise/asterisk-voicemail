@@ -16,6 +16,24 @@
       "revId": "8a4d09540e361b6a4b4ee099708ab5f0547c1db7",
       "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da1255d7_66064722",
+        "filename": "debian/patches/sipwise_vm_store_message_reconnect.patch",
+        "patchSetId": 3
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2019-01-31T12:09:22Z",
+      "side": 1,
+      "message": "well, if mysql is permanently not reachable - new users will not be able to reach the voicemail, so it is safe.",
+      "parentUuid": "da1255d7_a60c3f43",
+      "revId": "8a4d09540e361b6a4b4ee099708ab5f0547c1db7",
+      "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
+      "unresolved": false
     }
   ]
 }
