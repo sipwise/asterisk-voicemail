@@ -1,29 +1,17 @@
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -4488,6 +4488,22 @@
- 	struct insert_data *data = vdata;
+@@ -4489,6 +4489,10 @@
  	int res;
  	SQLHSTMT stmt;
-+	char sql[PATH_MAX];
-+	char *argv[] = {};
-+	struct generic_prepare_struct gps = { .sql = sql, .argc = 0, .argv = argv };
-+
+ 
 +	SQLSMALLINT msg_len = 0;
 +	SQLCHAR sql_state[6], message[256];
 +	SQLINTEGER native_error = 0;
 +
-+	snprintf(sql, sizeof(sql), "SELECT 1");
-+	stmt = ast_odbc_prepare_and_execute(obj, generic_prepare, &gps);
-+	if (!stmt) {
-+		ast_log(AST_LOG_WARNING, "SQL Server has gone away\n");
-+		SQLFreeHandle(SQL_HANDLE_STMT, stmt);
-+		return NULL;
-+	}
-+	SQLFreeHandle(SQL_HANDLE_STMT, stmt);
- 
  	res = SQLAllocHandle(SQL_HANDLE_STMT, obj->con, &stmt);
  	if ((res != SQL_SUCCESS) && (res != SQL_SUCCESS_WITH_INFO)) {
-@@ -4516,7 +4532,8 @@
+ 		ast_log(AST_LOG_WARNING, "SQL Alloc Handle failed!\n");
+@@ -4516,7 +4520,8 @@
  	}
  	res = SQLExecDirect(stmt, (unsigned char *) data->sql, SQL_NTS);
  	if ((res != SQL_SUCCESS) && (res != SQL_SUCCESS_WITH_INFO)) {
@@ -33,7 +21,7 @@
  		SQLFreeHandle(SQL_HANDLE_STMT, stmt);
  		return NULL;
  	}
-@@ -4638,7 +4655,14 @@
+@@ -4638,7 +4643,14 @@
  		if ((stmt = ast_odbc_direct_execute(obj, insert_data_cb, &idata))) {
  			SQLFreeHandle (SQL_HANDLE_STMT, stmt);
  		} else {
