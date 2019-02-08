@@ -1,0 +1,7 @@
+Verified+1: Jenkins Jenkins
+Code-Review+2: Kirill Solomko <ksolomko@sipwise.com>
+Submitted-by: Kirill Solomko <ksolomko@sipwise.com>
+Submitted-at: Fri, 08 Feb 2019 17:13:41 +0100
+Reviewed-on: http://gerrit.mgm.sipwise.com/27097
+Project: asterisk-voicemail
+Branch: refs/heads/mr7.0.1
