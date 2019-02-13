@@ -1,0 +1,31 @@
+Index: asterisk-voicemail/apps/app_voicemail.c
+===================================================================
+--- asterisk-voicemail.orig/apps/app_voicemail.c
++++ asterisk-voicemail/apps/app_voicemail.c
+@@ -12186,8 +12186,10 @@ static int vm_execmain(struct ast_channe
+ 					}
+ 					cmd = 't';
+ 					break;
++				*/
+ 				case '3': // Envelope
+ 					if (vms.lastmsg > -1 && !vms.starting) {
++						ast_safe_sleep(chan,500);
+ 						cmd = advanced_options(chan, vmu, &vms, vms.curmsg, 3, record_gain);
+ 						if (cmd == ERROR_LOCK_PATH) {
+ 							res = cmd;
+@@ -12198,6 +12200,7 @@ static int vm_execmain(struct ast_channe
+ 					}
+ 					cmd = 't';
+ 					break;
++				/*
+ 				case '4': // Dialout
+ 					if (!ast_strlen_zero(vmu->dialout)) {
+ 						cmd = dialout(chan, vmu, NULL, vmu->dialout);
+@@ -12230,6 +12233,7 @@ static int vm_execmain(struct ast_channe
+ 					break;
+ 
+ 				default:
++					ast_safe_sleep(chan,500);
+ 					cmd = 0;
+ 					/*
+ 					if (!vms.starting) {
