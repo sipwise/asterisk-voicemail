@@ -1,3 +1,12 @@
+ngcp-asterisk-voicemail (13.14.1+0~mr7.1.1.4) unstable; urgency=medium
+
+  [ Kirill Solomko ]
+  * [4412b6f] TT#50013 fix message envelope playback
+
+  [ Sipwise Jenkins Builder ]
+
+ -- Sipwise Jenkins Builder <jenkins@sipwise.com>  Fri, 15 Feb 2019 11:47:25 +0100
+
 ngcp-asterisk-voicemail (13.14.1+0~mr7.1.1.3) unstable; urgency=medium
 
   [ Kirill Solomko ]
