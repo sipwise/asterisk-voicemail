@@ -21,3 +21,4 @@ sipwise_vm_fix_odbc_retreive_file.patch
 sipwise_fix_chan_usage.patch
 sipwise_vm_store_message_add_diag_info.patch
 sipwise_vm_fix_envelope_play.patch
+sipwise_vm_support_debian_buster.patch
