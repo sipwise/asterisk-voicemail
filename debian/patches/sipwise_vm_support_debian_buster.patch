@@ -1,0 +1,57 @@
+Description: Define AST_MODULE_SELF_SYM necessary for Asterisk 14+ and further Debian/buster related fixes
+Author: Michael Prokop <mprokop@sipwise.com
+Forwarded: no
+License: GPL-2+
+Last-Update: 2019-03-15
+---
+This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
+--- a/Makefile
++++ b/Makefile
+@@ -20,6 +20,8 @@
+ CFLAGS+=-Wall -Wextra -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations \
+ 		-Wno-sign-compare -Wno-unused-parameter -Wno-unused-variable
+ CFLAGS+=-D_REENTRANT -D_GNU_SOURCE -DODBC_STORAGE
++CFLAGS+=-DAST_MODULE=voicemail
++CFLAGS+=-DAST_MODULE_SELF_SYM=__internal_voicemail
+ 
+ all: _all
+ 	@echo " +-------- app_voicemail Build Complete --------+"
+--- a/apps/app_playback.c
++++ b/apps/app_playback.c
+@@ -31,7 +31,11 @@
+ 
+ #include "asterisk.h"
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision$")
++#if defined(ASTERISK_REGISTER_FILE)
++ASTERISK_REGISTER_FILE()
++#elif defined(ASTERISK_FILE_VERSION)
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: $")
++#endif
+ 
+ #define AST_MODULE "app_playback"
+ 
+--- a/apps/app_voicemail.c
++++ b/apps/app_voicemail.c
+@@ -102,7 +102,11 @@
+ #endif
+ #endif
+ 
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision$")
++#if defined(ASTERISK_REGISTER_FILE)
++ASTERISK_REGISTER_FILE()
++#elif defined(ASTERISK_FILE_VERSION)
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: $")
++#endif
+ 
+ #define AST_MODULE "voicemail"
+ 
+@@ -11601,7 +11605,7 @@
+ 				ast_log(LOG_NOTICE, "Rewrote mailbox user input '%s' to %s\n",
+ 					mailbox, normalized_mailbox);
+ 				ast_copy_string(mailbox, normalized_mailbox, mailbox_size);
+-				free(normalized_mailbox);
++				ast_free(normalized_mailbox);
+ 			}
+ 		}
+ 
