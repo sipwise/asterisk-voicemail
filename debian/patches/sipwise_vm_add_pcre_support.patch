@@ -1,3 +1,14 @@
+--- a/Makefile
++++ b/Makefile
+@@ -15,7 +15,7 @@ CC?=gcc
+ OPTIMIZE=-O2
+ DEBUG=-g
+ 
+-LIBS+=
++LIBS+=-lpcre
+ CFLAGS+=-pipe -fPIC
+ CFLAGS+=-Wall -Wextra -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations
+ CFLAGS+=-D_REENTRANT -D_GNU_SOURCE -DODBC_STORAGE
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
 @@ -50,6 +50,7 @@
@@ -8,7 +19,7 @@
  	<support_level>core</support_level>
   ***/
  
-@@ -146,6 +147,9 @@
+@@ -143,6 +144,9 @@
  #include "asterisk/threadstorage.h"
  #endif
  
@@ -18,16 +29,16 @@
  /*** DOCUMENTATION
  	<application name="VoiceMail" language="en_US">
  		<synopsis>
-@@ -980,6 +984,8 @@
- static int maxlogins;
+@@ -1004,6 +1008,8 @@ static int maxlogins;
  static int minpassword;
  static int passwordlocation;
+ static char aliasescontext[MAX_VM_CONTEXT_LEN];
 +static char sw_normalize_user_match[256];
 +static char sw_normalize_user_replace[256];
  
  /*! Poll mailboxes for changes since there is something external to
   *  app_voicemail that may change them. */
-@@ -1223,6 +1229,114 @@
+@@ -1272,6 +1278,114 @@ static int inprocess_count(const char *c
  static int __has_voicemail(const char *context, const char *mailbox, const char *folder, int shortcircuit);
  #endif
  
@@ -142,7 +153,7 @@
  /*!
   * \brief Strips control and non 7-bit clean characters from input string.
   *
-@@ -7920,6 +8034,8 @@
+@@ -8084,6 +8198,8 @@ static int get_folder2(struct ast_channe
   * This is invoked from forward_message() when performing a forward operation (option 8 from main menu).
   * \return zero on success, -1 on error.
   */
@@ -151,7 +162,7 @@
  static int vm_forwardoptions(struct ast_channel *chan, struct ast_vm_user *vmu, char *curdir, int curmsg, char *vm_fmts,
  			char *context, signed char record_gain, long *duration, struct vm_state *vms, char *flag)
  {
-@@ -8080,6 +8196,7 @@
+@@ -8245,6 +8361,7 @@ static int vm_forwardoptions(struct ast_
  		cmd = 0;
  	return cmd;
  }
@@ -159,7 +170,7 @@
  
  static void queue_mwi_event(const char *channel_id, const char *box, int urgent, int new, int old)
  {
-@@ -8221,6 +8338,8 @@
+@@ -8403,6 +8520,8 @@ static int notify_new_message(struct ast
   *
   * \return zero on success, -1 on error.
   */
@@ -168,7 +179,7 @@
  static int forward_message(struct ast_channel *chan, char *context, struct vm_state *vms, struct ast_vm_user *sender, char *fmt, int is_new_message, signed char record_gain, int urgent)
  {
  #ifdef IMAP_STORAGE
-@@ -8558,6 +8677,7 @@
+@@ -8741,6 +8860,7 @@ static int forward_message(struct ast_ch
  	}
  	return res ? res : cmd;
  }
@@ -176,9 +187,9 @@
  
  static int wait_file2(struct ast_channel *chan, struct vm_state *vms, char *file)
  {
-@@ -11174,6 +11294,11 @@
+@@ -11439,6 +11559,11 @@ static int vm_authenticate(struct ast_ch
  	int useadsi = 0, valid = 0, logretries = 0;
- 	char password[AST_MAX_EXTENSION]="", *passptr;
+ 	char password[AST_MAX_EXTENSION], *passptr;
  	struct ast_vm_user vmus, *vmu = NULL;
 +	const char *err;
 +	int erroffset;
@@ -188,7 +199,7 @@
  
  	/* If ADSI is supported, setup login screen */
  	adsi_begin(chan, &useadsi);
-@@ -11184,6 +11309,22 @@
+@@ -11449,6 +11574,22 @@ static int vm_authenticate(struct ast_ch
  		return -1;
  	}
  
@@ -197,13 +208,13 @@
 +		ppat = pcre_compile(sw_normalize_user_match, 0, &err, &erroffset, NULL);
 +		if(ppat == NULL) {
 +			ast_log(LOG_WARNING, "Couldn't compile user match regex '%s': %s at offset %d\n",
-+				sw_normalize_user_match, err, erroffset);
++					sw_normalize_user_match, err, erroffset);
 +			return -1;
 +		}
 +		extra = pcre_study(ppat, 0, &err);
 +		if(err) {
 +			ast_log(LOG_WARNING, "Couldn't study regex '%s': %s\n",
-+				sw_normalize_user_match, err);
++					sw_normalize_user_match, err);
 +			return -1;
 +		}
 +	}
@@ -211,38 +222,38 @@
  	/* Authenticate them and get their mailbox/password */
  
  	while (!valid && (logretries < max_logins)) {
-@@ -11213,6 +11354,18 @@
+@@ -11478,6 +11619,18 @@ static int vm_authenticate(struct ast_ch
  		if (useadsi)
  			adsi_password(chan);
  
 +		if(ppat && extra) {
 +			ast_log(LOG_NOTICE, "Trying to rewrite user input '%s' using s/%s/%s/\n",
-+				mailbox, sw_normalize_user_match, sw_normalize_user_replace);
++					mailbox, sw_normalize_user_match, sw_normalize_user_replace);
 +			normalized_mailbox = pcre_subst(ppat, extra, mailbox, strlen(mailbox), 0, 0, sw_normalize_user_replace);
 +			if(normalized_mailbox) {
 +				ast_log(LOG_NOTICE, "Rewrote mailbox user input '%s' to %s\n",
-+					mailbox, normalized_mailbox);
++						mailbox, normalized_mailbox);
 +				ast_copy_string(mailbox, normalized_mailbox, mailbox_size);
 +				free(normalized_mailbox);
 +			}
 +		}
 +
  		if (!ast_strlen_zero(prefix)) {
- 			char fullusername[80] = "";
- 			ast_copy_string(fullusername, prefix, sizeof(fullusername));
-@@ -13645,6 +13798,8 @@
+ 			char fullusername[80];
+ 
+@@ -14058,6 +14211,8 @@ static int actual_load_config(int reload
  	char secretfn[PATH_MAX] = "";
  	long tps_queue_low;
  	long tps_queue_high;
-+    const char *ast_sw_normalize_user_match = NULL;
-+    const char *ast_sw_normalize_user_replace = NULL;
++	const char *ast_sw_normalize_user_match = NULL;
++	const char *ast_sw_normalize_user_replace = NULL;
  
  #ifdef IMAP_STORAGE
  	ast_copy_string(imapparentfolder, "\0", sizeof(imapparentfolder));
-@@ -13696,6 +13851,19 @@
+@@ -14122,6 +14277,19 @@ static int actual_load_config(int reload
  			ast_copy_string(odbc_table, val, sizeof(odbc_table));
  		}
- #endif		
+ #endif
 +
 +		/* sipwise sw_normalize_user_match/replace */
 +		if ((ast_sw_normalize_user_match = ast_variable_retrieve(cfg, "general", "sw_normalize_user_match"))) {
@@ -259,14 +270,3 @@
  		/* Mail command */
  		strcpy(mailcmd, SENDMAIL);
  		if ((val = ast_variable_retrieve(cfg, "general", "mailcmd")))
---- a/Makefile
-+++ b/Makefile
-@@ -15,7 +15,7 @@
- OPTIMIZE=-O2
- DEBUG=-g
- 
--LIBS+=
-+LIBS+=-lpcre
- CFLAGS+=-pipe -fPIC
- CFLAGS+=-Wall -Wextra -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations
- CFLAGS+=-D_REENTRANT -D_GNU_SOURCE -DODBC_STORAGE
