@@ -1,6 +1,6 @@
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -8787,7 +8787,7 @@
+@@ -8968,7 +8968,7 @@ static int play_message_category(struct
  static int play_message_datetime(struct ast_channel *chan, struct ast_vm_user *vmu, const char *origtime, const char *filename)
  {
  	int res = 0;
@@ -9,7 +9,7 @@
  	time_t t;
  
  	if (ast_get_time_t(origtime, &t, 0, NULL)) {
-@@ -8802,12 +8802,19 @@
+@@ -8983,13 +8983,20 @@ static int play_message_datetime(struct
  		AST_LIST_LOCK(&zones);
  		AST_LIST_TRAVERSE(&zones, z, list) {
  			if (!strcmp(z->name, vmu->zonetag)) {
@@ -20,17 +20,18 @@
  		}
  		AST_LIST_UNLOCK(&zones);
  	}
-+    
+ 
 +	/* if no timezone is defined in voicemail.conf
 +	   try to use vmu->zonetag ("tz") as a valid timezone
 +	   NOTE: it uses GMT as fallback
 +	*/
 +	if (ast_strlen_zero(the_zone.timezone))
-+        ast_copy_string(the_zone.timezone, vmu->zonetag, sizeof(the_zone.timezone));
- 
++		ast_copy_string(the_zone.timezone, vmu->zonetag, sizeof(the_zone.timezone));
++
  /* No internal variable parsing for now, so we'll comment it out for the time being */
  #if 0
-@@ -8825,8 +8832,8 @@
+ 	/* Set the DIFF_* variables */
+@@ -9006,8 +9013,8 @@ static int play_message_datetime(struct
  
  	/* Can't think of how other diffs might be helpful, but I'm sure somebody will think of something. */
  #endif
@@ -41,29 +42,30 @@
  	} else if (!strncasecmp(ast_channel_language(chan), "de", 2)) {     /* GERMAN syntax */
  		res = ast_say_date_with_format(chan, t, AST_DIGIT_ANY, ast_channel_language(chan), "'vm-received' Q 'digits/at' HM", NULL);
  	} else if (!strncasecmp(ast_channel_language(chan), "gr", 2)) {     /* GREEK syntax */
-@@ -14545,17 +14552,14 @@
- 							char *msg_format, *tzone;
- 							msg_format = ast_strdupa(var->value);
- 							tzone = strsep(&msg_format, "|,");
--							if (msg_format) {
--								ast_copy_string(z->name, var->name, sizeof(z->name));
--								ast_copy_string(z->timezone, tzone, sizeof(z->timezone));
--								ast_copy_string(z->msg_format, msg_format, sizeof(z->msg_format));
--								AST_LIST_LOCK(&zones);
--								AST_LIST_INSERT_HEAD(&zones, z, list);
--								AST_LIST_UNLOCK(&zones);
--							} else {
--								ast_log(AST_LOG_WARNING, "Invalid timezone definition at line %d\n", var->lineno);
--								ast_free(z);
--							}
-+							if (msg_format == NULL)
-+								msg_format = "";
-+							ast_copy_string(z->name, var->name, sizeof(z->name));
-+							ast_copy_string(z->timezone, tzone, sizeof(z->timezone));
-+							ast_copy_string(z->msg_format, msg_format, sizeof(z->msg_format));
-+							AST_LIST_LOCK(&zones);
-+							AST_LIST_INSERT_HEAD(&zones, z, list);
-+							AST_LIST_UNLOCK(&zones);
- 						} else {
- 							AST_LIST_UNLOCK(&users);
- 							return -1;
+@@ -14251,17 +14258,15 @@ static void load_zonemessages(struct ast
+ 
+ 		msg_format = ast_strdupa(var->value);
+ 		tzone = strsep(&msg_format, "|,");
+-		if (msg_format) {
+-			ast_copy_string(z->name, var->name, sizeof(z->name));
+-			ast_copy_string(z->timezone, tzone, sizeof(z->timezone));
+-			ast_copy_string(z->msg_format, msg_format, sizeof(z->msg_format));
+-			AST_LIST_LOCK(&zones);
+-			AST_LIST_INSERT_HEAD(&zones, z, list);
+-			AST_LIST_UNLOCK(&zones);
+-		} else {
+-			ast_log(AST_LOG_WARNING, "Invalid timezone definition at line %d\n", var->lineno);
+-			ast_free(z);
+-		}
++		if (msg_format == NULL)
++			msg_format = "";
++		ast_copy_string(z->name, var->name, sizeof(z->name));
++		ast_copy_string(z->timezone, tzone, sizeof(z->timezone));
++		ast_copy_string(z->msg_format, msg_format, sizeof(z->msg_format));
++		AST_LIST_LOCK(&zones);
++		AST_LIST_INSERT_HEAD(&zones, z, list);
++		AST_LIST_UNLOCK(&zones);
++
+ 		var = var->next;
+ 	}
+ }

@@ -1,6 +1,6 @@
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -1799,7 +1799,7 @@
+@@ -1850,7 +1850,7 @@ static int is_valid_dtmf(const char *key
   *
   * \return The ast_vm_user structure for the user that was found.
   */
@@ -9,7 +9,7 @@
  {
  	struct ast_variable *var;
  	struct ast_vm_user *retval;
-@@ -1816,9 +1816,15 @@
+@@ -1867,9 +1867,15 @@ static struct ast_vm_user *find_user_rea
  			ast_copy_string(retval->mailbox, mailbox, sizeof(retval->mailbox));
  		}
  		if (!context && ast_test_flag((&globalflags), VM_SEARCH)) {
@@ -27,7 +27,7 @@
  		}
  		if (var) {
  			// ast_log (LOG_DEBUG,"call apply_options_full\n");
-@@ -1880,7 +1886,7 @@
+@@ -1933,7 +1939,7 @@ static struct ast_vm_user *find_user(str
  #ifdef ODBC_STORAGE
  		vmu = find_user_realtime_by_alias(ivm, context, mailbox);
  #else
@@ -35,8 +35,8 @@
 +		vmu = find_user_realtime(ivm, context, mailbox, 0);
  #endif
  	}
- 	AST_LIST_UNLOCK(&users);
-@@ -4151,6 +4157,7 @@
+ 	if (!vmu && !ast_strlen_zero(aliasescontext)) {
+@@ -4227,6 +4233,7 @@ static struct ast_vm_user *find_user_rea
  		"where customer_id = ?";
  	struct generic_prepare_struct gps_uuid = { .sql = sql_uuid, .argc = 1, .argv = argv };
  	struct odbc_obj *obj = NULL;
@@ -44,7 +44,7 @@
  	SQLHSTMT stmt = NULL;
  
  	obj = ast_odbc_request_obj(odbc_database, 0);
-@@ -4165,6 +4172,8 @@
+@@ -4241,6 +4248,8 @@ static struct ast_vm_user *find_user_rea
  		ast_log(LOG_NOTICE, "Failed to fetch mailbox for uuid '%s', falling back to alias search\n", alias);
  		SQLFreeHandle (SQL_HANDLE_STMT, stmt);
  
@@ -53,7 +53,7 @@
  		stmt = ast_odbc_prepare_and_execute(obj, generic_prepare, &gps);
  		if (!stmt) {
  			ast_log(LOG_WARNING, "SQL Execute error!\n[%s]\n\n", sql);
-@@ -4191,7 +4200,11 @@
+@@ -4267,7 +4276,11 @@ static struct ast_vm_user *find_user_rea
  	ast_odbc_release_obj(obj);
  
  	ast_log(LOG_NOTICE, "Found mailbox '%s' for alias '%s'\n", mailbox, alias);
