@@ -1,6 +1,6 @@
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -4154,26 +4154,26 @@
+@@ -4230,26 +4230,26 @@ static struct ast_vm_user *find_user_rea
  	SQLHSTMT stmt = NULL;
  
  	obj = ast_odbc_request_obj(odbc_database, 0);
