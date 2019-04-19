@@ -1,6 +1,6 @@
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -1086,6 +1086,9 @@
+@@ -1133,6 +1133,9 @@ static char emaildateformat[32] = "%A, %
  static char pagerdateformat[32] = "%A, %B %d, %Y at %r";
  
  /* Forward declarations - generic */
@@ -10,10 +10,10 @@
  static int open_mailbox(struct vm_state *vms, struct ast_vm_user *vmu, int box);
  static int close_mailbox(struct vm_state *vms, struct ast_vm_user *vmu);
  static int advanced_options(struct ast_channel *chan, struct ast_vm_user *vmu, struct vm_state *vms, int msg, int option, signed char record_gain);
-@@ -1749,7 +1752,12 @@
- 		}
- 	} else {
- 		ast_log (LOG_DEBUG,"call find_user_realtime for '%s@%s'\n", mailbox, context);
+@@ -1802,7 +1805,12 @@ static struct ast_vm_user *find_user(str
+ 	AST_LIST_UNLOCK(&users);
+ 	if (!vmu) {
+ 		ast_log(LOG_DEBUG,"call find_user_realtime for '%s@%s'\n", mailbox, context);
 +		// agranig: always find user by alias
 +#ifdef ODBC_STORAGE
 +		vmu = find_user_realtime_by_alias(ivm, context, mailbox);
@@ -21,9 +21,9 @@
  		vmu = find_user_realtime(ivm, context, mailbox);
 +#endif
  	}
- 	AST_LIST_UNLOCK(&users);
- 	return vmu;
-@@ -4004,6 +4012,65 @@
+ 	if (!vmu && !ast_strlen_zero(aliasescontext)) {
+ 		struct alias_mailbox_mapping *mapping;
+@@ -4080,6 +4088,65 @@ bail:
  	return x - 1;
  }
  
@@ -88,4 +88,4 @@
 +
  /*!
   * \brief Determines the highest message number in use for a given user and mailbox folder.
-  * \param vmu 
+  * \param vmu
