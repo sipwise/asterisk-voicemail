@@ -1,6 +1,6 @@
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -703,6 +703,7 @@
+@@ -720,6 +720,7 @@ static int actual_load_config(int reload
  	\arg \b es    - Spanish
  	\arg \b fr    - French
  	\arg \b it    - Italian
@@ -8,14 +8,13 @@
  	\arg \b nl    - Dutch
  	\arg \b pt    - Portuguese
  	\arg \b pt_BR - Portuguese (Brazil)
-@@ -5652,14 +5653,16 @@
+@@ -5804,13 +5805,17 @@ static int invent_message(struct ast_cha
  	} else {
  		/* Dispose just in case */
  		DISPOSE(fn, -1);
 -		/*
 -		res = ast_stream_and_wait(chan, "vm-theperson", ecodes);
--		if (res)
--		{
+-		if (res) {
 -			ast_log(LOG_WARNING, "failed to stream/wait vm-theperson\n");
 -			return res;
 +
@@ -29,11 +28,12 @@
  		}
 -		*/
 +
- 		ast_log(LOG_DEBUG, "stream/wait dialed_num\n");
++		ast_log(LOG_DEBUG, "stream/wait dialed_num\n");
  		res = ast_say_digit_str(chan, dialed_num, ecodes, ast_channel_language(chan));
- 		if (res)
-@@ -8567,6 +8570,8 @@
- 		res = ast_say_date_with_format(chan, t, AST_DIGIT_ANY, ast_channel_language(chan), "'vm-received' q  H 'digits/kai' M ", NULL);
+ 		if (res) {
+ 			ast_log(LOG_WARNING, "failed to stream/wait '%s'\n", dialed_num);
+@@ -8750,6 +8755,8 @@ static int play_message_datetime(struct
+ 		res = ast_say_date_with_format(chan, t, AST_DIGIT_ANY, ast_channel_language(chan), "'vm-received' Q 'digits/at' HM", NULL);
  	} else if (!strncasecmp(ast_channel_language(chan), "it", 2)) {     /* ITALIAN syntax */
  		res = ast_say_date_with_format(chan, t, AST_DIGIT_ANY, ast_channel_language(chan), "'vm-received' q 'digits/at' 'digits/hours' k 'digits/e' M 'digits/minutes'", NULL);
 +	} else if (!strncasecmp(ast_channel_language(chan), "ro", 2)) {     /* ROMANIAN syntax */
@@ -41,22 +41,21 @@
  	} else if (!strcasecmp(ast_channel_language(chan),"ja")) {     /* Japanese syntax */
  		res = ast_say_date_with_format(chan, t, AST_DIGIT_ANY, ast_channel_language(chan), "PHM q 'jp-ni' 'vm-received'", NULL);
  	} else if (!strncasecmp(ast_channel_language(chan), "nl", 2)) {     /* DUTCH syntax */
-@@ -9199,7 +9204,8 @@
- {
+@@ -9390,8 +9397,9 @@ static int vm_play_folder_name(struct as
  	int cmd;
  
--	if (  !strncasecmp(ast_channel_language(chan), "it", 2) ||
-+	if (  !strncasecmp(ast_channel_language(chan), "ro", 2) ||
-+          !strncasecmp(ast_channel_language(chan), "it", 2) ||
+ 	if (  !strncasecmp(ast_channel_language(chan), "it", 2) ||
++		  !strncasecmp(ast_channel_language(chan), "ro", 2) ||
  		  !strncasecmp(ast_channel_language(chan), "es", 2) ||
- 		  !strncasecmp(ast_channel_language(chan), "pt", 2)) { /* Italian, Spanish, or Portuguese syntax */
+-		  !strncasecmp(ast_channel_language(chan), "pt", 2)) { /* Italian, Spanish, or Portuguese syntax */
++		  !strncasecmp(ast_channel_language(chan), "pt", 2)) { /* Italian, Romanian, Spanish, or Portuguese syntax */
  		cmd = ast_play_and_wait(chan, "vm-messages"); /* "messages */
-@@ -9472,7 +9478,53 @@
-       }
+ 		return cmd ? cmd : ast_play_and_wait(chan, box);
+ 	} else if (!strncasecmp(ast_channel_language(chan), "gr", 2)) {
+@@ -9663,6 +9671,52 @@ static int vm_intro_ja(struct ast_channe
        return res;
  } /* Japanese */
--	
-+
+ 
 +/* ROMANIAN syntax */
 +static int vm_intro_ro(struct ast_channel *chan, struct vm_state *vms)
 +{
@@ -70,10 +69,10 @@
 +		res =   ast_play_and_wait(chan, "vm-youhave");
 +	if (!res && vms->newmessages) {
 +		if(vms->newmessages == 1) {
-+		   res =
-+			ast_play_and_wait(chan, "digits/1a") ||
-+			ast_play_and_wait(chan, "vm-message") ||
-+			ast_play_and_wait(chan, "vm-INBOXa");
++			res =
++				ast_play_and_wait(chan, "digits/1a") ||
++				ast_play_and_wait(chan, "vm-message") ||
++				ast_play_and_wait(chan, "vm-INBOXa");
 +		} else {
 +			if(vms->newmessages == 2)
 +				res = ast_play_and_wait(chan, "digits/2f");
@@ -81,7 +80,7 @@
 +				res = say_and_wait(chan, vms->newmessages, ast_channel_language(chan));
 +			if(!res)
 +				res = ast_play_and_wait(chan, "vm-messages") ||
-+					ast_play_and_wait(chan, "vm-INBOX");
++					  ast_play_and_wait(chan, "vm-INBOX");
 +		}
 +	}
 +	if (!res && vms->oldmessages) {
@@ -97,7 +96,7 @@
 +				res = say_and_wait(chan, vms->oldmessages, ast_channel_language(chan));
 +			if(!res)
 +				res = ast_play_and_wait(chan, "vm-messages") ||
-+					ast_play_and_wait(chan, "vm-Old");
++					  ast_play_and_wait(chan, "vm-Old");
 +		}
 +	}
 +	return res;
@@ -106,16 +105,16 @@
  /* Default English syntax */
  static int vm_intro_en(struct ast_channel *chan, struct vm_state *vms)
  {
-@@ -10196,6 +10248,8 @@
- 		return vm_intro_he(chan, vms);
+@@ -10457,6 +10511,8 @@ static int vm_intro(struct ast_channel *
+ 		return vm_intro_is(chan, vms);
  	} else if (!strncasecmp(ast_channel_language(chan), "it", 2)) {  /* ITALIAN syntax */
  		return vm_intro_it(chan, vms);
-+	} else if (!strncasecmp(ast_channel_language(chan), "ro", 2)) {  /* ROMANIAN syntax */
++	} else if (!strncasecmp(ast_channel_language(chan), "ro", 2)) {  /* ITALIAN syntax */
 +		return vm_intro_ro(chan, vms);
  	} else if (!strncasecmp(ast_channel_language(chan), "ja", 2)) {  /* JAPANESE syntax */
  		return vm_intro_ja(chan, vms);
  	} else if (!strncasecmp(ast_channel_language(chan), "nl", 2)) {  /* DUTCH syntax */
-@@ -10887,6 +10941,25 @@
+@@ -11150,6 +11206,25 @@ static int vm_browse_messages_ja(struct
          return cmd;
  }
  
@@ -138,10 +137,10 @@
 +	return cmd;
 +}
 +
- /*! 
+ /*!
   * \brief Spanish syntax for 'You have N messages' greeting.
   * \param chan
-@@ -11012,8 +11085,10 @@
+@@ -11275,8 +11350,10 @@ static int vm_browse_messages(struct ast
  		return vm_browse_messages_he(chan, vms, vmu);
  	} else if (!strncasecmp(ast_channel_language(chan), "it", 2)) {  /* ITALIAN */
  		return vm_browse_messages_it(chan, vms, vmu);
