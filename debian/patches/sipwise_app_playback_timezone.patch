@@ -1,6 +1,6 @@
 --- a/apps/app_playback.c
 +++ b/apps/app_playback.c
-@@ -228,6 +228,15 @@
+@@ -226,6 +226,15 @@ static int do_say(say_args_t *a, const c
  	}
  	AST_LIST_INSERT_HEAD(&head, n, entries);
  
@@ -16,7 +16,7 @@
  	/* scan the body, one piece at a time */
  	while ( !ret && (x = strsep(&rule, ",")) ) { /* exit on key */
  		char fn[128];
-@@ -241,6 +250,15 @@
+@@ -239,6 +248,15 @@ static int do_say(say_args_t *a, const c
  		pbx_substitute_variables_varshead(&head, x, fn, sizeof(fn));
  		ast_debug(2, "doing [%s]\n", fn);
  
@@ -32,20 +32,19 @@
  		/* locate prefix and data, if any */
  		fmt = strchr(fn, ':');
  		if (!fmt || fmt == fn)	{	/* regular filename */
-@@ -323,10 +341,34 @@
+@@ -321,10 +339,34 @@ static int say_date_generic(struct ast_c
  	struct ast_tm tm;
  	struct timeval when = { t, 0 };
  	say_args_t a = { chan, ints, lang, -1, -1 };
-+	ast_localtime(&when, &tm, timezonename);
-+
- 	if (format == NULL)
- 		format = "";
- 
--	ast_localtime(&when, &tm, NULL);
 +	struct timeval now;
 +	struct ast_tm tmnow;
 +	time_t beg_today;
 +	char when_fmt[16] = "";
++
+ 	if (format == NULL)
+ 		format = "";
+ 
+ 	ast_localtime(&when, &tm, timezonename);
 +
 +	now = ast_tvnow();
 +	ast_localtime(&now, &tmnow, timezonename);
@@ -68,7 +67,7 @@
  	snprintf(buf, sizeof(buf), "%s:%s:%04d%02d%02d%02d%02d.%02d-%d-%3d",
  		prefix,
  		format,
-@@ -338,7 +380,7 @@
+@@ -336,7 +378,7 @@ static int say_date_generic(struct ast_c
  		tm.tm_sec,
  		tm.tm_wday,
  		tm.tm_yday);
