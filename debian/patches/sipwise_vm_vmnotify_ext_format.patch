@@ -1,6 +1,6 @@
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -1140,6 +1140,8 @@
+@@ -1189,6 +1189,8 @@ static int vm_msg_move(const char *mailb
  static int vm_msg_remove(const char *mailbox, const char *context, size_t num_msgs, const char *folder, const char *msgs[]);
  static int vm_msg_play(struct ast_channel *chan, const char *mailbox, const char *context, const char *folder, const char *msg_num, ast_vm_msg_play_cb cb);
  
@@ -9,7 +9,7 @@
  #ifdef TEST_FRAMEWORK
  static int vm_test_destroy_user(const char *context, const char *mailbox);
  static int vm_test_create_user(const char *context, const char *mailbox);
-@@ -5663,7 +5665,7 @@
+@@ -5815,7 +5817,7 @@ static int sendmail(char *srcemail,
  	return 0;
  }
  
@@ -18,36 +18,32 @@
  {
  	char arguments[2048];
  	char date[256];
-@@ -5671,8 +5673,9 @@
-     char body[1024];
+@@ -5824,6 +5826,7 @@ static void run_externpager(char *pager,
  	char dur[PATH_MAX];
  	struct ast_tm tm;
-+
  	struct ast_str *str1 = ast_str_create(16);
--	
-+
-     if (!str1) {
++	struct timeval t = ast_tvnow();
+ 
+ 	if (!str1) {
  		return;
- 	}
-@@ -5687,8 +5690,15 @@
+@@ -5839,8 +5842,14 @@ static void run_externpager(char *pager,
  
- 	    snprintf(dur, sizeof(dur), "%d:%02d", duration / 60, duration % 60);
+ 		snprintf(dur, sizeof(dur), "%d:%02d", duration / 60, duration % 60);
  
--        ast_strftime(date, sizeof(date), "%a, %d %b %Y %H:%M:%S %z", vmu_tm(vmu, &tm));
--        ast_strftime_locale(date, sizeof(date), pagerdateformat, vmu_tm(vmu, &tm), S_OR(vmu->locale, NULL));
+-		ast_strftime(date, sizeof(date), "%a, %d %b %Y %H:%M:%S %z", vmu_tm(vmu, &tm));
+-		ast_strftime_locale(date, sizeof(date), pagerdateformat, vmu_tm(vmu, &tm), S_OR(vmu->locale, NULL));
 +		if (msg_time) {
 +			ast_localtime(msg_time, &tm, timezonename);
 +		} else {
-+			struct timeval t = ast_tvnow();
 +			ast_localtime(&t, &tm, timezonename);
 +		}
 +
-+		ast_strftime(date, sizeof(date), "%a, %d %b %Y %H:%M:%S %z", &tm);
-+		ast_strftime_locale(date, sizeof(date), pagerdateformat, &tm, S_OR(vmu->locale, NULL));
++       ast_strftime(date, sizeof(date), "%a, %d %b %Y %H:%M:%S %z", &tm);
++       ast_strftime_locale(date, sizeof(date), pagerdateformat, &tm, S_OR(vmu->locale, NULL));
  
-         if (pagerbody) {
-             struct ast_channel *ast;
-@@ -6388,9 +6398,11 @@
+ 		if (pagerbody) {
+ 			struct ast_channel *ast;
+@@ -6545,9 +6554,11 @@ static int inboxcount(const char *mailbo
  	return res;
  }
  
@@ -61,7 +57,7 @@
  	char ext_context[256] = "";
  	char number[256] = "";
  	int newvoicemails = 0, oldvoicemails = 0, urgentvoicemails = 0;
-@@ -6430,10 +6442,20 @@
+@@ -6587,10 +6598,20 @@ static void run_externnotify(char *conte
  		} else if (ast_strlen_zero(number) || !strcmp(extension, number)) {
  			ast_log(AST_LOG_WARNING, "Missing user number to run externnotify on context '%s'\n", ext_context);
  		} else {
@@ -70,33 +66,37 @@
 -				number, newvoicemails,
 -				oldvoicemails, urgentvoicemails);
 +			if (msg_time) {
-+    			ast_localtime(msg_time, &tm, timezonename);
++				ast_localtime(msg_time, &tm, timezonename);
 +				ast_strftime(date, sizeof(date), "%Y-%m-%dT%H:%M:%S%z", &tm);
 +				snprintf(arguments, sizeof(arguments), "%s %s %s %d %d %d %d %s %s %d &",
-+					externnotify, S_OR(context, "\"\""),
-+					number, newvoicemails,
-+					oldvoicemails, urgentvoicemails,
-+					msgnum, cidnum, date, duration);
++						 externnotify, S_OR(context, "\"\""),
++						 number, newvoicemails,
++						 oldvoicemails, urgentvoicemails,
++						 msgnum, cidnum, date, duration);
 +			} else { // original short notify
 +				snprintf(arguments, sizeof(arguments), "%s %s %s %d %d %d &",
-+					externnotify, S_OR(context, "\"\""),
-+					number, newvoicemails,
-+					oldvoicemails, urgentvoicemails);
++						 externnotify, S_OR(context, "\"\""),
++						 number, newvoicemails,
++						 oldvoicemails, urgentvoicemails);
 +			}
  			ast_debug(1, "Executing %s\n", arguments);
  			ast_safe_system(arguments);
  		}
-@@ -8285,6 +8307,58 @@
- 	ast_publish_mwi_state_channel(mailbox, context, new + urgent, old, channel_id);
+@@ -8465,6 +8486,59 @@ static void queue_mwi_event(const char *
+ 	}
  }
  
 +static struct vm_zone * get_vmu_timezone(struct ast_vm_user *vmu)
 +{
 +	struct vm_zone * tz = NULL;
++	int wrongtz = 0;
++	struct vm_zone *z;
++	char fname[2048];
++	char * tzdir = "/usr/share/zoneinfo";
++
 +	/* Does this user have a timezone specified? */
 +	if (!ast_strlen_zero(vmu->zonetag)) {
 +		/* Find the zone in the list */
-+		struct vm_zone *z;
 +		AST_LIST_LOCK(&zones);
 +		AST_LIST_TRAVERSE(&zones, z, list) {
 +			if (!strcmp(z->name, vmu->zonetag)) {
@@ -112,15 +112,12 @@
 +	   NOTE: it uses GMT as fallback
 +	*/
 +	if (tz == NULL) {
-+		int wrongtz = 0;
 +		if (ast_strlen_zero(vmu->zonetag)) {
-+		   wrongtz = 1;
++			wrongtz = 1;
 +		} else {
-+		   char fname[2048];
-+		   char * tzdir = "/usr/share/zoneinfo";
-+		   sprintf(fname, "%s/%s", tzdir, vmu->zonetag);
-+		   if (access(fname, F_OK) == -1)
-+			   wrongtz = 1;
++			sprintf(fname, "%s/%s", tzdir, vmu->zonetag);
++			if (access(fname, F_OK) == -1)
++				wrongtz = 1;
 +		}
 +		if ((tz = ast_malloc(sizeof(*tz)))) {
 +			if (wrongtz) {
@@ -145,7 +142,7 @@
  /*!
   * \brief Sends email notification that a user has a new voicemail waiting for them.
   * \param chan
-@@ -8305,6 +8379,8 @@
+@@ -8485,6 +8559,8 @@ static int notify_new_message(struct ast
  	int newmsgs = 0, oldmsgs = 0, urgentmsgs = 0;
  	const char *category;
  	char *myserveremail = serveremail;
@@ -154,16 +151,16 @@
  
  	ast_channel_lock(chan);
  	if ((category = pbx_builtin_getvar_helper(chan, "VM_CATEGORY"))) {
-@@ -8363,7 +8439,7 @@
+@@ -8543,7 +8619,7 @@ static int notify_new_message(struct ast
  
  	if (!ast_strlen_zero(vmu->pager)) {
  		//sendpage(myserveremail, vmu->pager, msgnum, vmu->context, vmu->mailbox, mbox(vmu, 0), cidnum, cidname, duration, vmu, category, flag);
--        run_externpager(vmu->pager, vmu->dialed_num, cidnum, duration, vmu);
-+        run_externpager(vmu->pager, vmu->dialed_num, cidnum, &msg_time, duration, S_COR(tz, tz->timezone, ""), vmu);
+-		run_externpager(vmu->pager, vmu->dialed_num, cidnum, duration, vmu)
++		run_externpager(vmu->pager, vmu->dialed_num, cidnum, &msg_time, duration, S_COR(tz, tz->timezone, ""), vmu);
  	}
  
  	if (ast_test_flag(vmu, VM_DELETE))
-@@ -8374,7 +8450,7 @@
+@@ -8554,7 +8630,7 @@ static int notify_new_message(struct ast
  		ast_app_inboxcount2(ext_context, &urgentmsgs, &newmsgs, &oldmsgs);
  
  	queue_mwi_event(ast_channel_uniqueid(chan), ext_context, urgentmsgs, newmsgs, oldmsgs);
@@ -172,16 +169,16 @@
  
  #ifdef IMAP_STORAGE
  	vm_delete(fn);  /* Delete the file, but not the IMAP message */
-@@ -8677,7 +8753,7 @@
+@@ -8858,7 +8934,7 @@ static int forward_message(struct ast_ch
  						ast_log(AST_LOG_ERROR, "IMAP mailstream for %s is NULL\n", vmtmp->mailbox);
  					} else {
  						copy_msg_result = STORE(vmstmp.curdir, vmtmp->mailbox, vmtmp->context, curmsg, chan, vmtmp, fmt, duration, dstvms, urgent_str, msg_id);
--						run_externnotify(vmtmp->context, vmtmp->mailbox, urgent_str, vmtmp->dialed_num); 
-+						run_externnotify(vmtmp->context, vmtmp->mailbox, urgent_str, vmtmp->dialed_num, 0, NULL, NULL, 0, NULL); 
+-						run_externnotify(vmtmp->context, vmtmp->mailbox, urgent_str, vmtmp->dialed_num);
++						run_externnotify(vmtmp->context, vmtmp->mailbox, urgent_str, vmtmp->dialed_num, 0, NULL, NULL, 0, NULL);
  					}
  				} else {
  					ast_log(AST_LOG_ERROR, "Could not find state information for mailbox %s\n", vmtmp->mailbox);
-@@ -8787,34 +8863,19 @@
+@@ -8968,35 +9044,20 @@ static int play_message_category(struct
  static int play_message_datetime(struct ast_channel *chan, struct ast_vm_user *vmu, const char *origtime, const char *filename)
  {
  	int res = 0;
@@ -212,17 +209,18 @@
 +		ast_log(AST_LOG_ERROR, "Couldn't find tz in %s\n", filename);
 +		return 0;
  	}
--    
+ 
 -	/* if no timezone is defined in voicemail.conf
 -	   try to use vmu->zonetag ("tz") as a valid timezone
 -	   NOTE: it uses GMT as fallback
 -	*/
 -	if (ast_strlen_zero(the_zone.timezone))
--        ast_copy_string(the_zone.timezone, vmu->zonetag, sizeof(the_zone.timezone));
- 
+-		ast_copy_string(the_zone.timezone, vmu->zonetag, sizeof(the_zone.timezone));
+-
  /* No internal variable parsing for now, so we'll comment it out for the time being */
  #if 0
-@@ -8832,8 +8893,8 @@
+ 	/* Set the DIFF_* variables */
+@@ -9013,8 +9074,8 @@ static int play_message_datetime(struct
  
  	/* Can't think of how other diffs might be helpful, but I'm sure somebody will think of something. */
  #endif
@@ -233,7 +231,7 @@
  	} else if (!strncasecmp(ast_channel_language(chan), "de", 2)) {     /* GERMAN syntax */
  		res = ast_say_date_with_format(chan, t, AST_DIGIT_ANY, ast_channel_language(chan), "'vm-received' Q 'digits/at' HM", NULL);
  	} else if (!strncasecmp(ast_channel_language(chan), "gr", 2)) {     /* GREEK syntax */
-@@ -12437,7 +12498,7 @@
+@@ -12702,7 +12763,7 @@ out:
  		int new = 0, old = 0, urgent = 0;
  		snprintf(ext_context, sizeof(ext_context), "%s@%s", vms.username, vmu->context);
  		/* Urgent flag not passwd to externnotify here */
@@ -242,7 +240,7 @@
  		ast_app_inboxcount2(ext_context, &urgent, &new, &old);
  		queue_mwi_event(ast_channel_uniqueid(chan), ext_context, urgent, new, old);
  	}
-@@ -13412,7 +13473,7 @@
+@@ -13590,7 +13651,7 @@ static void poll_subscribed_mailbox(stru
  		mwi_sub->old_old = old;
  		queue_mwi_event(NULL, mwi_sub->mailbox, urgent, new, old);
  		// ksolomko: disabled as we do not have the number here
@@ -251,7 +249,7 @@
  	}
  }
  
-@@ -16308,7 +16369,7 @@
+@@ -16763,7 +16824,7 @@ static void notify_new_state(struct ast_
  	char ext_context[1024];
  
  	snprintf(ext_context, sizeof(ext_context), "%s@%s", vmu->mailbox, vmu->context);

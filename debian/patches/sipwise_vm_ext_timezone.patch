@@ -1,7 +1,7 @@
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -987,6 +987,8 @@
- static int passwordlocation;
+@@ -1011,6 +1011,8 @@ static int passwordlocation;
+ static char aliasescontext[MAX_VM_CONTEXT_LEN];
  static char sw_normalize_user_match[256];
  static char sw_normalize_user_replace[256];
 +static char sw_timezone_table[256];
@@ -9,7 +9,7 @@
  
  /*! Poll mailboxes for changes since there is something external to
   *  app_voicemail that may change them. */
-@@ -1141,6 +1143,7 @@
+@@ -1190,6 +1192,7 @@ static int vm_msg_remove(const char *mai
  static int vm_msg_play(struct ast_channel *chan, const char *mailbox, const char *context, const char *folder, const char *msg_num, ast_vm_msg_play_cb cb);
  
  static struct vm_zone *get_vmu_timezone(struct ast_vm_user *vmu);
@@ -17,50 +17,51 @@
  
  #ifdef TEST_FRAMEWORK
  static int vm_test_destroy_user(const char *context, const char *mailbox);
-@@ -1734,6 +1737,8 @@
+@@ -1785,6 +1788,8 @@ static void apply_options_full(struct as
  		} else if (!strcasecmp(var->name, "mailbox")) { /* granig: but save number for announcement */
  			ast_copy_string(retval->dialed_num, var->value, sizeof(retval->dialed_num));
  			// ast_log (LOG_DEBUG,"setting dialed_num to '%s'\n", var->value);
-+		} else if (!strcasecmp(var->name, "tz")) { /* granig: but save number for announcement */
++		} else if (!strcasecmp(var->name, "tz")) {
 +			load_vmu_timezone(retval);
  #ifdef IMAP_STORAGE
  		} else if (!strcasecmp(var->name, "imapuser")) {
  			ast_copy_string(retval->imapuser, var->value, sizeof(retval->imapuser));
-@@ -8359,6 +8364,57 @@
+@@ -8539,6 +8544,58 @@ static struct vm_zone * get_vmu_timezone
  	return tz;
  }
  
 +static void load_vmu_timezone(struct ast_vm_user *vmu)
 +{
++	int res;
++	char *argv[] = { vmu->mailbox };
++	char sql[PATH_MAX];
++	struct generic_prepare_struct gps = { .sql = sql, .argc = 1, .argv = argv };
++	struct odbc_obj *obj = NULL;
++	SQLHSTMT stmt = NULL;
++
 +	if (vmu->mailbox == NULL || ast_strlen_zero(sw_timezone_table))
 +		return;
 +
-+    int res;
-+    char *argv[] = { vmu->mailbox };
-+    char sql[PATH_MAX];
 +	snprintf(sql, sizeof(sql),
-+				"select name from %s where uuid = ?", sw_timezone_table);
-+    struct generic_prepare_struct gps = { .sql = sql, .argc = 1, .argv = argv };
-+    struct odbc_obj *obj = NULL;
-+    SQLHSTMT stmt = NULL;
++			 "select name from %s where uuid = ?", sw_timezone_table);
 +
-+    obj = ast_odbc_request_obj(odbc_database, 0);
-+    stmt = ast_odbc_prepare_and_execute(obj, generic_prepare, &gps);
-+    if (!stmt) {
-+        ast_log(LOG_WARNING, "SQL Execute error!\n[%s]\n\n", sql);
-+        ast_odbc_release_obj(obj);
-+        return;
-+    }
-+    res = SQLFetch(stmt);
-+    if ((res != SQL_SUCCESS) && (res != SQL_SUCCESS_WITH_INFO)) {
-+        ast_log(LOG_NOTICE, "Failed to timezone for mailbox '%s'\n", vmu->mailbox);
++	obj = ast_odbc_request_obj(odbc_database, 0);
++	stmt = ast_odbc_prepare_and_execute(obj, generic_prepare, &gps);
++	if (!stmt) {
++		ast_log(LOG_WARNING, "SQL Execute error!\n[%s]\n\n", sql);
++		ast_odbc_release_obj(obj);
++		return;
++	}
++	res = SQLFetch(stmt);
++	if ((res != SQL_SUCCESS) && (res != SQL_SUCCESS_WITH_INFO)) {
++		ast_log(LOG_NOTICE, "Failed to timezone for mailbox '%s'\n", vmu->mailbox);
 +		SQLFreeHandle (SQL_HANDLE_STMT, stmt);
 +
 +		ast_odbc_release_obj(obj);
 +		return;
-+    }
-+    res = SQLGetData(stmt, 1, SQL_CHAR, vmu->zonetag, sizeof(vmu->zonetag), NULL);
-+    if ((res != SQL_SUCCESS) && (res != SQL_SUCCESS_WITH_INFO)) {
++	}
++	res = SQLGetData(stmt, 1, SQL_CHAR, vmu->zonetag, sizeof(vmu->zonetag), NULL);
++	if ((res != SQL_SUCCESS) && (res != SQL_SUCCESS_WITH_INFO)) {
 +		if (ast_strlen_zero(sw_default_timezone)) {
 +			ast_log(LOG_DEBUG,
 +					"Undefined timezone for mailbox '%s', local will be used\n",
@@ -73,10 +74,10 @@
 +			ast_copy_string(vmu->zonetag, sw_default_timezone, sizeof(vmu->zonetag));
 +		}
 +	} else {
-+    	ast_log(LOG_DEBUG, "Using timezeone '%s' for mailbox '%s'\n", vmu->zonetag, vmu->mailbox);
++		ast_log(LOG_DEBUG, "Using timezeone '%s' for mailbox '%s'\n", vmu->zonetag, vmu->mailbox);
 +	}
-+    SQLFreeHandle(SQL_HANDLE_STMT, stmt);
-+    ast_odbc_release_obj(obj);
++	SQLFreeHandle(SQL_HANDLE_STMT, stmt);
++	ast_odbc_release_obj(obj);
 +
 +	return;
 +}
@@ -84,25 +85,26 @@
  /*!
   * \brief Sends email notification that a user has a new voicemail waiting for them.
   * \param chan
-@@ -13956,6 +14012,8 @@
+@@ -14365,6 +14422,9 @@ static int actual_load_config(int reload
  	long tps_queue_high;
-     const char *ast_sw_normalize_user_match = NULL;
-     const char *ast_sw_normalize_user_replace = NULL;
-+    const char *ast_sw_timezone_table = NULL;
-+    const char *ast_sw_default_timezone = NULL;
+ 	const char *ast_sw_normalize_user_match = NULL;
+ 	const char *ast_sw_normalize_user_replace = NULL;
++	const char *ast_sw_timezone_table = NULL;
++	const char *ast_sw_default_timezone = NULL;
++
  
  #ifdef IMAP_STORAGE
  	ast_copy_string(imapparentfolder, "\0", sizeof(imapparentfolder));
-@@ -14020,6 +14078,13 @@
+@@ -14442,6 +14502,13 @@ static int actual_load_config(int reload
  			sw_normalize_user_replace[0] = '\0';
  		}
  
 +		/* sipwise timezone table */
-+        if ((ast_sw_timezone_table = ast_variable_retrieve(cfg, "general", "sw_timezone_table")))
-+            ast_copy_string(sw_timezone_table, ast_sw_timezone_table, sizeof(sw_timezone_table));
++		if ((ast_sw_timezone_table = ast_variable_retrieve(cfg, "general", "sw_timezone_table")))
++			ast_copy_string(sw_timezone_table, ast_sw_timezone_table, sizeof(sw_timezone_table));
 +		/* sipwise default timezone */
-+        if ((ast_sw_default_timezone = ast_variable_retrieve(cfg, "general", "sw_default_timezone")))
-+            ast_copy_string(sw_default_timezone, ast_sw_default_timezone, sizeof(sw_default_timezone));
++		if ((ast_sw_default_timezone = ast_variable_retrieve(cfg, "general", "sw_default_timezone")))
++			ast_copy_string(sw_default_timezone, ast_sw_default_timezone, sizeof(sw_default_timezone));
 +
  		/* Mail command */
  		strcpy(mailcmd, SENDMAIL);
