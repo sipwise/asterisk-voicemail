@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "3afb71cf_8486e611",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2019-04-24T08:10:58Z",
+      "side": 1,
+      "message": "makes sense, going to change the name.",
+      "parentUuid": "3afb71cf_c4517e10",
+      "revId": "919b14ad9d6c78ff7eb67d869741e89a6540fa79",
+      "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3afb71cf_a4568204",
         "filename": "/COMMIT_MSG",
         "patchSetId": 6
@@ -30,6 +48,24 @@
       "writtenOn": "2019-04-23T20:28:17Z",
       "side": 1,
       "message": "What about this? -\u003e\n\n* port app_voicemail to support asterisk 13 (Debian/stretch) and asterisk 16 (Debian/buster)",
+      "revId": "919b14ad9d6c78ff7eb67d869741e89a6540fa79",
+      "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3afb71cf_647c0a21",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2019-04-24T08:10:58Z",
+      "side": 1,
+      "message": "\"port app_voicemail to support asterisk 16 (Debian/buster)\"\n\nasterisk 13 is supported but this port will not be merged into stretch.",
+      "parentUuid": "3afb71cf_a4568204",
       "revId": "919b14ad9d6c78ff7eb67d869741e89a6540fa79",
       "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
       "unresolved": false
