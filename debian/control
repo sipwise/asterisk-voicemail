@@ -6,7 +6,7 @@ Homepage: https://www.sipwise.com/
 Standards-Version: 3.9.8
 Build-Depends:
  asterisk-dev,
- debhelper (>= 10~),
+ debhelper-compat (= 12),
  libpcre3-dev,
  quilt,
  unixodbc-dev,
