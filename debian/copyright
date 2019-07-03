@@ -3,15 +3,11 @@ Upstream-Name: ngcp-asterisk-voicemail
 Source: https://github.com/sipwise/asterisk-voicemail.git
 
 Files: *
-Copyright: 2013-2014 Sipwise GmbH, Austria
+Copyright: 2013-2019 Sipwise GmbH, Austria
 License: GPL-2
 
 Files: apps/app_voicemail.c
 Copyright: 1999-2015, Digium, Inc
-License: GPL-2
-
-Files: debian/*
-Copyright: 2015 Sipwise Development Team <support@sipwise.com>
 License: GPL-2
 
 License: GPL-2
