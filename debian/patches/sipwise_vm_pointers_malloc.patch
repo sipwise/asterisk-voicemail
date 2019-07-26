@@ -1,0 +1,20 @@
+--- a/apps/app_voicemail.c
++++ b/apps/app_voicemail.c
+@@ -1365,7 +1365,7 @@ static char *edit(const char *str, int l
+ 	slen = len;
+ 	len -= mvec[1] - mvec[0];
+ 	len += rlen = findreplen(rep, nmat, replen);
+-	cp = res = pcre_malloc(len + 1);
++	cp = res = ast_malloc(len + 1);
+ 	if (mvec[0] > 0) {
+ 		strncpy(cp, str, mvec[0]);
+ 		cp += mvec[0];
+@@ -12130,6 +12130,8 @@ static int vm_execmain(struct ast_channe
+ 
+ 	/* Add the vm_state to the active list and keep it active */
+ 	vms.lastmsg = -1;
++    vms.deleted = NULL;
++    vms.heard = NULL;
+ 
+ 	ast_test_suite_event_notify("START", "Message: vm_execmain started");
+ 	if (ast_channel_state(chan) != AST_STATE_UP) {
