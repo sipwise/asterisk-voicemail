@@ -1,3 +1,18 @@
+ngcp-asterisk-voicemail (13.14.1+0~mr7.5.1.0) unstable; urgency=medium
+
+  [ Kirill Solomko ]
+  * [96f5a00] TT#56412 Support Asterisk 16.2.1 on Debian/buster
+  * [5d2df35] TT#63546 fix app_voicemail pcre_malloc and vmu pointers
+
+  [ Guillem Jover ]
+  * [1f91e71] TT#61954 Update copyright years
+  * [0572ad2] TT#61954 Update copyright Format URL to use https
+  * [c3cdfc5] TT#61954 Set debhelper compat level in Build-Depends instead of debian/compat
+
+  [ Sipwise Jenkins Builder ]
+
+ -- Sipwise Jenkins Builder <jenkins@sipwise.com>  Mon, 05 Aug 2019 20:51:31 +0200
+
 ngcp-asterisk-voicemail (13.14.1+0~mr7.5.0.0) unstable; urgency=medium
 
   * New release.
