@@ -1,0 +1,29 @@
+--- a/apps/app_voicemail.c
++++ b/apps/app_voicemail.c
+@@ -1318,7 +1318,7 @@
+ 	while(*cp) {
+ 		if (*cp == '$' && isdigit(cp[1])) {
+ 			val = strtoul(&cp[1], &cp, 10);
+-			if (val && val <= nmat + 1)
++			if (val && val <= nmat)
+ 				len += replen[val -1];
+ 			else
+ 				fprintf(stderr, "repl %d out of range\n", val);
+@@ -1338,7 +1338,7 @@
+ 	while(*cp) {
+ 		if (*cp == '$' && isdigit(cp[1])) {
+ 			val = strtoul(&cp[1], &cp, 10);
+-			if (val && val <= nmat + 1) {
++			if (val && val <= nmat) {
+ 				strncpy(out, repstr[val - 1], replen[val - 1]);
+ 				out += replen[val -1];
+ 			}
+@@ -1385,7 +1385,7 @@
+ 	int nmat;
+ 	int ovec[MAXCAPTURE * 3];
+ 	nmat = pcre_exec(ppat, extra, str, len, offset, options,
+-		ovec, sizeof(ovec));
++		ovec, MAXCAPTURE * 3);
+ 	if (nmat <= 0)
+ 		return NULL;
+ 	return(edit(str, len, rep, nmat, ovec));
