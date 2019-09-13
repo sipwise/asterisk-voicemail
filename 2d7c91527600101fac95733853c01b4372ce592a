@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2a614038_229d4829",
+        "filename": "debian/patches/sipwise_fix_app_voicemail_bugs.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2019-09-13T20:38:35Z",
+      "side": 1,
+      "message": "I\u0027m not a fan of repeating these, as I find them not future-proof as it might get out-of-sync with the definition. I\u0027d use instead:\n\n  sizeof(ovec) / sizeof(ovec[0])",
+      "range": {
+        "startLine": 26,
+        "startChar": 9,
+        "endLine": 26,
+        "endChar": 23
+      },
+      "revId": "2d7c91527600101fac95733853c01b4372ce592a",
+      "serverId": "85315e57-5f03-49c3-83f8-201ae2313a75",
+      "unresolved": false
+    }
+  ]
+}
