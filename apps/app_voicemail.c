@@ -1572,7 +1572,7 @@ static int check_password(struct ast_vm_user *vmu, char *password)
 }
 
 /*!
- * \brief Performs a change of the voicemail passowrd in the realtime engine.
+ * \brief Performs a change of the voicemail password in the realtime engine.
  * \param vmu The voicemail user to change the password for.
  * \param password The new value to be set to the password for this user.
  *
@@ -3107,7 +3107,7 @@ static int init_mailstream(struct vm_state *vms, int box)
 	ast_mutex_lock(&vms->lock);
 	ast_mutex_lock(&mail_open_lock);
 	vms->mailstream = mail_open (stream, tmp, debug ? OP_DEBUG : NIL);
-	/* Create the folder if it dosn't exist */
+	/* Create the folder if it does not exist */
 	if (vms->mailstream && !mail_status(vms->mailstream, tmp, SA_UIDNEXT)) {
 		mail_create(vms->mailstream, tmp);
 	}
@@ -4295,7 +4295,7 @@ static void delete_file(const char *sdir, int smsg)
  * \param smsg the index of the message to be copied.
  * \param ddir the destination folder to copy the message into.
  * \param dmsg the index to be used for the copied message.
- * \param dmailboxuser The user who owns the mailbox tha contains the destination folder.
+ * \param dmailboxuser The user who owns the mailbox that contains the destination folder.
  * \param dmailboxcontext The context for the destination user.
  *
  * This method is used for the COPY macro when mailboxes are stored in an ODBC back end.
@@ -4532,7 +4532,7 @@ static int store_file(const char *dir, const char *mailboxuser, const char *mail
  * \param dmsg The destination message for the message to be renamed.
  *
  * This method is used by the RENAME macro when mailboxes are stored in an ODBC back end.
- * The is usually used to resequence the messages in the mailbox, such as to delete messag index 0, it would be called successively to slide all the other messages down one index.
+ * The is usually used to resequence the messages in the mailbox, such as to delete message index 0, it would be called successively to slide all the other messages down one index.
  * But in theory, because the SQL query performs an update on (dir, msgnum, mailboxuser, mailboxcontext) in the database, it should be possible to have the message relocated to another mailbox or context as well.
  */
 static void rename_file(char *sdir, int smsg, char *mailboxuser, char *mailboxcontext, char *ddir, int dmsg)
@@ -5025,7 +5025,7 @@ static void prep_email_sub_vars(struct ast_channel *ast, struct ast_vm_user *vmu
 }
 
 /*!
- * \brief Wraps a character sequence in double quotes, escaping occurences of quotes within the string.
+ * \brief Wraps a character sequence in double quotes, escaping occurrences of quotes within the string.
  * \param from The string to work with.
  * \param buf The buffer into which to write the modified quoted string.
  * \param maxlen Always zero, but see \see ast_str
@@ -5158,7 +5158,7 @@ static const char *ast_str_encode_mime(struct ast_str **end, ssize_t maxlen, con
  * \param imap if == 1, indicates the target folder for the email notification to be sent to will be an IMAP mailstore. This causes additional mailbox headers to be set, which would facilitate searching for the email in the destination IMAP folder.
  * \param flag, msg_id
  *
- * The email body, and base 64 encoded attachement (if any) are stored to the file identified by *p. This method does not actually send the email.  That is done by invoking the configure 'mailcmd' and piping this generated file into it, or with the sendemail() function.
+ * The email body, and base 64 encoded attachment (if any) are stored to the file identified by *p. This method does not actually send the email.  That is done by invoking the configure 'mailcmd' and piping this generated file into it, or with the sendemail() function.
  */
 static void make_email_file(FILE *p,
 		char *srcemail,
@@ -6315,7 +6315,7 @@ static void run_externnotify(char *context, char *extension, const char *flag)
 /*!
  * \brief Variables used for saving a voicemail.
  *
- * This includes the record gain, mode flags, and the exit context of the chanel that was used for leaving the voicemail.
+ * This includes the record gain, mode flags, and the exit context of the channel that was used for leaving the voicemail.
  */
 struct leave_vm_options {
 	unsigned int flags;
@@ -7281,7 +7281,7 @@ static int save_to_folder(struct ast_vm_user *vmu, struct vm_state *vms, int msg
 	/* get the current mailbox so that we can point the mailstream back to it later */
 	curr_mbox = get_folder_by_name(vms->curbox);
 
-	/* Create the folder if it dosn't exist */
+	/* Create the folder if it does not exist */
 	imap_mailbox_name(mailbox, sizeof(mailbox), vms, box, 1); /* Get the full mailbox name */
 	if (vms->mailstream && !mail_status(vms->mailstream, mailbox, SA_UIDNEXT)) {
     		if (mail_create(vms->mailstream, mailbox) != NIL) {
@@ -9468,7 +9468,7 @@ static int vm_intro_gr(struct ast_channel *chan, struct vm_state *vms)
  *     on vm-message.
  *  3) Call ast_say_counted_adjective() to put the proper gender and number
  *     prefix on vm-new and vm-old (none for English).
- *  4) Pass the gender of the language's word for "message" as an agument to
+ *  4) Pass the gender of the language's word for "message" as an argument to
  *     this function which is can in turn pass on to the functions which
  *     say numbers and put endings on nounds and adjectives.
  *
@@ -13295,7 +13295,7 @@ static int handle_subscribe(void *datap)
 		len += strlen(p->mailbox);
 
 	if (!ast_strlen_zero(p->context))
-		len += strlen(p->context) + 1; /* Allow for seperator */
+		len += strlen(p->context) + 1; /* Allow for separator */
 
 	if (!(mwi_sub = ast_calloc(1, len)))
 		return -1;
@@ -14123,11 +14123,11 @@ static int actual_load_config(int reload, struct ast_config *cfg, struct ast_con
 				smdi_iface = ast_smdi_interface_find("/dev/ttyS0");
 			}
 			if (!smdi_iface) {
-				ast_log(AST_LOG_ERROR, "No valid SMDI interface specfied, disabling SMDI voicemail notification\n");
+				ast_log(AST_LOG_ERROR, "No valid SMDI interface specified, disabling SMDI voicemail notification\n");
 			}
 		}
 
-		/* Silence treshold */
+		/* Silence threshold */
 		silencethreshold = ast_dsp_get_threshold_from_settings(THRESHOLD_SILENCE);
 		if ((val = ast_variable_retrieve(cfg, "general", "silencethreshold")))
 			silencethreshold = atoi(val);
@@ -15190,7 +15190,7 @@ AST_TEST_DEFINE(test_voicemail_vm_info)
 		ast_copy_string(vminfo_args, test_items[test_counter].vminfo_test_args, sizeof(vminfo_args));
 		test_ret = acf_vm_info(chan, vminfo_cmd, vminfo_args, vminfo_buf, sizeof(vminfo_buf));
 		if (strcmp(vminfo_buf, test_items[test_counter].vminfo_expected)) {
-			ast_test_status_update(test, "VM_INFO respose was: '%s', but expected: '%s'\n", vminfo_buf, test_items[test_counter].vminfo_expected);
+			ast_test_status_update(test, "VM_INFO response was: '%s', but expected: '%s'\n", vminfo_buf, test_items[test_counter].vminfo_expected);
 			res = AST_TEST_FAIL;
 		}
 		if (!(test_ret == test_items[test_counter].vminfo_ret)) {
@@ -15879,7 +15879,7 @@ static int play_record_review(struct ast_channel *chan, char *playfile, char *re
 			}
 			return cmd;
 		default:
-			/* If the caller is an ouside caller and the review option is enabled or it's forward intro
+			/* If the caller is an outside caller and the review option is enabled or it's forward intro
 			   allow them to review the message, but let the owner of the box review
 			   their OGM's */
 			if (outsidecaller && !ast_test_flag(vmu, VM_REVIEW) && !forwardintro)
