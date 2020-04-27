@@ -1,3 +1,10 @@
+ngcp-asterisk-voicemail (13.14.1+0~mr8.2.3.0) unstable; urgency=medium
+
+  [ Kirill Solomko ]
+  * [68f44d6] TT#76362 externotify add uuid argument
+
+ -- Sipwise Jenkins Builder <jenkins@sipwise.com>  Mon, 27 Apr 2020 21:24:31 +0200
+
 ngcp-asterisk-voicemail (13.14.1+0~mr8.2.2.0) unstable; urgency=medium
 
   * New release.
