@@ -1,0 +1,21 @@
+--- a/apps/app_voicemail.c
++++ b/apps/app_voicemail.c
+@@ -9346,10 +9346,14 @@ static int play_message(struct ast_chann
+ 	vms->starting = 0;
+ 	make_file(vms->fn, sizeof(vms->fn), vms->curdir, vms->curmsg);
+ 	adsi_message(chan, vms);
+-	if (!vms->curmsg) {
+-		res = wait_file2(chan, vms, "vm-first");	/* "First" */
+-	} else if (vms->curmsg == vms->lastmsg) {
+-		res = wait_file2(chan, vms, "vm-last");		/* "last" */
++
++	/* NOT HEBREW syntax */
++	if (strncasecmp(ast_channel_language(chan), "he", 2)) {
++		if (!vms->curmsg) {
++			res = wait_file2(chan, vms, "vm-first");	/* "First" */
++		} else if (vms->curmsg == vms->lastmsg) {
++			res = wait_file2(chan, vms, "vm-last");		/* "last" */
++		}
+ 	}
+ 
+ 	snprintf(filename, sizeof(filename), "%s.txt", vms->fn);
