@@ -25,3 +25,4 @@ sipwise_vm_asterisk_16_support.patch
 sipwise_vm_pointers_malloc.patch
 sipwise_fix_app_voicemail_bugs.patch
 sipwise_vm_externnotify_by_uuid.patch
+sipwise_vm_hebrew_language_fixups.patch
