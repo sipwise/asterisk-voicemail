@@ -1,3 +1,10 @@
+ngcp-asterisk-voicemail (13.14.1+0~mr8.5.1.2) unstable; urgency=medium
+
+  [ Kirill Solomko ]
+  * [7434d63] TT#86802 - Hebrew language fixups
+
+ -- Sipwise Jenkins Builder <jenkins@sipwise.com>  Thu, 10 Sep 2020 19:09:49 +0200
+
 ngcp-asterisk-voicemail (13.14.1+0~mr8.5.1.1) unstable; urgency=medium
 
   * New release.
