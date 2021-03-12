@@ -2,7 +2,7 @@
 +++ b/Makefile
 @@ -17,7 +17,8 @@ DEBUG=-g
  
- LIBS+=-pcre
+ LIBS+=-lpcre
  CFLAGS+=-pipe -fPIC
 -CFLAGS+=-Wall -Wextra -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations
 +CFLAGS+=-Wall -Wextra -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations \
