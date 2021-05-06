@@ -1,6 +1,6 @@
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -6644,15 +6644,15 @@
+@@ -6701,15 +6701,15 @@ static void run_externnotify(char *conte
  			if (msg_time) {
  				ast_localtime(msg_time, &tm, timezonename);
  				ast_strftime(date, sizeof(date), "%Y-%m-%dT%H:%M:%S%z", &tm);

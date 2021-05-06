@@ -1,6 +1,6 @@
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -1365,7 +1365,7 @@ static char *edit(const char *str, int l
+@@ -1363,7 +1363,7 @@ static char *edit(const char *str, int l
  	slen = len;
  	len -= mvec[1] - mvec[0];
  	len += rlen = findreplen(rep, nmat, replen);
@@ -9,7 +9,7 @@
  	if (mvec[0] > 0) {
  		strncpy(cp, str, mvec[0]);
  		cp += mvec[0];
-@@ -12130,6 +12130,8 @@ static int vm_execmain(struct ast_channe
+@@ -12183,6 +12183,8 @@ static int vm_execmain(struct ast_channe
  
  	/* Add the vm_state to the active list and keep it active */
  	vms.lastmsg = -1;

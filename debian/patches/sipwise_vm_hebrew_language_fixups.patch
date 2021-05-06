@@ -1,6 +1,6 @@
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -9346,10 +9346,14 @@ static int play_message(struct ast_chann
+@@ -9396,10 +9396,14 @@ static int play_message(struct ast_chann
  	vms->starting = 0;
  	make_file(vms->fn, sizeof(vms->fn), vms->curdir, vms->curmsg);
  	adsi_message(chan, vms);

@@ -1,67 +1,25 @@
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -925,7 +925,7 @@ static char odbc_table[80];
- #define RENAME(a,b,c,d,e,f,g,h) (rename_file(a,b,c,d,e,f))
- #define COPY(a,b,c,d,e,f,g,h) (copy_file(a,b,c,d,e,f))
- #define DELETE(a,b,c,d) (delete_file(a,b))
--#define UPDATE_MSG_ID(a, b, c, d, e, f) (odbc_update_msg_id((a), (b), (c)))
-+#define UPDATE_MSG_ID(a, b, c, d, e, f) (odbc_update_msg_id((a), (b), (c), (NULL)))
- #else
- #ifdef IMAP_STORAGE
- #define DISPOSE(a,b) (imap_remove_file(a,b))
-@@ -4017,16 +4017,19 @@ static SQLHSTMT generic_prepare(struct o
- 	return stmt;
- }
- 
--static void odbc_update_msg_id(char *dir, int msg_num, char *msg_id)
-+static void odbc_update_msg_id(char *dir, int msg_num, char *msg_id, struct odbc_obj *obj)
- {
- 	SQLHSTMT stmt;
- 	char sql[PATH_MAX];
--	struct odbc_obj *obj;
- 	char msg_num_str[20];
+@@ -4033,7 +4033,7 @@ static void odbc_update_msg_id(char *dir
  	char *argv[] = { msg_id, dir, msg_num_str };
  	struct generic_prepare_struct gps = { .sql = sql, .argc = 3, .argv = argv };
-+	int created_obj = 0;
  
 -	obj = ast_odbc_request_obj(odbc_database, 0);
-+	if (!obj) {
-+		obj = ast_odbc_request_obj(odbc_database, 0);
-+		created_obj = 1;
-+	}
++    obj = ast_odbc_request_obj(odbc_database, 0);
  	if (!obj) {
  		ast_log(LOG_WARNING, "Unable to update message ID for message %d in %s\n", msg_num, dir);
  		return;
-@@ -4040,7 +4043,9 @@ static void odbc_update_msg_id(char *dir
- 	} else {
- 		SQLFreeHandle(SQL_HANDLE_STMT, stmt);
- 	}
--	ast_odbc_release_obj(obj);
-+	if (created_obj) {
-+		ast_odbc_release_obj(obj);
-+	}
- 	return;
- }
- 
-@@ -4189,13 +4194,15 @@ static int retrieve_file(char *dir, int
- 				char msg_id[MSG_ID_LEN];
- 				generate_msg_id(msg_id);
- 				snprintf(rowdata, sizeof(rowdata), "%s", msg_id);
--				odbc_update_msg_id(dir, msgnum, msg_id);
-+				odbc_update_msg_id(dir, msgnum, msg_id, obj);
- 			} else if (res == SQL_NULL_DATA && !strcasecmp(coltitle, "category")) {
- 				/* Ignore null column value for category */
- 				ast_debug(3, "Ignoring null category column in ODBC voicemail retrieve_file.\n");
+@@ -4204,6 +4204,9 @@ static int retrieve_file(char *dir, int
  				continue;
  			} else if (!SQL_SUCCEEDED(res)) {
--				ast_log(AST_LOG_WARNING, "SQL Get Data error! coltitle=%s\n[%s]\n\n", coltitle, sql);
+ 				ast_log(AST_LOG_WARNING, "SQL Get Data error! coltitle=%s\n[%s]\n\n", coltitle, sql);
 +				if (strcasecmp(coltitle, "call_id")) {
 +					ast_log(AST_LOG_WARNING, "SQL Get Data error! coltitle=%s\n[%s]\n\n", coltitle, sql);
 +				}
  				goto bail_with_handle;
  			}
  			if (strcasecmp(coltitle, "msgnum") && strcasecmp(coltitle, "dir")) {
-@@ -9473,7 +9480,9 @@ static int play_message(struct ast_chann
+@@ -9527,7 +9530,9 @@ static int play_message(struct ast_chann
  		}
  #endif
  		if ((res = wait_file(chan, vms, vms->fn)) < 0) {

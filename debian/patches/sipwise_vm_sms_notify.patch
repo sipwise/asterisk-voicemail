@@ -1,14 +1,14 @@
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -997,6 +997,7 @@ static int silencethreshold = 128;
- static char serveremail[80];
- static char mailcmd[160];	/* Configurable mail cmd */
+@@ -1007,6 +1007,7 @@ static int silencethreshold = 128;
+ static char serveremail[80] = ASTERISK_USERNAME;
+ static char mailcmd[160] = SENDMAIL;	/* Configurable mail cmd */
  static char externnotify[160];
 +static char externpager[160];
  static struct ast_smdi_interface *smdi_iface = NULL;
- static char vmfmts[80];
+ static char vmfmts[80] = "wav";
  static double volgain;
-@@ -5165,6 +5166,20 @@ static int base_encode(char *filename, F
+@@ -5184,6 +5185,20 @@ static int base_encode(char *filename, F
  	return 1;
  }
  
@@ -29,7 +29,7 @@
  static void prep_email_sub_vars(struct ast_channel *ast, struct ast_vm_user *vmu, int msgnum, char *context, char *mailbox, const char *fromfolder, char *cidnum, char *cidname, char *dur, char *date, const char *category, const char *flag)
  {
  	char callerid[256];
-@@ -5800,6 +5815,59 @@ static int sendmail(char *srcemail,
+@@ -5861,6 +5876,59 @@ static int sendmail(char *srcemail,
  	return 0;
  }
  
@@ -89,7 +89,7 @@
  static int sendpage(char *srcemail, char *pager, int msgnum, char *context, char *mailbox, const char *fromfolder, char *cidnum, char *cidname, int duration, struct ast_vm_user *vmu, const char *category, const char *flag)
  {
  	char enc_cidnum[256], enc_cidname[256];
-@@ -5813,6 +5881,8 @@ static int sendpage(char *srcemail, char
+@@ -5874,6 +5942,8 @@ static int sendpage(char *srcemail, char
  	FILE *p;
  	struct ast_str *str1 = ast_str_create(16), *str2 = ast_str_create(16);
  
@@ -98,7 +98,7 @@
  	if (!str1 || !str2) {
  		ast_free(str1);
  		ast_free(str2);
-@@ -5945,6 +6015,7 @@ static int sendpage(char *srcemail, char
+@@ -6006,6 +6076,7 @@ static int sendpage(char *srcemail, char
  	ast_free(str2);
  	return 0;
  }
@@ -106,7 +106,7 @@
  
  /*!
   * \brief Gets the current date and time, as formatted string.
-@@ -8471,7 +8542,8 @@ static int notify_new_message(struct ast
+@@ -8525,7 +8596,8 @@ static int notify_new_message(struct ast
  	}
  
  	if (!ast_strlen_zero(vmu->pager)) {
@@ -116,7 +116,7 @@
  	}
  
  	if (ast_test_flag(vmu, VM_DELETE))
-@@ -14474,6 +14546,13 @@ static int actual_load_config(int reload
+@@ -14533,6 +14605,13 @@ static int actual_load_config(int reload
  			externnotify[0] = '\0';
  		}
  

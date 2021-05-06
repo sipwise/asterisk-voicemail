@@ -1,6 +1,6 @@
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -1011,6 +1011,8 @@ static int passwordlocation;
+@@ -1021,6 +1021,8 @@ static int passwordlocation;
  static char aliasescontext[MAX_VM_CONTEXT_LEN];
  static char sw_normalize_user_match[256];
  static char sw_normalize_user_replace[256];
@@ -9,7 +9,7 @@
  
  /*! Poll mailboxes for changes since there is something external to
   *  app_voicemail that may change them. */
-@@ -1190,6 +1192,7 @@ static int vm_msg_remove(const char *mai
+@@ -1186,6 +1188,7 @@ static int vm_msg_remove(const char *mai
  static int vm_msg_play(struct ast_channel *chan, const char *mailbox, const char *context, const char *folder, const char *msg_num, ast_vm_msg_play_cb cb);
  
  static struct vm_zone *get_vmu_timezone(struct ast_vm_user *vmu);
@@ -17,7 +17,7 @@
  
  #ifdef TEST_FRAMEWORK
  static int vm_test_destroy_user(const char *context, const char *mailbox);
-@@ -1785,6 +1788,8 @@ static void apply_options_full(struct as
+@@ -1783,6 +1786,8 @@ static void apply_options_full(struct as
  		} else if (!strcasecmp(var->name, "mailbox")) { /* granig: but save number for announcement */
  			ast_copy_string(retval->dialed_num, var->value, sizeof(retval->dialed_num));
  			// ast_log (LOG_DEBUG,"setting dialed_num to '%s'\n", var->value);
@@ -26,7 +26,7 @@
  #ifdef IMAP_STORAGE
  		} else if (!strcasecmp(var->name, "imapuser")) {
  			ast_copy_string(retval->imapuser, var->value, sizeof(retval->imapuser));
-@@ -8539,6 +8544,58 @@ static struct vm_zone * get_vmu_timezone
+@@ -8593,6 +8598,58 @@ static struct vm_zone * get_vmu_timezone
  	return tz;
  }
  
@@ -85,7 +85,7 @@
  /*!
   * \brief Sends email notification that a user has a new voicemail waiting for them.
   * \param chan
-@@ -14365,6 +14422,9 @@ static int actual_load_config(int reload
+@@ -14423,6 +14480,9 @@ static int actual_load_config(int reload
  	long tps_queue_high;
  	const char *ast_sw_normalize_user_match = NULL;
  	const char *ast_sw_normalize_user_replace = NULL;
@@ -95,7 +95,7 @@
  
  #ifdef IMAP_STORAGE
  	ast_copy_string(imapparentfolder, "\0", sizeof(imapparentfolder));
-@@ -14442,6 +14502,13 @@ static int actual_load_config(int reload
+@@ -14500,6 +14560,13 @@ static int actual_load_config(int reload
  			sw_normalize_user_replace[0] = '\0';
  		}
  

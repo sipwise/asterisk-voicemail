@@ -1,6 +1,6 @@
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -15459,7 +15459,9 @@ AST_TEST_DEFINE(test_voicemail_msgcount)
+@@ -15516,7 +15516,9 @@ AST_TEST_DEFINE(test_voicemail_msgcount)
  			break;
  		}
  		open_mailbox(&vms, vmu, folder2mbox[i]);

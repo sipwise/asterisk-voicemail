@@ -1,6 +1,6 @@
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -1318,7 +1318,7 @@
+@@ -1316,7 +1316,7 @@ static int findreplen(const char *rep, i
  	while(*cp) {
  		if (*cp == '$' && isdigit(cp[1])) {
  			val = strtoul(&cp[1], &cp, 10);
@@ -9,7 +9,7 @@
  				len += replen[val -1];
  			else
  				fprintf(stderr, "repl %d out of range\n", val);
-@@ -1338,7 +1338,7 @@
+@@ -1336,7 +1336,7 @@ static void doreplace(char *out, const c
  	while(*cp) {
  		if (*cp == '$' && isdigit(cp[1])) {
  			val = strtoul(&cp[1], &cp, 10);
@@ -18,7 +18,7 @@
  				strncpy(out, repstr[val - 1], replen[val - 1]);
  				out += replen[val -1];
  			}
-@@ -1385,7 +1385,7 @@
+@@ -1383,7 +1383,7 @@ static char *pcre_subst(const pcre *ppat
  	int nmat;
  	int ovec[MAXCAPTURE * 3];
  	nmat = pcre_exec(ppat, extra, str, len, offset, options,

@@ -19,7 +19,7 @@
  	<support_level>core</support_level>
   ***/
  
-@@ -143,6 +144,9 @@
+@@ -144,6 +145,9 @@
  #include "asterisk/threadstorage.h"
  #endif
  
@@ -29,8 +29,8 @@
  /*** DOCUMENTATION
  	<application name="VoiceMail" language="en_US">
  		<synopsis>
-@@ -1004,6 +1008,8 @@ static int maxlogins;
- static int minpassword;
+@@ -1014,6 +1018,8 @@ static int maxlogins = 3;
+ static int minpassword = MINPASSWORD;
  static int passwordlocation;
  static char aliasescontext[MAX_VM_CONTEXT_LEN];
 +static char sw_normalize_user_match[256];
@@ -38,7 +38,7 @@
  
  /*! Poll mailboxes for changes since there is something external to
   *  app_voicemail that may change them. */
-@@ -1272,6 +1278,114 @@ static int inprocess_count(const char *c
+@@ -1270,6 +1276,114 @@ static int inprocess_count(const char *c
  static int __has_voicemail(const char *context, const char *mailbox, const char *folder, int shortcircuit);
  #endif
  
@@ -153,7 +153,7 @@
  /*!
   * \brief Strips control and non 7-bit clean characters from input string.
   *
-@@ -8084,6 +8198,8 @@ static int get_folder2(struct ast_channe
+@@ -8136,6 +8250,8 @@ static int get_folder2(struct ast_channe
   * This is invoked from forward_message() when performing a forward operation (option 8 from main menu).
   * \return zero on success, -1 on error.
   */
@@ -162,7 +162,7 @@
  static int vm_forwardoptions(struct ast_channel *chan, struct ast_vm_user *vmu, char *curdir, int curmsg, char *vm_fmts,
  			char *context, signed char record_gain, long *duration, struct vm_state *vms, char *flag)
  {
-@@ -8245,6 +8361,7 @@ static int vm_forwardoptions(struct ast_
+@@ -8297,6 +8413,7 @@ static int vm_forwardoptions(struct ast_
  		cmd = 0;
  	return cmd;
  }
@@ -170,7 +170,7 @@
  
  static void queue_mwi_event(const char *channel_id, const char *box, int urgent, int new, int old)
  {
-@@ -8403,6 +8520,8 @@ static int notify_new_message(struct ast
+@@ -8457,6 +8574,8 @@ static int notify_new_message(struct ast
   *
   * \return zero on success, -1 on error.
   */
@@ -179,7 +179,7 @@
  static int forward_message(struct ast_channel *chan, char *context, struct vm_state *vms, struct ast_vm_user *sender, char *fmt, int is_new_message, signed char record_gain, int urgent)
  {
  #ifdef IMAP_STORAGE
-@@ -8741,6 +8860,7 @@ static int forward_message(struct ast_ch
+@@ -8795,6 +8914,7 @@ static int forward_message(struct ast_ch
  	}
  	return res ? res : cmd;
  }
@@ -187,9 +187,9 @@
  
  static int wait_file2(struct ast_channel *chan, struct vm_state *vms, char *file)
  {
-@@ -11439,6 +11559,11 @@ static int vm_authenticate(struct ast_ch
+@@ -11496,6 +11616,11 @@ static int vm_authenticate(struct ast_ch
  	int useadsi = 0, valid = 0, logretries = 0;
- 	char password[AST_MAX_EXTENSION], *passptr;
+ 	char password[AST_MAX_EXTENSION], *passptr = NULL;
  	struct ast_vm_user vmus, *vmu = NULL;
 +	const char *err;
 +	int erroffset;
@@ -199,7 +199,7 @@
  
  	/* If ADSI is supported, setup login screen */
  	adsi_begin(chan, &useadsi);
-@@ -11449,6 +11574,22 @@ static int vm_authenticate(struct ast_ch
+@@ -11506,6 +11631,22 @@ static int vm_authenticate(struct ast_ch
  		return -1;
  	}
  
@@ -222,7 +222,7 @@
  	/* Authenticate them and get their mailbox/password */
  
  	while (!valid && (logretries < max_logins)) {
-@@ -11478,6 +11619,18 @@ static int vm_authenticate(struct ast_ch
+@@ -11535,6 +11676,18 @@ static int vm_authenticate(struct ast_ch
  		if (useadsi)
  			adsi_password(chan);
  
@@ -241,7 +241,7 @@
  		if (!ast_strlen_zero(prefix)) {
  			char fullusername[80];
  
-@@ -14058,6 +14211,8 @@ static int actual_load_config(int reload
+@@ -14117,6 +14270,8 @@ static int actual_load_config(int reload
  	char secretfn[PATH_MAX] = "";
  	long tps_queue_low;
  	long tps_queue_high;
@@ -250,7 +250,7 @@
  
  #ifdef IMAP_STORAGE
  	ast_copy_string(imapparentfolder, "\0", sizeof(imapparentfolder));
-@@ -14122,6 +14277,19 @@ static int actual_load_config(int reload
+@@ -14181,6 +14336,19 @@ static int actual_load_config(int reload
  			ast_copy_string(odbc_table, val, sizeof(odbc_table));
  		}
  #endif

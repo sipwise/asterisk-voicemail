@@ -1,6 +1,6 @@
 --- a/apps/app_playback.c
 +++ b/apps/app_playback.c
-@@ -226,6 +226,15 @@ static int do_say(say_args_t *a, const c
+@@ -230,6 +230,15 @@ static int do_say(say_args_t *a, const c
  	}
  	AST_LIST_INSERT_HEAD(&head, n, entries);
  
@@ -16,7 +16,7 @@
  	/* scan the body, one piece at a time */
  	while ( !ret && (x = strsep(&rule, ",")) ) { /* exit on key */
  		char fn[128];
-@@ -239,6 +248,15 @@ static int do_say(say_args_t *a, const c
+@@ -243,6 +252,15 @@ static int do_say(say_args_t *a, const c
  		pbx_substitute_variables_varshead(&head, x, fn, sizeof(fn));
  		ast_debug(2, "doing [%s]\n", fn);
  
@@ -32,7 +32,7 @@
  		/* locate prefix and data, if any */
  		fmt = strchr(fn, ':');
  		if (!fmt || fmt == fn)	{	/* regular filename */
-@@ -321,10 +339,34 @@ static int say_date_generic(struct ast_c
+@@ -326,10 +344,34 @@ static int say_date_generic(struct ast_c
  	struct ast_tm tm;
  	struct timeval when = { t, 0 };
  	say_args_t a = { chan, ints, lang, -1, -1 };
@@ -67,7 +67,7 @@
  	snprintf(buf, sizeof(buf), "%s:%s:%04d%02d%02d%02d%02d.%02d-%d-%3d",
  		prefix,
  		format,
-@@ -336,7 +378,7 @@ static int say_date_generic(struct ast_c
+@@ -341,7 +383,7 @@ static int say_date_generic(struct ast_c
  		tm.tm_sec,
  		tm.tm_wday,
  		tm.tm_yday);

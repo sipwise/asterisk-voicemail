@@ -1,6 +1,6 @@
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -12450,8 +12450,10 @@ static int vm_execmain(struct ast_channe
+@@ -12503,8 +12503,10 @@ static int vm_execmain(struct ast_channe
  					}
  					cmd = 't';
  					break;
@@ -11,7 +11,7 @@
  						cmd = advanced_options(chan, vmu, &vms, vms.curmsg, 3, record_gain);
  						if (cmd == ERROR_LOCK_PATH) {
  							res = cmd;
-@@ -12462,6 +12464,7 @@ static int vm_execmain(struct ast_channe
+@@ -12515,6 +12517,7 @@ static int vm_execmain(struct ast_channe
  					}
  					cmd = 't';
  					break;
@@ -19,7 +19,7 @@
  				case '4': // Dialout
  					if (!ast_strlen_zero(vmu->dialout)) {
  						cmd = dialout(chan, vmu, NULL, vmu->dialout);
-@@ -12494,6 +12497,7 @@ static int vm_execmain(struct ast_channe
+@@ -12547,6 +12550,7 @@ static int vm_execmain(struct ast_channe
  					break;
  
  				default:

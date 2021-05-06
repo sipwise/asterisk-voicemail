@@ -1,3 +1,10 @@
+ngcp-asterisk-voicemail (16.16.1+0~mr9.5.0.0) unstable; urgency=medium
+
+  [ Kirill Solomko ]
+  * [843663f] TT#115204 add asterisk 16.16.1 bullseye support
+
+ -- Alex Lutay <alutay@sipwise.com>  Thu, 06 May 2021 17:53:56 +0200
+
 ngcp-asterisk-voicemail (13.14.1+0~mr9.5.0.0) unstable; urgency=medium
 
   [ Victor Seva ]
