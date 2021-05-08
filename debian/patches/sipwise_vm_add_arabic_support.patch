@@ -1,0 +1,154 @@
+--- a/apps/app_voicemail.c
++++ b/apps/app_voicemail.c
+@@ -9397,8 +9397,10 @@ static int play_message(struct ast_chann
+ 	make_file(vms->fn, sizeof(vms->fn), vms->curdir, vms->curmsg);
+ 	adsi_message(chan, vms);
+ 
+-	/* NOT HEBREW syntax */
+-	if (strncasecmp(ast_channel_language(chan), "he", 2)) {
++	if (!strncasecmp(ast_channel_language(chan), "he", 2) ||
++			!strncasecmp(ast_channel_language(chan), "ar", 2)) {
++		/* Do not play "vm-first"/"vm-last" for Hebrew/Arabic syntaxes */
++	} else {
+ 		if (!vms->curmsg) {
+ 			res = wait_file2(chan, vms, "vm-first");	/* "First" */
+ 		} else if (vms->curmsg == vms->lastmsg) {
+@@ -9446,6 +9448,18 @@ static int play_message(struct ast_chann
+ 			}
+ 			if (!res)
+ 				res = wait_file2(chan, vms, "vm-message");
++		/* ARABIC syntax */
++		} else if (!strncasecmp(ast_channel_language(chan), "ar", 2)) {
++			res = wait_file2(chan, vms, "vm-message");
++			/* Requires "vm-first", "vm-last" in feminine form */
++			// if (!vms->curmsg)
++			// 	res = wait_file2(chan, vms, "vm-first");
++			// else if (vms->curmsg == vms->lastmsg)
++			// 	res = wait_file2(chan, vms, "vm-last");
++			// else {
++				res = wait_file2(chan, vms, "vm-number");
++				res = ast_say_number(chan, vms->curmsg + 1, AST_DIGIT_ANY, ast_channel_language(chan), "m");
++			// }
+ 		/* HEBREW syntax */
+ 		} else if (!strncasecmp(ast_channel_language(chan), "he", 2)) {
+ 			if (!vms->curmsg) {
+@@ -9888,6 +9902,8 @@ static int vm_play_folder_name(struct as
+ 		return cmd ? cmd : ast_play_and_wait(chan, box);
+ 	} else if (!strncasecmp(ast_channel_language(chan), "gr", 2)) {
+ 		return vm_play_folder_name_gr(chan, box);
++	} else if (!strncasecmp(ast_channel_language(chan), "ar", 2)) {  /* Arabic syntax */
++		return ast_play_and_wait(chan, box);
+ 	} else if (!strncasecmp(ast_channel_language(chan), "he", 2)) {  /* Hebrew syntax */
+ 		return ast_play_and_wait(chan, box);
+ 	} else if (!strncasecmp(ast_channel_language(chan), "ja", 2)) {  /* Japanese syntax */
+@@ -10049,6 +10065,59 @@ static int vm_intro_multilang(struct ast
+ 	return res;
+ }
+ 
++/* Default Arabic syntax
++Requires the next special voice prompts:
++vm-INBOX1 == "message(singular) new(feminine)"
++vm-INBOX2 == "message(dual) new(dual,feminine)"
++vm-INBOX == "messages(plural) new(feminine)"
++vm-Old1 == "message(singular) old(feminine)"
++vm-Old2 == "message(dual) old(dual,feminine)"
++vm-Old == "messages(plural) old(feminine)"
++vm-nomessages == "there-is-no messages"
++*/
++static int vm_intro_ar(struct ast_channel *chan, struct vm_state *vms)
++{
++	int res = 0;
++
++	/* Introduce messages they have */
++	if (vms->newmessages || vms->oldmessages) {
++		res = ast_play_and_wait(chan, "vm-youhave");
++
++		if (vms->newmessages && !res) {
++			if (vms->newmessages == 1)
++				res = ast_play_and_wait(chan, "vm-INBOX1");
++			else if (vms->newmessages == 2)
++				res = ast_play_and_wait(chan, "vm-INBOX2");
++			else {
++				res = ast_say_number(chan, vms->newmessages, AST_DIGIT_ANY, ast_channel_language(chan), "f");
++				if (!res && vms->newmessages < 11)
++					res = ast_play_and_wait(chan, "vm-INBOX");
++				else
++					res = ast_play_and_wait(chan, "vm-INBOX1");
++			}
++
++			if (vms->oldmessages && !res)
++				res = ast_play_and_wait(chan, "vm-and");
++		}
++		if (vms->oldmessages && !res) {
++			if (vms->oldmessages == 1)
++				res = ast_play_and_wait(chan, "vm-Old1");
++			else if (vms->oldmessages == 2)
++				res = ast_play_and_wait(chan, "vm-Old2");
++			else {
++				res = ast_say_number(chan, vms->oldmessages, AST_DIGIT_ANY, ast_channel_language(chan), "f");
++				if (!res && vms->oldmessages < 11)
++		  			res = ast_play_and_wait(chan, "vm-Old");
++				else
++					res = ast_play_and_wait(chan, "vm-Old1");
++			}
++		}
++	} else
++		res = ast_play_and_wait(chan, "vm-nomessages");
++
++	return res;
++}
++
+ /* Default Hebrew syntax */
+ static int vm_intro_he(struct ast_channel *chan, struct vm_state *vms)
+ {
+@@ -10989,6 +11058,8 @@ static int vm_intro(struct ast_channel *
+ 		return vm_intro_fr(chan, vms);
+ 	} else if (!strncasecmp(ast_channel_language(chan), "gr", 2)) {  /* GREEK syntax */
+ 		return vm_intro_gr(chan, vms);
++	} else if (!strncasecmp(ast_channel_language(chan), "ar", 2)) {  /* ARABIC syntax */
++		return vm_intro_ar(chan, vms);
+ 	} else if (!strncasecmp(ast_channel_language(chan), "he", 2)) {  /* HEBREW syntax */
+ 		return vm_intro_he(chan, vms);
+ 	} else if (!strncasecmp(ast_channel_language(chan), "is", 2)) {  /* ICELANDIC syntax */
+@@ -11591,6 +11662,23 @@ static int vm_browse_messages_gr(struct
+ 	return cmd;
+ }
+ 
++/* Arabic Syntax */
++static int vm_browse_messages_ar(struct ast_channel *chan, struct vm_state *vms, struct ast_vm_user *vmu)
++{
++	int cmd = 0;
++
++	if (vms->lastmsg > -1) {
++		cmd = play_message(chan, vmu, vms);
++	} else {
++		if (!strcasecmp(vms->fn, "INBOX")) {
++			cmd = ast_play_and_wait(chan, "vm-nonewmessages");
++		} else {
++			cmd = ast_play_and_wait(chan, "vm-nomessages");
++		}
++	}
++	return cmd;
++}
++
+ /* Hebrew Syntax */
+ static int vm_browse_messages_he(struct ast_channel *chan, struct vm_state *vms, struct ast_vm_user *vmu)
+ {
+@@ -11829,6 +11917,8 @@ static int vm_browse_messages(struct ast
+ 		return vm_browse_messages_es(chan, vms, vmu);
+ 	} else if (!strncasecmp(ast_channel_language(chan), "gr", 2)) {  /* GREEK */
+ 		return vm_browse_messages_gr(chan, vms, vmu);
++	} else if (!strncasecmp(ast_channel_language(chan), "ar", 2)) {  /* ARABIC */
++		return vm_browse_messages_ar(chan, vms, vmu);
+ 	} else if (!strncasecmp(ast_channel_language(chan), "he", 2)) {  /* HEBREW */
+ 		return vm_browse_messages_he(chan, vms, vmu);
+ 	} else if (!strncasecmp(ast_channel_language(chan), "it", 2)) {  /* ITALIAN */
+@@ -12881,6 +12971,8 @@ static int vm_execmain(struct ast_channe
+ 			if (folder_change && vms.lastmsg == -1) {
+ 				if(!strcasecmp(ast_channel_language(chan), "ro")) {
+ 					ast_play_and_wait(chan, "vm-dir-empty");
++				} else if(!strcasecmp(ast_channel_language(chan), "ar")) {
++					ast_play_and_wait(chan, "vm-nomessages");
+ 				} else {
+ 					res = ast_play_and_wait(chan, "vm-no");
+ 					if (!res)
