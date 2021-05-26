@@ -1,0 +1,10 @@
+--- a/apps/app_voicemail.c
++++ b/apps/app_voicemail.c
+@@ -12276,6 +12276,7 @@ static int vm_execmain(struct ast_channe
+ #endif
+ 
+ 	/* Add the vm_state to the active list and keep it active */
++	vms.curmsg = -1;
+ 	vms.lastmsg = -1;
+     vms.deleted = NULL;
+     vms.heard = NULL;
