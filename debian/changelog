@@ -1,3 +1,10 @@
+ngcp-asterisk-voicemail (13.14.1+0~mr9.4.1.2) unstable; urgency=medium
+
+  [ Kirill Solomko ]
+  * [9575bbb] TT#123903 fix prev message pointer
+
+ -- Sipwise Jenkins Builder <jenkins@sipwise.com>  Wed, 26 May 2021 18:58:54 +0200
+
 ngcp-asterisk-voicemail (13.14.1+0~mr9.4.1.1) unstable; urgency=medium
 
   * New release.
