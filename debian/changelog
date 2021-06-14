@@ -1,3 +1,13 @@
+ngcp-asterisk-voicemail (16.16.1+0~mr10.0.0.0) unstable; urgency=medium
+
+  [ Victor Tsvetov ]
+  * [c5ead4d] TT#88905 Add Arabic support in app_voicemail
+
+  [ Kirill Solomko ]
+  * [98b461e] TT#123903 fix prev message pointer
+
+ -- Sipwise Jenkins Builder <jenkins@sipwise.com>  Mon, 14 Jun 2021 16:33:55 +0200
+
 ngcp-asterisk-voicemail (16.16.1+0~mr9.5.0.0) unstable; urgency=medium
 
   [ Kirill Solomko ]
