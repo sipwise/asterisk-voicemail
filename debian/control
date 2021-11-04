@@ -3,10 +3,10 @@ Priority: optional
 Section: comm
 Maintainer: Sipwise Development Team <support@sipwise.com>
 Homepage: https://www.sipwise.com/
-Standards-Version: 3.9.8
+Standards-Version: 4.5.1
 Build-Depends:
  asterisk-dev,
- debhelper-compat (= 12),
+ debhelper-compat (= 13),
  libpcre3-dev,
  quilt,
  unixodbc-dev,
