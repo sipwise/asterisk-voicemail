@@ -1,3 +1,14 @@
+From: Sipwise Development Team <support@sipwise.com>
+Date: Mon, 21 Feb 2022 14:17:23 +0100
+Subject: sipwise_vm_fix_compile_warnings
+
+---
+ Makefile             | 3 ++-
+ apps/app_voicemail.c | 9 ++-------
+ 2 files changed, 4 insertions(+), 8 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index ad0c960..fc52c48 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -17,7 +17,8 @@ DEBUG=-g
@@ -10,9 +21,11 @@
  CFLAGS+=-D_REENTRANT -D_GNU_SOURCE -DODBC_STORAGE
  
  all: _all
+diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
+index 3849b6d..b5fb35e 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -5194,16 +5194,11 @@ static int base_encode(char *filename, F
+@@ -5194,16 +5194,11 @@ static int base_encode(char *filename, FILE *so)
  
  static void prep_pager_sub_vars(struct ast_channel *ast, struct ast_vm_user *vmu, char *cidnum, char *dur, char *date)
  {
@@ -29,7 +42,7 @@
  }
  
  static void prep_email_sub_vars(struct ast_channel *ast, struct ast_vm_user *vmu, int msgnum, char *context, char *mailbox, const char *fromfolder, char *cidnum, char *cidname, char *dur, char *date, const char *category, const char *flag)
-@@ -5252,7 +5247,7 @@ static void prep_email_sub_vars(struct a
+@@ -5252,7 +5247,7 @@ static void prep_email_sub_vars(struct ast_channel *ast, struct ast_vm_user *vmu
  	}
  
  	if ((origtime = ast_variable_retrieve(msg_cfg, "message", "origtime")) && sscanf(origtime, "%30d", &inttime) == 1) {

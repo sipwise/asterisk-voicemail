@@ -1,6 +1,16 @@
+From: Sipwise Development Team <support@sipwise.com>
+Date: Mon, 21 Feb 2022 14:17:23 +0100
+Subject: sipwise_vm_find_user_by_alias_prio_uuid
+
+---
+ apps/app_voicemail.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
+index c00767a..d776cd0 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -4245,26 +4245,26 @@ static struct ast_vm_user *find_user_rea
+@@ -4245,26 +4245,26 @@ static struct ast_vm_user *find_user_realtime_by_alias(struct ast_vm_user *ivm,
  	SQLHSTMT stmt = NULL;
  
  	obj = ast_odbc_request_obj(odbc_database, 0);

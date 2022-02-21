@@ -1,6 +1,16 @@
+From: Sipwise Development Team <support@sipwise.com>
+Date: Mon, 21 Feb 2022 14:17:23 +0100
+Subject: sipwise_fix_app_voicemail_bugs
+
+---
+ apps/app_voicemail.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
+index 36fac28..d9c0755 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -1316,7 +1316,7 @@ static int findreplen(const char *rep, i
+@@ -1316,7 +1316,7 @@ static int findreplen(const char *rep, int nmat, const int *replen)
  	while(*cp) {
  		if (*cp == '$' && isdigit(cp[1])) {
  			val = strtoul(&cp[1], &cp, 10);
@@ -9,7 +19,7 @@
  				len += replen[val -1];
  			else
  				fprintf(stderr, "repl %d out of range\n", val);
-@@ -1336,7 +1336,7 @@ static void doreplace(char *out, const c
+@@ -1336,7 +1336,7 @@ static void doreplace(char *out, const char *rep,
  	while(*cp) {
  		if (*cp == '$' && isdigit(cp[1])) {
  			val = strtoul(&cp[1], &cp, 10);
@@ -18,7 +28,7 @@
  				strncpy(out, repstr[val - 1], replen[val - 1]);
  				out += replen[val -1];
  			}
-@@ -1383,7 +1383,7 @@ static char *pcre_subst(const pcre *ppat
+@@ -1383,7 +1383,7 @@ static char *pcre_subst(const pcre *ppat, const pcre_extra *extra,
  	int nmat;
  	int ovec[MAXCAPTURE * 3];
  	nmat = pcre_exec(ppat, extra, str, len, offset, options,

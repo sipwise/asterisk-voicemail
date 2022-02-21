@@ -1,6 +1,16 @@
+From: Sipwise Development Team <support@sipwise.com>
+Date: Mon, 21 Feb 2022 14:17:23 +0100
+Subject: sipwise_vm_ast_load_realtime_use_uuid
+
+---
+ apps/app_voicemail.c | 23 ++++++++++++++++++-----
+ 1 file changed, 18 insertions(+), 5 deletions(-)
+
+diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
+index d776cd0..b7ee586 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -1848,7 +1848,7 @@ static int is_valid_dtmf(const char *key
+@@ -1848,7 +1848,7 @@ static int is_valid_dtmf(const char *key)
   *
   * \return The ast_vm_user structure for the user that was found.
   */
@@ -9,7 +19,7 @@
  {
  	struct ast_variable *var;
  	struct ast_vm_user *retval;
-@@ -1865,9 +1865,15 @@ static struct ast_vm_user *find_user_rea
+@@ -1865,9 +1865,15 @@ static struct ast_vm_user *find_user_realtime(struct ast_vm_user *ivm, const cha
  			ast_copy_string(retval->mailbox, mailbox, sizeof(retval->mailbox));
  		}
  		if (!context && ast_test_flag((&globalflags), VM_SEARCH)) {
@@ -27,7 +37,7 @@
  		}
  		if (var) {
  			// ast_log (LOG_DEBUG,"call apply_options_full\n");
-@@ -1931,7 +1937,7 @@ static struct ast_vm_user *find_user(str
+@@ -1931,7 +1937,7 @@ static struct ast_vm_user *find_user(struct ast_vm_user *ivm, const char *contex
  #ifdef ODBC_STORAGE
  		vmu = find_user_realtime_by_alias(ivm, context, mailbox);
  #else
@@ -36,7 +46,7 @@
  #endif
  	}
  	if (!vmu && !ast_strlen_zero(aliasescontext)) {
-@@ -4242,6 +4248,7 @@ static struct ast_vm_user *find_user_rea
+@@ -4242,6 +4248,7 @@ static struct ast_vm_user *find_user_realtime_by_alias(struct ast_vm_user *ivm,
  		"where customer_id = ?";
  	struct generic_prepare_struct gps_uuid = { .sql = sql_uuid, .argc = 1, .argv = argv };
  	struct odbc_obj *obj = NULL;
@@ -44,7 +54,7 @@
  	SQLHSTMT stmt = NULL;
  
  	obj = ast_odbc_request_obj(odbc_database, 0);
-@@ -4256,6 +4263,8 @@ static struct ast_vm_user *find_user_rea
+@@ -4256,6 +4263,8 @@ static struct ast_vm_user *find_user_realtime_by_alias(struct ast_vm_user *ivm,
  		ast_log(LOG_NOTICE, "Failed to fetch mailbox for uuid '%s', falling back to alias search\n", alias);
  		SQLFreeHandle (SQL_HANDLE_STMT, stmt);
  
@@ -53,7 +63,7 @@
  		stmt = ast_odbc_prepare_and_execute(obj, generic_prepare, &gps);
  		if (!stmt) {
  			ast_log(LOG_WARNING, "SQL Execute error!\n[%s]\n\n", sql);
-@@ -4282,7 +4291,11 @@ static struct ast_vm_user *find_user_rea
+@@ -4282,7 +4291,11 @@ static struct ast_vm_user *find_user_realtime_by_alias(struct ast_vm_user *ivm,
  	ast_odbc_release_obj(obj);
  
  	ast_log(LOG_NOTICE, "Found mailbox '%s' for alias '%s'\n", mailbox, alias);

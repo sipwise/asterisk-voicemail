@@ -1,6 +1,16 @@
+From: Sipwise Development Team <support@sipwise.com>
+Date: Mon, 21 Feb 2022 14:17:23 +0100
+Subject: sipwise_vm_hebrew_language_fixups
+
+---
+ apps/app_voicemail.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
+index dfb806b..06d8eea 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -9396,10 +9396,14 @@ static int play_message(struct ast_chann
+@@ -9396,10 +9396,14 @@ static int play_message(struct ast_channel *chan, struct ast_vm_user *vmu, struc
  	vms->starting = 0;
  	make_file(vms->fn, sizeof(vms->fn), vms->curdir, vms->curmsg);
  	adsi_message(chan, vms);

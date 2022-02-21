@@ -1,6 +1,16 @@
+From: Sipwise Development Team <support@sipwise.com>
+Date: Mon, 21 Feb 2022 14:17:23 +0100
+Subject: sipwise_vm_fix_odbc_retreive_file
+
+---
+ apps/app_voicemail.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
+index b7ee586..c72c9e5 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -4033,7 +4033,7 @@ static void odbc_update_msg_id(char *dir
+@@ -4033,7 +4033,7 @@ static void odbc_update_msg_id(char *dir, int msg_num, char *msg_id)
  	char *argv[] = { msg_id, dir, msg_num_str };
  	struct generic_prepare_struct gps = { .sql = sql, .argc = 3, .argv = argv };
  
@@ -9,7 +19,7 @@
  	if (!obj) {
  		ast_log(LOG_WARNING, "Unable to update message ID for message %d in %s\n", msg_num, dir);
  		return;
-@@ -4204,6 +4204,9 @@ static int retrieve_file(char *dir, int
+@@ -4204,6 +4204,9 @@ static int retrieve_file(char *dir, int msgnum)
  				continue;
  			} else if (!SQL_SUCCEEDED(res)) {
  				ast_log(AST_LOG_WARNING, "SQL Get Data error! coltitle=%s\n[%s]\n\n", coltitle, sql);
@@ -19,7 +29,7 @@
  				goto bail_with_handle;
  			}
  			if (strcasecmp(coltitle, "msgnum") && strcasecmp(coltitle, "dir")) {
-@@ -9527,7 +9530,9 @@ static int play_message(struct ast_chann
+@@ -9527,7 +9530,9 @@ static int play_message(struct ast_channel *chan, struct ast_vm_user *vmu, struc
  		}
  #endif
  		if ((res = wait_file(chan, vms, vms->fn)) < 0) {
