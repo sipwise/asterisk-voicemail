@@ -2,28 +2,26 @@ From: Sipwise Development Team <support@sipwise.com>
 Date: Mon, 21 Feb 2022 14:17:23 +0100
 Subject: sipwise_vm_envelope_behaviour
 
+envelope variable is taken globally from voicemail.conf
+and currently ignored per user
 ---
- apps/app_voicemail.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ apps/app_voicemail.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index bdd0850..90c5f41 100644
+index 3464b39..3c04f43 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -1527,8 +1527,10 @@ static void apply_option(struct ast_vm_user *vmu, const char *var, const char *v
+@@ -1432,8 +1432,6 @@ static void apply_option(struct ast_vm_user *vmu, const char *var, const char *v
  		ast_set2_flag(vmu, ast_true(value), VM_MESSAGEWRAP);
  	} else if (!strcasecmp(var, "operator")) {
  		ast_set2_flag(vmu, ast_true(value), VM_OPERATOR);
 -	} else if (!strcasecmp(var, "envelope")){
 -		ast_set2_flag(vmu, ast_true(value), VM_ENVELOPE);
-+	// envelope variable is taken globally from voicemail.conf
-+	// and currently ignored per user
-+	//} else if (!strcasecmp(var, "envelope")){
-+	//	ast_set2_flag(vmu, ast_true(value), VM_ENVELOPE);
  	} else if (!strcasecmp(var, "moveheard")){
  		ast_set2_flag(vmu, ast_true(value), VM_MOVEHEARD);
  	} else if (!strcasecmp(var, "sayduration")){
-@@ -15952,7 +15954,7 @@ static int advanced_options(struct ast_channel *chan, struct ast_vm_user *vmu, s
+@@ -14944,7 +14942,7 @@ static int advanced_options(struct ast_channel *chan, struct ast_vm_user *vmu, s
  		context = ast_variable_retrieve(msg_cfg, "message", "macrocontext");
  	switch (option) {
  	case 3: /* Play message envelope */

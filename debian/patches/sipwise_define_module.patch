@@ -3,33 +3,35 @@ Date: Mon, 21 Feb 2022 14:17:23 +0100
 Subject: sipwise_define_module
 
 ---
- apps/app_playback.c  | 2 ++
- apps/app_voicemail.c | 2 ++
- 2 files changed, 4 insertions(+)
+ apps/app_playback.c  | 3 +++
+ apps/app_voicemail.c | 3 +++
+ 2 files changed, 6 insertions(+)
 
 diff --git a/apps/app_playback.c b/apps/app_playback.c
-index 0c9281a..f8d0abd 100644
+index 56c2a86..b9caab5 100644
 --- a/apps/app_playback.c
 +++ b/apps/app_playback.c
-@@ -31,6 +31,8 @@
- 
- #include "asterisk.h"
+@@ -29,6 +29,9 @@
+ 	<support_level>core</support_level>
+  ***/
  
 +#define AST_MODULE "app_playback"
++#define AST_MODULE_SELF_SYM __app_playback_sym
 +
+ #include "asterisk.h"
+ 
  #include "asterisk/file.h"
- #include "asterisk/pbx.h"
- #include "asterisk/module.h"
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index e554ee7..b1f5182 100644
+index 510e15d..b54f59c 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -100,6 +100,8 @@
- #endif
- #endif
+@@ -46,6 +46,9 @@
+  * \verbinclude voicemail.conf.sample
+  */
  
-+#define AST_MODULE "voicemail"
++#define AST_MODULE "app_voicemail"
++#define AST_MODULE_SELF_SYM __app_voicemail_sym
 +
- #include "asterisk/paths.h"	/* use ast_config_AST_SPOOL_DIR */
- #include <sys/time.h>
- #include <sys/stat.h>
+ #include "asterisk.h"
+ 
+ #ifdef IMAP_STORAGE

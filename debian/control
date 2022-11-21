@@ -14,7 +14,7 @@ Build-Depends:
 Package: ngcp-asterisk-voicemail-odbcstorage
 Architecture: any
 Depends:
- asterisk,
+ ${asterisk:Depends},
  ${misc:Depends},
  ${shlibs:Depends},
 Provides:
