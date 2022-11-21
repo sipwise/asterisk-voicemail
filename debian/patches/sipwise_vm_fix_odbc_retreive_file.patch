@@ -7,10 +7,10 @@ Subject: sipwise_vm_fix_odbc_retreive_file
  1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index b7ee586..58d4595 100644
+index 7bed701..9c1e5d3 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -4203,7 +4203,9 @@ static int retrieve_file(char *dir, int msgnum)
+@@ -4092,7 +4092,9 @@ static int retrieve_file(char *dir, int msgnum)
  				ast_debug(3, "Ignoring null category column in ODBC voicemail retrieve_file.\n");
  				continue;
  			} else if (!SQL_SUCCEEDED(res)) {
@@ -21,7 +21,7 @@ index b7ee586..58d4595 100644
  				goto bail_with_handle;
  			}
  			if (strcasecmp(coltitle, "msgnum") && strcasecmp(coltitle, "dir")) {
-@@ -9527,7 +9529,9 @@ static int play_message(struct ast_channel *chan, struct ast_vm_user *vmu, struc
+@@ -8619,7 +8621,9 @@ static int play_message(struct ast_channel *chan, struct ast_vm_user *vmu, struc
  		}
  #endif
  		if ((res = wait_file(chan, vms, vms->fn)) < 0) {

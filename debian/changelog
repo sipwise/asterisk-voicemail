@@ -1,6 +1,7 @@
-ngcp-asterisk-voicemail (16.16.1+0~mr11.4.0.0) unstable; urgency=medium
+ngcp-asterisk-voicemail (20.1.0+0~mr11.4.0.0) unstable; urgency=medium
 
   * New release.
+  * [507ee34] MT#55917 support bookworm
 
  -- Sipwise Jenkins Builder <jenkins@sipwise.com>  Fri, 24 Mar 2023 13:02:25 +0100
 

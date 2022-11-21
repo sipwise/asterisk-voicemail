@@ -7,7 +7,7 @@
 # at the top of the source tree.
 
 INSTALL=install
-ASTLIBDIR=/usr/lib/asterisk/modules
+ASTLIBDIR?=/usr/lib/asterisk/modules
 MODULES_DIR=$(INSTALL_PREFIX)$(ASTLIBDIR)
 ASTETCDIR=$(INSTALL_PREFIX)/etc/asterisk
 
