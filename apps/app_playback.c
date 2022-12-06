@@ -35,7 +35,7 @@
 #include "asterisk/pbx.h"
 #include "asterisk/module.h"
 #include "asterisk/app.h"
-/* This file provides config-file based 'say' functions, and implenents
+/* This file provides config-file based 'say' functions, and implements
  * some CLI commands.
  */
 #include "asterisk/say.h"	/*!< provides config-file based 'say' functions */
@@ -62,13 +62,19 @@
 						be answered before the sound is played.</para>
 						<note><para>Not all channel types support playing messages while still on hook.</para></note>
 					</option>
+					<option name="say">
+						<para>Play using the say.conf file.</para>
+					</option>
+					<option name="mix">
+						<para>Play using a mix of filename and the say.conf file.</para>
+					</option>
 				</optionlist>
 			</parameter>
 		</syntax>
 		<description>
 			<para>Plays back given filenames (do not put extension of wav/alaw etc).
-			The playback command answer the channel if no options are specified.
-			If the file is non-existent it will fail</para>
+			The Playback application answers the channel if no options are specified.
+			If the file is non-existent it will fail.</para>
 			<para>This application sets the following channel variable upon completion:</para>
 			<variablelist>
 				<variable name="PLAYBACKSTATUS">
@@ -173,7 +179,10 @@ static int s_streamwait3(const say_args_t *a, const char *fn)
 static int do_say(say_args_t *a, const char *s, const char *options, int depth)
 {
 	struct ast_variable *v;
-	char *lang, *x, *rule = NULL;
+	char *lang;
+	char *x;
+	char *rule = NULL;
+	char *rule_head = NULL;
 	int ret = 0;
 	struct varshead head = { .first = NULL, .last = NULL };
 	struct ast_var_t *n;
@@ -195,7 +204,7 @@ static int do_say(say_args_t *a, const char *s, const char *options, int depth)
 	for (;;) {
 		for (v = ast_variable_browse(say_cfg, lang); v ; v = v->next) {
 			if (ast_extension_match(v->name, s)) {
-				rule = ast_strdupa(v->value);
+				rule_head = rule = ast_strdup(v->value);
 				break;
 			}
 		}
@@ -220,6 +229,7 @@ static int do_say(say_args_t *a, const char *s, const char *options, int depth)
 	n = ast_var_assign("SAY", s);
 	if (!n) {
 		ast_log(LOG_ERROR, "Memory allocation error in do_say\n");
+		ast_free(rule_head);
 		return -1;
 	}
 	AST_LIST_INSERT_HEAD(&head, n, entries);
@@ -281,6 +291,7 @@ static int do_say(say_args_t *a, const char *s, const char *options, int depth)
 		}
 	}
 	ast_var_delete(n);
+	ast_free(rule_head);
 	return ret;
 }
 
@@ -441,6 +452,7 @@ static int playback_exec(struct ast_channel *chan, const char *data)
 	char *tmp;
 	int option_skip=0;
 	int option_say=0;
+	int option_mix=0;
 	int option_noanswer = 0;
 
 	AST_DECLARE_APP_ARGS(args,
@@ -461,6 +473,8 @@ static int playback_exec(struct ast_channel *chan, const char *data)
 			option_skip = 1;
 		if (strcasestr(args.options, "say"))
 			option_say = 1;
+		if (strcasestr(args.options, "mix"))
+			option_mix = 1;
 		if (strcasestr(args.options, "noanswer"))
 			option_noanswer = 1;
 	}
@@ -481,6 +495,13 @@ static int playback_exec(struct ast_channel *chan, const char *data)
 		while (!res && (front = strsep(&back, "&"))) {
 			if (option_say)
 				res = say_full(chan, front, "", ast_channel_language(chan), NULL, -1, -1);
+			else if (option_mix){
+				/* Check if it is in say format but not remote audio file */
+				if (strcasestr(front, ":") && !strcasestr(front, "://"))
+					res = say_full(chan, front, "", ast_channel_language(chan), NULL, -1, -1);
+				else
+					res = ast_streamfile(chan, front, ast_channel_language(chan));
+			}
 			else
 				res = ast_streamfile(chan, front, ast_channel_language(chan));
 			if (!res) {

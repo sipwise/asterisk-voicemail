@@ -21,18 +21,18 @@ index 67ec08d..ad0c960 100644
  CFLAGS+=-Wall -Wextra -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations
  CFLAGS+=-D_REENTRANT -D_GNU_SOURCE -DODBC_STORAGE
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index 3b6d206..9bf065f 100644
+index be8e8e7..526ce00 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
 @@ -50,6 +50,7 @@
- 	<defaultenabled>yes</defaultenabled>
  	<use type="module">res_adsi</use>
  	<use type="module">res_smdi</use>
+ 	<defaultenabled>yes</defaultenabled>
 +	<depend>pcre</depend>
  	<support_level>core</support_level>
   ***/
  
-@@ -143,6 +144,9 @@
+@@ -145,6 +146,9 @@
  #include "asterisk/threadstorage.h"
  #endif
  
@@ -42,8 +42,8 @@ index 3b6d206..9bf065f 100644
  /*** DOCUMENTATION
  	<application name="VoiceMail" language="en_US">
  		<synopsis>
-@@ -1004,6 +1008,8 @@ static int maxlogins;
- static int minpassword;
+@@ -1025,6 +1029,8 @@ static int maxlogins = 3;
+ static int minpassword = MINPASSWORD;
  static int passwordlocation;
  static char aliasescontext[MAX_VM_CONTEXT_LEN];
 +static char sw_normalize_user_match[256];
@@ -51,7 +51,7 @@ index 3b6d206..9bf065f 100644
  
  /*! Poll mailboxes for changes since there is something external to
   *  app_voicemail that may change them. */
-@@ -1272,6 +1278,114 @@ static int inprocess_count(const char *context, const char *mailbox, int delta)
+@@ -1281,6 +1287,114 @@ static int inprocess_count(const char *context, const char *mailbox, int delta)
  static int __has_voicemail(const char *context, const char *mailbox, const char *folder, int shortcircuit);
  #endif
  
@@ -166,7 +166,7 @@ index 3b6d206..9bf065f 100644
  /*!
   * \brief Strips control and non 7-bit clean characters from input string.
   *
-@@ -8084,6 +8198,8 @@ static int get_folder2(struct ast_channel *chan, char *fn, int start)
+@@ -8012,6 +8126,8 @@ static int get_folder2(struct ast_channel *chan, char *fn, int start)
   * This is invoked from forward_message() when performing a forward operation (option 8 from main menu).
   * \return zero on success, -1 on error.
   */
@@ -175,7 +175,7 @@ index 3b6d206..9bf065f 100644
  static int vm_forwardoptions(struct ast_channel *chan, struct ast_vm_user *vmu, char *curdir, int curmsg, char *vm_fmts,
  			char *context, signed char record_gain, long *duration, struct vm_state *vms, char *flag)
  {
-@@ -8245,6 +8361,7 @@ static int vm_forwardoptions(struct ast_channel *chan, struct ast_vm_user *vmu,
+@@ -8173,6 +8289,7 @@ static int vm_forwardoptions(struct ast_channel *chan, struct ast_vm_user *vmu,
  		cmd = 0;
  	return cmd;
  }
@@ -183,7 +183,7 @@ index 3b6d206..9bf065f 100644
  
  static void queue_mwi_event(const char *channel_id, const char *box, int urgent, int new, int old)
  {
-@@ -8403,6 +8520,8 @@ static int notify_new_message(struct ast_channel *chan, struct ast_vm_user *vmu,
+@@ -8333,6 +8450,8 @@ static int notify_new_message(struct ast_channel *chan, struct ast_vm_user *vmu,
   *
   * \return zero on success, -1 on error.
   */
@@ -192,7 +192,7 @@ index 3b6d206..9bf065f 100644
  static int forward_message(struct ast_channel *chan, char *context, struct vm_state *vms, struct ast_vm_user *sender, char *fmt, int is_new_message, signed char record_gain, int urgent)
  {
  #ifdef IMAP_STORAGE
-@@ -8741,6 +8860,7 @@ static int forward_message(struct ast_channel *chan, char *context, struct vm_st
+@@ -8672,6 +8791,7 @@ static int forward_message(struct ast_channel *chan, char *context, struct vm_st
  	}
  	return res ? res : cmd;
  }
@@ -200,9 +200,9 @@ index 3b6d206..9bf065f 100644
  
  static int wait_file2(struct ast_channel *chan, struct vm_state *vms, char *file)
  {
-@@ -11439,6 +11559,11 @@ static int vm_authenticate(struct ast_channel *chan, char *mailbox, int mailbox_
+@@ -11417,6 +11537,11 @@ static int vm_authenticate(struct ast_channel *chan, char *mailbox, int mailbox_
  	int useadsi = 0, valid = 0, logretries = 0;
- 	char password[AST_MAX_EXTENSION], *passptr;
+ 	char password[AST_MAX_EXTENSION], *passptr = NULL;
  	struct ast_vm_user vmus, *vmu = NULL;
 +	const char *err;
 +	int erroffset;
@@ -212,7 +212,7 @@ index 3b6d206..9bf065f 100644
  
  	/* If ADSI is supported, setup login screen */
  	adsi_begin(chan, &useadsi);
-@@ -11449,6 +11574,22 @@ static int vm_authenticate(struct ast_channel *chan, char *mailbox, int mailbox_
+@@ -11427,6 +11552,22 @@ static int vm_authenticate(struct ast_channel *chan, char *mailbox, int mailbox_
  		return -1;
  	}
  
@@ -235,7 +235,7 @@ index 3b6d206..9bf065f 100644
  	/* Authenticate them and get their mailbox/password */
  
  	while (!valid && (logretries < max_logins)) {
-@@ -11478,6 +11619,18 @@ static int vm_authenticate(struct ast_channel *chan, char *mailbox, int mailbox_
+@@ -11456,6 +11597,18 @@ static int vm_authenticate(struct ast_channel *chan, char *mailbox, int mailbox_
  		if (useadsi)
  			adsi_password(chan);
  
@@ -247,14 +247,14 @@ index 3b6d206..9bf065f 100644
 +				ast_log(LOG_NOTICE, "Rewrote mailbox user input '%s' to %s\n",
 +						mailbox, normalized_mailbox);
 +				ast_copy_string(mailbox, normalized_mailbox, mailbox_size);
-+				free(normalized_mailbox);
++				ast_free(normalized_mailbox);
 +			}
 +		}
 +
  		if (!ast_strlen_zero(prefix)) {
  			char fullusername[80];
  
-@@ -14058,6 +14211,8 @@ static int actual_load_config(int reload, struct ast_config *cfg, struct ast_con
+@@ -14053,6 +14206,8 @@ static int actual_load_config(int reload, struct ast_config *cfg, struct ast_con
  	char secretfn[PATH_MAX] = "";
  	long tps_queue_low;
  	long tps_queue_high;
@@ -263,7 +263,7 @@ index 3b6d206..9bf065f 100644
  
  #ifdef IMAP_STORAGE
  	ast_copy_string(imapparentfolder, "\0", sizeof(imapparentfolder));
-@@ -14122,6 +14277,19 @@ static int actual_load_config(int reload, struct ast_config *cfg, struct ast_con
+@@ -14117,6 +14272,19 @@ static int actual_load_config(int reload, struct ast_config *cfg, struct ast_con
  			ast_copy_string(odbc_table, val, sizeof(odbc_table));
  		}
  #endif
