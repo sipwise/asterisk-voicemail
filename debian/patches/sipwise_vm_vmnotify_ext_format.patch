@@ -1,6 +1,16 @@
+From: Sipwise Development Team <support@sipwise.com>
+Date: Tue, 6 Dec 2022 14:51:13 +0100
+Subject: sipwise_vm_vmnotify_ext_format
+
+---
+ apps/app_voicemail.c | 137 +++++++++++++++++++++++++++++++++++++--------------
+ 1 file changed, 99 insertions(+), 38 deletions(-)
+
+diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
+index 5729441..241b7e7 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -1189,6 +1189,8 @@ static int vm_msg_move(const char *mailb
+@@ -1189,6 +1189,8 @@ static int vm_msg_move(const char *mailbox, const char *context, size_t num_msgs
  static int vm_msg_remove(const char *mailbox, const char *context, size_t num_msgs, const char *folder, const char *msgs[]);
  static int vm_msg_play(struct ast_channel *chan, const char *mailbox, const char *context, const char *folder, const char *msg_num, ast_vm_msg_play_cb cb);
  
@@ -18,7 +28,7 @@
  {
  	char arguments[2048];
  	char date[256];
-@@ -5824,6 +5826,7 @@ static void run_externpager(char *pager,
+@@ -5824,6 +5826,7 @@ static void run_externpager(char *pager, char *dialed_num, char *cidnum, int dur
  	char dur[PATH_MAX];
  	struct ast_tm tm;
  	struct ast_str *str1 = ast_str_create(16);
@@ -26,7 +36,7 @@
  
  	if (!str1) {
  		return;
-@@ -5839,8 +5842,14 @@ static void run_externpager(char *pager,
+@@ -5839,8 +5842,14 @@ static void run_externpager(char *pager, char *dialed_num, char *cidnum, int dur
  
  		snprintf(dur, sizeof(dur), "%d:%02d", duration / 60, duration % 60);
  
@@ -43,7 +53,7 @@
  
  		if (pagerbody) {
  			struct ast_channel *ast;
-@@ -6545,9 +6554,11 @@ static int inboxcount(const char *mailbo
+@@ -6545,9 +6554,11 @@ static int inboxcount(const char *mailbox, int *newmsgs, int *oldmsgs)
  	return res;
  }
  
@@ -57,7 +67,7 @@
  	char ext_context[256] = "";
  	char number[256] = "";
  	int newvoicemails = 0, oldvoicemails = 0, urgentvoicemails = 0;
-@@ -6587,10 +6598,20 @@ static void run_externnotify(char *conte
+@@ -6587,10 +6598,20 @@ static void run_externnotify(char *context, char *extension, const char *flag, c
  		} else if (ast_strlen_zero(number) || !strcmp(extension, number)) {
  			ast_log(AST_LOG_WARNING, "Missing user number to run externnotify on context '%s'\n", ext_context);
  		} else {
@@ -82,7 +92,7 @@
  			ast_debug(1, "Executing %s\n", arguments);
  			ast_safe_system(arguments);
  		}
-@@ -8465,6 +8486,59 @@ static void queue_mwi_event(const char *
+@@ -8465,6 +8486,59 @@ static void queue_mwi_event(const char *channel_id, const char *box, int urgent,
  	}
  }
  
@@ -142,7 +152,7 @@
  /*!
   * \brief Sends email notification that a user has a new voicemail waiting for them.
   * \param chan
-@@ -8485,6 +8559,8 @@ static int notify_new_message(struct ast
+@@ -8485,6 +8559,8 @@ static int notify_new_message(struct ast_channel *chan, struct ast_vm_user *vmu,
  	int newmsgs = 0, oldmsgs = 0, urgentmsgs = 0;
  	const char *category;
  	char *myserveremail = serveremail;
@@ -151,7 +161,7 @@
  
  	ast_channel_lock(chan);
  	if ((category = pbx_builtin_getvar_helper(chan, "VM_CATEGORY"))) {
-@@ -8543,7 +8619,7 @@ static int notify_new_message(struct ast
+@@ -8543,7 +8619,7 @@ static int notify_new_message(struct ast_channel *chan, struct ast_vm_user *vmu,
  
  	if (!ast_strlen_zero(vmu->pager)) {
  		//sendpage(myserveremail, vmu->pager, msgnum, vmu->context, vmu->mailbox, mbox(vmu, 0), cidnum, cidname, duration, vmu, category, flag);
@@ -160,7 +170,7 @@
  	}
  
  	if (ast_test_flag(vmu, VM_DELETE))
-@@ -8554,7 +8630,7 @@ static int notify_new_message(struct ast
+@@ -8554,7 +8630,7 @@ static int notify_new_message(struct ast_channel *chan, struct ast_vm_user *vmu,
  		ast_app_inboxcount2(ext_context, &urgentmsgs, &newmsgs, &oldmsgs);
  
  	queue_mwi_event(ast_channel_uniqueid(chan), ext_context, urgentmsgs, newmsgs, oldmsgs);
@@ -169,7 +179,7 @@
  
  #ifdef IMAP_STORAGE
  	vm_delete(fn);  /* Delete the file, but not the IMAP message */
-@@ -8858,7 +8934,7 @@ static int forward_message(struct ast_ch
+@@ -8858,7 +8934,7 @@ static int forward_message(struct ast_channel *chan, char *context, struct vm_st
  						ast_log(AST_LOG_ERROR, "IMAP mailstream for %s is NULL\n", vmtmp->mailbox);
  					} else {
  						copy_msg_result = STORE(vmstmp.curdir, vmtmp->mailbox, vmtmp->context, curmsg, chan, vmtmp, fmt, duration, dstvms, urgent_str, msg_id);
@@ -178,7 +188,7 @@
  					}
  				} else {
  					ast_log(AST_LOG_ERROR, "Could not find state information for mailbox %s\n", vmtmp->mailbox);
-@@ -8968,35 +9044,20 @@ static int play_message_category(struct
+@@ -8968,35 +9044,20 @@ static int play_message_category(struct ast_channel *chan, const char *category)
  static int play_message_datetime(struct ast_channel *chan, struct ast_vm_user *vmu, const char *origtime, const char *filename)
  {
  	int res = 0;
@@ -220,7 +230,7 @@
  /* No internal variable parsing for now, so we'll comment it out for the time being */
  #if 0
  	/* Set the DIFF_* variables */
-@@ -9013,8 +9074,8 @@ static int play_message_datetime(struct
+@@ -9013,8 +9074,8 @@ static int play_message_datetime(struct ast_channel *chan, struct ast_vm_user *v
  
  	/* Can't think of how other diffs might be helpful, but I'm sure somebody will think of something. */
  #endif
@@ -240,7 +250,7 @@
  		ast_app_inboxcount2(ext_context, &urgent, &new, &old);
  		queue_mwi_event(ast_channel_uniqueid(chan), ext_context, urgent, new, old);
  	}
-@@ -13590,7 +13651,7 @@ static void poll_subscribed_mailbox(stru
+@@ -13590,7 +13651,7 @@ static void poll_subscribed_mailbox(struct mwi_sub *mwi_sub)
  		mwi_sub->old_old = old;
  		queue_mwi_event(NULL, mwi_sub->mailbox, urgent, new, old);
  		// ksolomko: disabled as we do not have the number here
@@ -249,7 +259,7 @@
  	}
  }
  
-@@ -16763,7 +16824,7 @@ static void notify_new_state(struct ast_
+@@ -16763,7 +16824,7 @@ static void notify_new_state(struct ast_vm_user *vmu)
  	char ext_context[1024];
  
  	snprintf(ext_context, sizeof(ext_context), "%s@%s", vmu->mailbox, vmu->context);

@@ -1,3 +1,13 @@
+From: Sipwise Development Team <support@sipwise.com>
+Date: Tue, 6 Dec 2022 14:51:13 +0100
+Subject: sipwise_fix_chan_usage
+
+---
+ apps/app_voicemail.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
+index bbcdd2a..cf15e20 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
 @@ -15459,7 +15459,9 @@ AST_TEST_DEFINE(test_voicemail_msgcount)

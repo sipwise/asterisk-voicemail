@@ -1,3 +1,13 @@
+From: Sipwise Development Team <support@sipwise.com>
+Date: Tue, 6 Dec 2022 14:51:13 +0100
+Subject: sipwise_vm_fix_odbc_retreive_file
+
+---
+ apps/app_voicemail.c | 23 ++++++++++++++++-------
+ 1 file changed, 16 insertions(+), 7 deletions(-)
+
+diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
+index fa3a04c..bbcdd2a 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
 @@ -925,7 +925,7 @@ static char odbc_table[80];
@@ -9,7 +19,7 @@
  #else
  #ifdef IMAP_STORAGE
  #define DISPOSE(a,b) (imap_remove_file(a,b))
-@@ -4017,16 +4017,19 @@ static SQLHSTMT generic_prepare(struct o
+@@ -4017,16 +4017,19 @@ static SQLHSTMT generic_prepare(struct odbc_obj *obj, void *data)
  	return stmt;
  }
  
@@ -32,7 +42,7 @@
  	if (!obj) {
  		ast_log(LOG_WARNING, "Unable to update message ID for message %d in %s\n", msg_num, dir);
  		return;
-@@ -4040,7 +4043,9 @@ static void odbc_update_msg_id(char *dir
+@@ -4040,7 +4043,9 @@ static void odbc_update_msg_id(char *dir, int msg_num, char *msg_id)
  	} else {
  		SQLFreeHandle(SQL_HANDLE_STMT, stmt);
  	}
@@ -43,7 +53,7 @@
  	return;
  }
  
-@@ -4189,13 +4194,15 @@ static int retrieve_file(char *dir, int
+@@ -4189,13 +4194,15 @@ static int retrieve_file(char *dir, int msgnum)
  				char msg_id[MSG_ID_LEN];
  				generate_msg_id(msg_id);
  				snprintf(rowdata, sizeof(rowdata), "%s", msg_id);
@@ -61,7 +71,7 @@
  				goto bail_with_handle;
  			}
  			if (strcasecmp(coltitle, "msgnum") && strcasecmp(coltitle, "dir")) {
-@@ -9473,7 +9480,9 @@ static int play_message(struct ast_chann
+@@ -9473,7 +9480,9 @@ static int play_message(struct ast_channel *chan, struct ast_vm_user *vmu, struc
  		}
  #endif
  		if ((res = wait_file(chan, vms, vms->fn)) < 0) {
