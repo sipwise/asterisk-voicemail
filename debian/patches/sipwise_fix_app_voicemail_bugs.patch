@@ -1,6 +1,16 @@
+From: Sipwise Development Team <support@sipwise.com>
+Date: Tue, 6 Dec 2022 14:51:13 +0100
+Subject: sipwise_fix_app_voicemail_bugs
+
+---
+ apps/app_voicemail.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
+index 77a3712..45dd384 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -1318,7 +1318,7 @@
+@@ -1318,7 +1318,7 @@ static int findreplen(const char *rep, int nmat, const int *replen)
  	while(*cp) {
  		if (*cp == '$' && isdigit(cp[1])) {
  			val = strtoul(&cp[1], &cp, 10);
@@ -9,7 +19,7 @@
  				len += replen[val -1];
  			else
  				fprintf(stderr, "repl %d out of range\n", val);
-@@ -1338,7 +1338,7 @@
+@@ -1338,7 +1338,7 @@ static void doreplace(char *out, const char *rep,
  	while(*cp) {
  		if (*cp == '$' && isdigit(cp[1])) {
  			val = strtoul(&cp[1], &cp, 10);
@@ -18,7 +28,7 @@
  				strncpy(out, repstr[val - 1], replen[val - 1]);
  				out += replen[val -1];
  			}
-@@ -1385,7 +1385,7 @@
+@@ -1385,7 +1385,7 @@ static char *pcre_subst(const pcre *ppat, const pcre_extra *extra,
  	int nmat;
  	int ovec[MAXCAPTURE * 3];
  	nmat = pcre_exec(ppat, extra, str, len, offset, options,

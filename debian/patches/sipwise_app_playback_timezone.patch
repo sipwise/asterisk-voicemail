@@ -1,6 +1,16 @@
+From: Sipwise Development Team <support@sipwise.com>
+Date: Tue, 6 Dec 2022 14:51:13 +0100
+Subject: sipwise_app_playback_timezone
+
+---
+ apps/app_playback.c | 44 +++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 43 insertions(+), 1 deletion(-)
+
+diff --git a/apps/app_playback.c b/apps/app_playback.c
+index 66efb9f..844b403 100644
 --- a/apps/app_playback.c
 +++ b/apps/app_playback.c
-@@ -226,6 +226,15 @@ static int do_say(say_args_t *a, const c
+@@ -226,6 +226,15 @@ static int do_say(say_args_t *a, const char *s, const char *options, int depth)
  	}
  	AST_LIST_INSERT_HEAD(&head, n, entries);
  
@@ -16,7 +26,7 @@
  	/* scan the body, one piece at a time */
  	while ( !ret && (x = strsep(&rule, ",")) ) { /* exit on key */
  		char fn[128];
-@@ -239,6 +248,15 @@ static int do_say(say_args_t *a, const c
+@@ -239,6 +248,15 @@ static int do_say(say_args_t *a, const char *s, const char *options, int depth)
  		pbx_substitute_variables_varshead(&head, x, fn, sizeof(fn));
  		ast_debug(2, "doing [%s]\n", fn);
  
@@ -32,7 +42,7 @@
  		/* locate prefix and data, if any */
  		fmt = strchr(fn, ':');
  		if (!fmt || fmt == fn)	{	/* regular filename */
-@@ -321,10 +339,34 @@ static int say_date_generic(struct ast_c
+@@ -321,10 +339,34 @@ static int say_date_generic(struct ast_channel *chan, time_t t,
  	struct ast_tm tm;
  	struct timeval when = { t, 0 };
  	say_args_t a = { chan, ints, lang, -1, -1 };
@@ -67,7 +77,7 @@
  	snprintf(buf, sizeof(buf), "%s:%s:%04d%02d%02d%02d%02d.%02d-%d-%3d",
  		prefix,
  		format,
-@@ -336,7 +378,7 @@ static int say_date_generic(struct ast_c
+@@ -336,7 +378,7 @@ static int say_date_generic(struct ast_channel *chan, time_t t,
  		tm.tm_sec,
  		tm.tm_wday,
  		tm.tm_yday);

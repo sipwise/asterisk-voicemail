@@ -1,6 +1,16 @@
+From: Sipwise Development Team <support@sipwise.com>
+Date: Tue, 6 Dec 2022 14:51:13 +0100
+Subject: sipwise_rename_apps
+
+---
+ Makefile | 20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 5b96cba..67ec08d 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -45,13 +45,19 @@ apps/app_playback.so: apps/app_playback.
+@@ -45,13 +45,19 @@ apps/app_playback.so: apps/app_playback.o
  clean:
  	rm -f apps/app_voicemail.o apps/app_voicemail.so \
  		  apps/app_playback.o apps/app_playback.so

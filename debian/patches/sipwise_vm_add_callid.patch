@@ -1,3 +1,13 @@
+From: Sipwise Development Team <support@sipwise.com>
+Date: Tue, 6 Dec 2022 14:51:13 +0100
+Subject: sipwise_vm_add_callid
+
+---
+ apps/app_voicemail.c | 22 ++++++++++++++++------
+ 1 file changed, 16 insertions(+), 6 deletions(-)
+
+diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
+index 99a16b7..c2e6752 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
 @@ -920,7 +920,7 @@ static char odbc_database[80];
@@ -17,7 +27,7 @@
  };
  
  static SQLHSTMT insert_data_cb(struct odbc_obj *obj, void *vdata)
-@@ -4580,6 +4581,9 @@ static SQLHSTMT insert_data_cb(struct od
+@@ -4580,6 +4581,9 @@ static SQLHSTMT insert_data_cb(struct odbc_obj *obj, void *vdata)
  	SQLBindParameter(stmt, 12, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_CHAR, strlen(data->msg_id), 0, (void *) data->msg_id, 0, NULL);
  	if (!ast_strlen_zero(data->category)) {
  		SQLBindParameter(stmt, 13, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_CHAR, strlen(data->category), 0, (void *) data->category, 0, NULL);
@@ -27,7 +37,7 @@
  	}
  	res = SQLExecDirect(stmt, (unsigned char *) data->sql, SQL_NTS);
  	if (!SQL_SUCCEEDED(res)) {
-@@ -4604,7 +4608,7 @@ static SQLHSTMT insert_data_cb(struct od
+@@ -4604,7 +4608,7 @@ static SQLHSTMT insert_data_cb(struct odbc_obj *obj, void *vdata)
   *
   * \return the zero on success -1 on error.
   */
@@ -36,7 +46,7 @@
  {
  	int res = 0;
  	int fd = -1;
-@@ -4619,8 +4623,9 @@ static int store_file(const char *dir, c
+@@ -4619,8 +4623,9 @@ static int store_file(const char *dir, const char *mailboxuser, const char *mail
  	char *c;
  	struct ast_config *cfg = NULL;
  	struct odbc_obj *obj;
@@ -47,7 +57,7 @@
  	struct ast_flags config_flags = { CONFIG_FLAG_NOCACHE };
  
  	delete_file(dir, msgnum);
-@@ -4693,10 +4698,15 @@ static int store_file(const char *dir, c
+@@ -4693,10 +4698,15 @@ static int store_file(const char *dir, const char *mailboxuser, const char *mail
  		idata.data = fdm;
  		idata.datalen = idata.indlen = fdlen;
  
@@ -65,7 +75,7 @@
  
  		if (ast_strlen_zero(idata.origtime)) {
  			idata.origtime = "0";
-@@ -7130,7 +7140,7 @@ static int leave_voicemail(struct ast_ch
+@@ -7130,7 +7140,7 @@ static int leave_voicemail(struct ast_channel *chan, char *ext, struct leave_vm_
  			if (success == -1) {
  				/* We couldn't retrieve the file from the database, but we found it on the file system. Let's put it in the database. */
  				ast_debug(1, "Greeting not retrieved from database, but found in file storage. Inserting into database\n");

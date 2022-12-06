@@ -1,3 +1,13 @@
+From: Sipwise Development Team <support@sipwise.com>
+Date: Tue, 6 Dec 2022 14:51:13 +0100
+Subject: sipwise_vm_ext_timezone
+
+---
+ apps/app_voicemail.c | 67 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 67 insertions(+)
+
+diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
+index 241b7e7..cb9b988 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
 @@ -1011,6 +1011,8 @@ static int passwordlocation;
@@ -9,7 +19,7 @@
  
  /*! Poll mailboxes for changes since there is something external to
   *  app_voicemail that may change them. */
-@@ -1190,6 +1192,7 @@ static int vm_msg_remove(const char *mai
+@@ -1190,6 +1192,7 @@ static int vm_msg_remove(const char *mailbox, const char *context, size_t num_ms
  static int vm_msg_play(struct ast_channel *chan, const char *mailbox, const char *context, const char *folder, const char *msg_num, ast_vm_msg_play_cb cb);
  
  static struct vm_zone *get_vmu_timezone(struct ast_vm_user *vmu);
@@ -17,7 +27,7 @@
  
  #ifdef TEST_FRAMEWORK
  static int vm_test_destroy_user(const char *context, const char *mailbox);
-@@ -1785,6 +1788,8 @@ static void apply_options_full(struct as
+@@ -1785,6 +1788,8 @@ static void apply_options_full(struct ast_vm_user *retval, struct ast_variable *
  		} else if (!strcasecmp(var->name, "mailbox")) { /* granig: but save number for announcement */
  			ast_copy_string(retval->dialed_num, var->value, sizeof(retval->dialed_num));
  			// ast_log (LOG_DEBUG,"setting dialed_num to '%s'\n", var->value);
@@ -26,7 +36,7 @@
  #ifdef IMAP_STORAGE
  		} else if (!strcasecmp(var->name, "imapuser")) {
  			ast_copy_string(retval->imapuser, var->value, sizeof(retval->imapuser));
-@@ -8539,6 +8544,58 @@ static struct vm_zone * get_vmu_timezone
+@@ -8539,6 +8544,58 @@ static struct vm_zone * get_vmu_timezone(struct ast_vm_user *vmu)
  	return tz;
  }
  
@@ -85,7 +95,7 @@
  /*!
   * \brief Sends email notification that a user has a new voicemail waiting for them.
   * \param chan
-@@ -14365,6 +14422,9 @@ static int actual_load_config(int reload
+@@ -14365,6 +14422,9 @@ static int actual_load_config(int reload, struct ast_config *cfg, struct ast_con
  	long tps_queue_high;
  	const char *ast_sw_normalize_user_match = NULL;
  	const char *ast_sw_normalize_user_replace = NULL;
@@ -95,7 +105,7 @@
  
  #ifdef IMAP_STORAGE
  	ast_copy_string(imapparentfolder, "\0", sizeof(imapparentfolder));
-@@ -14442,6 +14502,13 @@ static int actual_load_config(int reload
+@@ -14442,6 +14502,13 @@ static int actual_load_config(int reload, struct ast_config *cfg, struct ast_con
  			sw_normalize_user_replace[0] = '\0';
  		}
  

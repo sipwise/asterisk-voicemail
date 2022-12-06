@@ -1,6 +1,16 @@
+From: Sipwise Development Team <support@sipwise.com>
+Date: Tue, 6 Dec 2022 14:51:13 +0100
+Subject: sipwise_vm_externnotify_by_uuid
+
+---
+ apps/app_voicemail.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
+index 45dd384..a0424f3 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -6644,15 +6644,15 @@
+@@ -6644,15 +6644,15 @@ static void run_externnotify(char *context, char *extension, const char *flag, c
  			if (msg_time) {
  				ast_localtime(msg_time, &tm, timezonename);
  				ast_strftime(date, sizeof(date), "%Y-%m-%dT%H:%M:%S%z", &tm);
