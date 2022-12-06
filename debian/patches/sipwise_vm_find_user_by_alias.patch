@@ -7,10 +7,10 @@ Subject: sipwise_vm_find_user_by_alias
  1 file changed, 67 insertions(+)
 
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index afe5ad2..3b6d206 100644
+index 5ce6bff..be8e8e7 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -1133,6 +1133,9 @@ static char emaildateformat[32] = "%A, %B %d, %Y at %r";
+@@ -1140,6 +1140,9 @@ static char emaildateformat[32] = "%A, %B %d, %Y at %r";
  static char pagerdateformat[32] = "%A, %B %d, %Y at %r";
  
  /* Forward declarations - generic */
@@ -20,7 +20,7 @@ index afe5ad2..3b6d206 100644
  static int open_mailbox(struct vm_state *vms, struct ast_vm_user *vmu, int box);
  static int close_mailbox(struct vm_state *vms, struct ast_vm_user *vmu);
  static int advanced_options(struct ast_channel *chan, struct ast_vm_user *vmu, struct vm_state *vms, int msg, int option, signed char record_gain);
-@@ -1802,7 +1805,12 @@ static struct ast_vm_user *find_user(struct ast_vm_user *ivm, const char *contex
+@@ -1811,7 +1814,12 @@ static struct ast_vm_user *find_user(struct ast_vm_user *ivm, const char *contex
  	AST_LIST_UNLOCK(&users);
  	if (!vmu) {
  		ast_log(LOG_DEBUG,"call find_user_realtime for '%s@%s'\n", mailbox, context);
@@ -33,7 +33,7 @@ index afe5ad2..3b6d206 100644
  	}
  	if (!vmu && !ast_strlen_zero(aliasescontext)) {
  		struct alias_mailbox_mapping *mapping;
-@@ -4080,6 +4088,65 @@ bail:
+@@ -4091,6 +4099,65 @@ bail:
  	return x - 1;
  }
  
