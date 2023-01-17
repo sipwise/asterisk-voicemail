@@ -1,3 +1,11 @@
+ngcp-asterisk-voicemail (16.16.1+0~mr11.3.0.0) unstable; urgency=medium
+
+  [ Victor Seva ]
+  * [3b818b7] TT#161551 debian/patches: add info for patches
+  * [ccdf42d] TT#161551 remove double logs
+
+ -- Sipwise Jenkins Builder <jenkins@sipwise.com>  Tue, 17 Jan 2023 17:41:07 +0100
+
 ngcp-asterisk-voicemail (16.16.1+0~mr11.2.0.0) unstable; urgency=medium
 
   * New release.
