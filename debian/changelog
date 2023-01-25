@@ -1,3 +1,10 @@
+ngcp-asterisk-voicemail (20.0.0+0~mr11.3.0.0) unstable; urgency=medium
+
+  [ Victor Seva ]
+  * [507ee34] MT#55917 support bookworm
+
+ -- Michael Prokop <mprokop@sipwise.com>  Wed, 25 Jan 2023 07:55:06 +0100
+
 ngcp-asterisk-voicemail (20.0.0+0~mr11.2.0.0) unstable; urgency=medium
 
   * TT#161551 debian/patches: add info for patches
