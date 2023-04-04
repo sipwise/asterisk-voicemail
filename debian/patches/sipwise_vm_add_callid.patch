@@ -7,10 +7,10 @@ Subject: sipwise_vm_add_callid
  1 file changed, 16 insertions(+), 6 deletions(-)
 
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index 8189485..b3e2cc3 100644
+index 33571cd..e483129 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -857,7 +857,7 @@ static char odbc_database[80] = "asterisk";
+@@ -858,7 +858,7 @@ static char odbc_database[80] = "asterisk";
  static char odbc_table[80] = "voicemessages";
  #define RETRIEVE(a,b,c,d) retrieve_file(a,b)
  #define DISPOSE(a,b) remove_file(a,b)
@@ -19,7 +19,7 @@ index 8189485..b3e2cc3 100644
  #define EXISTS(a,b,c,d) (message_exists(a,b))
  #define RENAME(a,b,c,d,e,f,g,h) (rename_file(a,b,c,d,e,f))
  #define COPY(a,b,c,d,e,f,g,h) (copy_file(a,b,c,d,e,f))
-@@ -4451,6 +4451,7 @@ struct insert_data {
+@@ -4454,6 +4454,7 @@ struct insert_data {
  	const char *category;
  	const char *flag;
  	const char *msg_id;
@@ -27,7 +27,7 @@ index 8189485..b3e2cc3 100644
  };
  
  static SQLHSTMT insert_data_cb(struct odbc_obj *obj, void *vdata)
-@@ -4479,6 +4480,9 @@ static SQLHSTMT insert_data_cb(struct odbc_obj *obj, void *vdata)
+@@ -4482,6 +4483,9 @@ static SQLHSTMT insert_data_cb(struct odbc_obj *obj, void *vdata)
  	SQLBindParameter(stmt, 12, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_CHAR, strlen(data->msg_id), 0, (void *) data->msg_id, 0, NULL);
  	if (!ast_strlen_zero(data->category)) {
  		SQLBindParameter(stmt, 13, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_CHAR, strlen(data->category), 0, (void *) data->category, 0, NULL);
@@ -37,7 +37,7 @@ index 8189485..b3e2cc3 100644
  	}
  	res = ast_odbc_execute_sql(obj, stmt, data->sql);
  	if (!SQL_SUCCEEDED(res)) {
-@@ -4503,7 +4507,7 @@ static SQLHSTMT insert_data_cb(struct odbc_obj *obj, void *vdata)
+@@ -4506,7 +4510,7 @@ static SQLHSTMT insert_data_cb(struct odbc_obj *obj, void *vdata)
   *
   * \return the zero on success -1 on error.
   */
@@ -46,7 +46,7 @@ index 8189485..b3e2cc3 100644
  {
  	int res = 0;
  	int fd = -1;
-@@ -4518,8 +4522,9 @@ static int store_file(const char *dir, const char *mailboxuser, const char *mail
+@@ -4521,8 +4525,9 @@ static int store_file(const char *dir, const char *mailboxuser, const char *mail
  	char *c;
  	struct ast_config *cfg = NULL;
  	struct odbc_obj *obj;
@@ -57,7 +57,7 @@ index 8189485..b3e2cc3 100644
  	struct ast_flags config_flags = { CONFIG_FLAG_NOCACHE };
  
  	delete_file(dir, msgnum);
-@@ -4592,10 +4597,15 @@ static int store_file(const char *dir, const char *mailboxuser, const char *mail
+@@ -4595,10 +4600,15 @@ static int store_file(const char *dir, const char *mailboxuser, const char *mail
  		idata.data = fdm;
  		idata.datalen = idata.indlen = fdlen;
  
@@ -75,7 +75,7 @@ index 8189485..b3e2cc3 100644
  
  		if (ast_strlen_zero(idata.origtime)) {
  			idata.origtime = "0";
-@@ -6802,7 +6812,7 @@ static int leave_voicemail(struct ast_channel *chan, char *ext, struct leave_vm_
+@@ -6831,7 +6841,7 @@ static int leave_voicemail(struct ast_channel *chan, char *ext, struct leave_vm_
  			if (success == -1) {
  				/* We couldn't retrieve the file from the database, but we found it on the file system. Let's put it in the database. */
  				ast_debug(1, "Greeting not retrieved from database, but found in file storage. Inserting into database\n");

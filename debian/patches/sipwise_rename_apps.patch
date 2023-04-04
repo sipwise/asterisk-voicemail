@@ -7,7 +7,7 @@ Subject: sipwise_rename_apps
  1 file changed, 13 insertions(+), 7 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index 5b96cba..67ec08d 100644
+index e183752..393aefc 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -45,13 +45,19 @@ apps/app_playback.so: apps/app_playback.o

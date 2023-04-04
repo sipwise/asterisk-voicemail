@@ -7,10 +7,10 @@ Subject: sipwise_vm_hebrew_language_fixups
  1 file changed, 8 insertions(+), 4 deletions(-)
 
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index 436cb97..16ab62c 100644
+index c4e3399..c42d667 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -8457,10 +8457,14 @@ static int play_message(struct ast_channel *chan, struct ast_vm_user *vmu, struc
+@@ -8486,10 +8486,14 @@ static int play_message(struct ast_channel *chan, struct ast_vm_user *vmu, struc
  	vms->starting = 0;
  	make_file(vms->fn, sizeof(vms->fn), vms->curdir, vms->curmsg);
  	adsi_message(chan, vms);
