@@ -1,3 +1,10 @@
+ngcp-asterisk-voicemail (20.1.0+0~mr12.0.1.0) unstable; urgency=medium
+
+  [ Fabricio Santolin da Silva ]
+  * [a9376c7] MT#57141 Add actions to send with MWI notification
+
+ -- Sipwise Jenkins Builder <jenkins@sipwise.com>  Wed, 30 Aug 2023 18:02:50 +0200
+
 ngcp-asterisk-voicemail (20.1.0+0~mr11.5.0.0) unstable; urgency=medium
 
   * New release.
