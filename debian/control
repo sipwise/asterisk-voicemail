@@ -3,7 +3,8 @@ Priority: optional
 Section: comm
 Maintainer: Sipwise Development Team <support@sipwise.com>
 Homepage: https://www.sipwise.com/
-Standards-Version: 4.5.1
+Standards-Version: 4.6.2
+Rules-Requires-Root: no
 Build-Depends:
  asterisk-dev,
  debhelper-compat (= 13),
