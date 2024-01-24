@@ -1,3 +1,10 @@
+ngcp-asterisk-voicemail (16.16.1+0~mr11.3.1.2) unstable; urgency=medium
+
+  [ Fabricio Santolin da Silva ]
+  * [b5b1028] MT#59127 Fix double help menu listing
+
+ -- Sipwise Jenkins Builder <jenkins@sipwise.com>  Wed, 24 Jan 2024 14:42:20 +0100
+
 ngcp-asterisk-voicemail (16.16.1+0~mr11.3.1.1) unstable; urgency=medium
 
   * New release.
