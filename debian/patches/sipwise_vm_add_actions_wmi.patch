@@ -7,7 +7,7 @@ Subject: sipwise_vm_add_actions_wmi
  1 file changed, 277 insertions(+), 19 deletions(-)
 
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index 185feae..5256865 100644
+index c3cdb58..77575c5 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
 @@ -1043,6 +1043,52 @@ static int adsiver = 1;
@@ -74,7 +74,7 @@ index 185feae..5256865 100644
  
  
  /*!
-@@ -4427,9 +4474,11 @@ static void copy_file(char *sdir, int smsg, char *ddir, int dmsg, char *dmailbox
+@@ -4447,9 +4494,11 @@ static void copy_file(char *sdir, int smsg, char *ddir, int dmsg, char *dmailbox
  	char msgnums[20];
  	char msgnumd[20];
  	char msg_id[MSG_ID_LEN];
@@ -88,7 +88,7 @@ index 185feae..5256865 100644
  
  	generate_msg_id(msg_id);
  	delete_file(ddir, dmsg);
-@@ -4441,7 +4490,10 @@ static void copy_file(char *sdir, int smsg, char *ddir, int dmsg, char *dmailbox
+@@ -4461,7 +4510,10 @@ static void copy_file(char *sdir, int smsg, char *ddir, int dmsg, char *dmailbox
  
  	snprintf(msgnums, sizeof(msgnums), "%d", smsg);
  	snprintf(msgnumd, sizeof(msgnumd), "%d", dmsg);
@@ -100,7 +100,7 @@ index 185feae..5256865 100644
  	stmt = ast_odbc_prepare_and_execute(obj, generic_prepare, &gps);
  	if (!stmt)
  		ast_log(AST_LOG_WARNING, "SQL Execute error!\n[%s] (You probably don't have MySQL 4.1 or later installed)\n\n", sql);
-@@ -6261,8 +6313,9 @@ static int inboxcount(const char *mailbox, int *newmsgs, int *oldmsgs)
+@@ -6281,8 +6333,9 @@ static int inboxcount(const char *mailbox, int *newmsgs, int *oldmsgs)
  	return res;
  }
  
@@ -111,7 +111,7 @@ index 185feae..5256865 100644
  	char arguments[2048];
  	char date[256];
  	struct ast_tm tm;
-@@ -6305,14 +6358,39 @@ static void run_externnotify(const char *context, const char *extension, const c
+@@ -6325,14 +6378,39 @@ static void run_externnotify(const char *context, const char *extension, const c
  		} else if (ast_strlen_zero(number) || !strcmp(extension, number)) {
  			ast_log(AST_LOG_WARNING, "Missing user number to run externnotify on context '%s'\n", ext_context);
  		} else {
@@ -156,7 +156,7 @@ index 185feae..5256865 100644
  			} else { // original short notify + extension
  				snprintf(arguments, sizeof(arguments), "%s %s %s %s %d %d %d &",
  						 externnotify, S_OR(context, "\"\""),
-@@ -6398,6 +6476,9 @@ static int msg_create_from_file(struct ast_vm_recording_data *recdata)
+@@ -6418,6 +6496,9 @@ static int msg_create_from_file(struct ast_vm_recording_data *recdata)
  	const char *category = NULL; /* pointless for now */
  	char msg_id[MSG_ID_LEN];
  
@@ -166,7 +166,7 @@ index 185feae..5256865 100644
  	/* Start by checking to see if the file actually exists... */
  	if (!(ast_fileexists(recdata->recording_file, recdata->recording_ext, NULL))) {
  		ast_log(LOG_ERROR, "File: %s not found.\n", recdata->recording_file);
-@@ -6654,7 +6735,9 @@ static int msg_create_from_file(struct ast_vm_recording_data *recdata)
+@@ -6674,7 +6755,9 @@ static int msg_create_from_file(struct ast_vm_recording_data *recdata)
  			if (send_email) { /* We tried and failed. */
  				ast_log(LOG_WARNING, "Failed to allocate dummy channel, email will not be sent\n");
  			}
@@ -177,7 +177,7 @@ index 185feae..5256865 100644
  		}
  	}
  
-@@ -8144,6 +8227,74 @@ static void load_vmu_timezone(struct ast_vm_user *vmu)
+@@ -8164,6 +8247,74 @@ static void load_vmu_timezone(struct ast_vm_user *vmu)
  	return;
  }
  
@@ -252,7 +252,7 @@ index 185feae..5256865 100644
  /*!
   * \brief Sends email notification that a user has a new voicemail waiting for them.
   * \param chan
-@@ -8167,6 +8318,9 @@ static int notify_new_message(struct ast_channel *chan, struct ast_vm_user *vmu,
+@@ -8187,6 +8338,9 @@ static int notify_new_message(struct ast_channel *chan, struct ast_vm_user *vmu,
  	struct timeval msg_time = ast_tvnow();
  	struct vm_zone *tz = get_vmu_timezone(vmu);
  
@@ -262,7 +262,7 @@ index 185feae..5256865 100644
  	ast_channel_lock(chan);
  	if ((category = pbx_builtin_getvar_helper(chan, "VM_CATEGORY"))) {
  		category = ast_strdupa(category);
-@@ -8234,7 +8388,9 @@ static int notify_new_message(struct ast_channel *chan, struct ast_vm_user *vmu,
+@@ -8254,7 +8408,9 @@ static int notify_new_message(struct ast_channel *chan, struct ast_vm_user *vmu,
  		ast_app_inboxcount2(ext_context, &urgentmsgs, &newmsgs, &oldmsgs);
  
  	queue_mwi_event(ast_channel_uniqueid(chan), ext_context, urgentmsgs, newmsgs, oldmsgs);
@@ -273,7 +273,7 @@ index 185feae..5256865 100644
  
  #ifdef IMAP_STORAGE
  	vm_delete(fn);  /* Delete the file, but not the IMAP message */
-@@ -11406,6 +11562,9 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
+@@ -11420,6 +11576,9 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
  #ifdef IMAP_STORAGE
  	int deleted = 0;
  #endif
@@ -283,7 +283,7 @@ index 185feae..5256865 100644
  
  	/* Add the vm_state to the active list and keep it active */
  	vms.curmsg = -1;
-@@ -11596,6 +11755,11 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
+@@ -11610,6 +11769,11 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
  		if (vms.lastmsg == -1) {
  			in_urgent = 0;
  			cmd = vm_browse_messages(chan, &vms, vmu);
@@ -295,7 +295,7 @@ index 185feae..5256865 100644
  			res = 0;
  			goto out;
  		}
-@@ -11671,6 +11835,11 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
+@@ -11685,6 +11849,11 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
  		case '5': /* Play current message */
  			ast_test_suite_event_notify("BROWSE", "Message: browsing message %d\r\nVoicemail: %d", vms.curmsg, vms.curmsg);
  			cmd = vm_browse_messages(chan, &vms, vmu);
@@ -307,7 +307,7 @@ index 185feae..5256865 100644
  			break;
  		case '2': /* Change folders */
  			folder_change = 1;
-@@ -11761,6 +11930,11 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
+@@ -11775,6 +11944,11 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
  			if (vms.curmsg > 0) {
  				vms.curmsg--;
  				cmd = play_message(chan, vmu, &vms);
@@ -319,7 +319,7 @@ index 185feae..5256865 100644
  			} else {
  				/* Check if we were listening to new
  				   messages.  If so, go to Urgent messages
-@@ -11783,6 +11957,11 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
+@@ -11797,6 +11971,11 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
  				} else if (ast_test_flag(vmu, VM_MESSAGEWRAP) && vms.lastmsg > 0) {
  					vms.curmsg = vms.lastmsg;
  					cmd = play_message(chan, vmu, &vms);
@@ -331,7 +331,7 @@ index 185feae..5256865 100644
  				} else {
  					cmd = ast_play_and_wait(chan, "vm-nomore");
  				}
-@@ -11793,6 +11972,11 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
+@@ -11807,6 +11986,11 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
  			if (vms.curmsg < vms.lastmsg) {
  				vms.curmsg++;
  				cmd = play_message(chan, vmu, &vms);
@@ -343,7 +343,7 @@ index 185feae..5256865 100644
  			} else {
  				if (in_urgent && vms.newmessages > 0) {
  					/* Check if we were listening to urgent
-@@ -11814,6 +11998,11 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
+@@ -11828,6 +12012,11 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
  				} else if (ast_test_flag(vmu, VM_MESSAGEWRAP) && vms.lastmsg > 0) {
  					vms.curmsg = 0;
  					cmd = play_message(chan, vmu, &vms);
@@ -355,7 +355,7 @@ index 185feae..5256865 100644
  				} else {
  					cmd = ast_play_and_wait(chan, "vm-nomore");
  				}
-@@ -11835,6 +12024,9 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
+@@ -11849,6 +12038,9 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
  					else if (play_folder == 1)
  						vms.oldmessages--;
  					cmd = ast_play_and_wait(chan, "vm-deleted");
@@ -365,7 +365,7 @@ index 185feae..5256865 100644
  				} else {
  					if (play_folder == 0) {
  						if (in_urgent) {
-@@ -11846,14 +12038,27 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
+@@ -11860,14 +12052,27 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
  					else if (play_folder == 1)
  						vms.oldmessages++;
  					cmd = ast_play_and_wait(chan, "vm-undeleted");
@@ -393,7 +393,7 @@ index 185feae..5256865 100644
  					} else {
  						/* Check if we were listening to urgent
  						   messages.  If so, go to regular new messages
-@@ -11904,6 +12109,29 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
+@@ -11918,6 +12123,29 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
  			} else if (cmd > 0) {
  				box = cmd = cmd - '0';
  				cmd = save_to_folder(vmu, &vms, vms.curmsg, cmd, NULL, 0);
@@ -423,7 +423,7 @@ index 185feae..5256865 100644
  				if (cmd == ERROR_LOCK_PATH) {
  					res = cmd;
  					goto out;
-@@ -11935,9 +12163,19 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
+@@ -11949,9 +12177,19 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
  				if (vms.curmsg < vms.lastmsg) {
  					vms.curmsg++;
  					cmd = play_message(chan, vmu, &vms);
@@ -443,7 +443,7 @@ index 185feae..5256865 100644
  				} else {
  					/* Check if we were listening to urgent
  					   messages.  If so, go to regular new messages
-@@ -12054,7 +12292,7 @@ out:
+@@ -12068,7 +12306,7 @@ out:
  		int new = 0, old = 0, urgent = 0;
  		snprintf(ext_context, sizeof(ext_context), "%s@%s", vms.username, vmu->context);
  		/* Urgent flag not passwd to externnotify here */
@@ -452,7 +452,7 @@ index 185feae..5256865 100644
  		ast_app_inboxcount2(ext_context, &urgent, &new, &old);
  		queue_mwi_event(ast_channel_uniqueid(chan), ext_context, urgent, new, old);
  	}
-@@ -15975,13 +16213,13 @@ done:
+@@ -15989,13 +16227,13 @@ done:
  	return res;
  }
  
@@ -468,7 +468,7 @@ index 185feae..5256865 100644
  	ast_app_inboxcount2(ext_context, &urgent, &new, &old);
  	queue_mwi_event(NULL, ext_context, urgent, new, old);
  }
-@@ -16008,6 +16246,9 @@ static int vm_msg_forward(const char *from_mailbox,
+@@ -16022,6 +16260,9 @@ static int vm_msg_forward(const char *from_mailbox,
  	int i;
  	int *msg_nums;
  
@@ -478,7 +478,7 @@ index 185feae..5256865 100644
  	if (ast_strlen_zero(from_mailbox) || ast_strlen_zero(to_mailbox)) {
  		ast_log(LOG_WARNING, "Cannot forward message because either the from or to mailbox was not specified\n");
  		return -1;
-@@ -16121,7 +16362,9 @@ vm_forward_cleanup:
+@@ -16135,7 +16376,9 @@ vm_forward_cleanup:
  #endif
  
  	if (!res) {
@@ -489,7 +489,7 @@ index 185feae..5256865 100644
  	}
  
  	free_user(vmu);
-@@ -16145,6 +16388,9 @@ static int vm_msg_move(const char *mailbox,
+@@ -16159,6 +16402,9 @@ static int vm_msg_move(const char *mailbox,
  	int i;
  	int *old_msg_nums;
  
@@ -499,7 +499,7 @@ index 185feae..5256865 100644
  	if (ast_strlen_zero(mailbox)) {
  		ast_log(LOG_WARNING, "Cannot move message because no mailbox was specified\n");
  		return -1;
-@@ -16226,7 +16472,9 @@ vm_move_cleanup:
+@@ -16240,7 +16486,9 @@ vm_move_cleanup:
  #endif
  
  	if (!res) {
@@ -510,7 +510,7 @@ index 185feae..5256865 100644
  	}
  
  	free_user(vmu);
-@@ -16247,6 +16495,9 @@ static int vm_msg_remove(const char *mailbox,
+@@ -16261,6 +16509,9 @@ static int vm_msg_remove(const char *mailbox,
  	int i;
  	int *msg_nums;
  
@@ -520,7 +520,7 @@ index 185feae..5256865 100644
  	if (ast_strlen_zero(mailbox)) {
  		ast_log(LOG_WARNING, "Cannot remove message because no mailbox was specified\n");
  		return -1;
-@@ -16324,7 +16575,9 @@ vm_remove_cleanup:
+@@ -16338,7 +16589,9 @@ vm_remove_cleanup:
  #endif
  
  	if (!res) {
@@ -531,7 +531,7 @@ index 185feae..5256865 100644
  	}
  
  	free_user(vmu);
-@@ -16349,6 +16602,9 @@ static int vm_msg_play(struct ast_channel *chan,
+@@ -16363,6 +16616,9 @@ static int vm_msg_play(struct ast_channel *chan,
  	int duration = 0;
  	const char *value;
  
@@ -541,7 +541,7 @@ index 185feae..5256865 100644
  	if (ast_strlen_zero(mailbox)) {
  		ast_log(LOG_WARNING, "Cannot play message because no mailbox was specified\n");
  		return -1;
-@@ -16438,7 +16694,9 @@ play2_msg_cleanup:
+@@ -16452,7 +16708,9 @@ play2_msg_cleanup:
  #endif
  
  	if (!res) {

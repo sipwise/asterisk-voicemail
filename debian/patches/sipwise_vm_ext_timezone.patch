@@ -7,7 +7,7 @@ Subject: sipwise_vm_ext_timezone
  1 file changed, 67 insertions(+)
 
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index 30cbd95..224ba2e 100644
+index 2830900..4d21ebd 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
 @@ -948,6 +948,8 @@ static int passwordlocation;
@@ -27,7 +27,7 @@ index 30cbd95..224ba2e 100644
  
  #ifdef TEST_FRAMEWORK
  static int vm_test_destroy_user(const char *context, const char *mailbox);
-@@ -1687,6 +1690,8 @@ static void apply_options_full(struct ast_vm_user *retval, struct ast_variable *
+@@ -1707,6 +1710,8 @@ static void apply_options_full(struct ast_vm_user *retval, struct ast_variable *
  		} else if (!strcasecmp(var->name, "mailbox")) { /* granig: but save number for announcement */
  			ast_copy_string(retval->dialed_num, var->value, sizeof(retval->dialed_num));
  			// ast_log (LOG_DEBUG,"setting dialed_num to '%s'\n", var->value);
@@ -36,7 +36,7 @@ index 30cbd95..224ba2e 100644
  #ifdef IMAP_STORAGE
  		} else if (!strcasecmp(var->name, "imapuser")) {
  			ast_copy_string(retval->imapuser, var->value, sizeof(retval->imapuser));
-@@ -8052,6 +8057,58 @@ static struct vm_zone * get_vmu_timezone(struct ast_vm_user *vmu)
+@@ -8072,6 +8077,58 @@ static struct vm_zone * get_vmu_timezone(struct ast_vm_user *vmu)
  	return tz;
  }
  
@@ -95,7 +95,7 @@ index 30cbd95..224ba2e 100644
  /*!
   * \brief Sends email notification that a user has a new voicemail waiting for them.
   * \param chan
-@@ -13306,6 +13363,9 @@ static int actual_load_config(int reload, struct ast_config *cfg, struct ast_con
+@@ -13320,6 +13377,9 @@ static int actual_load_config(int reload, struct ast_config *cfg, struct ast_con
  	long tps_queue_high;
  	const char *ast_sw_normalize_user_match = NULL;
  	const char *ast_sw_normalize_user_replace = NULL;
@@ -105,7 +105,7 @@ index 30cbd95..224ba2e 100644
  
  #ifdef IMAP_STORAGE
  	ast_copy_string(imapparentfolder, "\0", sizeof(imapparentfolder));
-@@ -13383,6 +13443,13 @@ static int actual_load_config(int reload, struct ast_config *cfg, struct ast_con
+@@ -13397,6 +13457,13 @@ static int actual_load_config(int reload, struct ast_config *cfg, struct ast_con
  			sw_normalize_user_replace[0] = '\0';
  		}
  

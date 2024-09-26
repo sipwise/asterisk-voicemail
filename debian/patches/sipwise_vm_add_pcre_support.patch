@@ -3,25 +3,37 @@ Date: Mon, 21 Feb 2022 14:17:23 +0100
 Subject: sipwise_vm_add_pcre_support
 
 ---
- Makefile             |   2 +-
- apps/app_voicemail.c | 161 +++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 162 insertions(+), 1 deletion(-)
+ Makefile             |   4 +-
+ apps/app_voicemail.c | 175 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 178 insertions(+), 1 deletion(-)
 
 diff --git a/Makefile b/Makefile
-index 9ee80e1..307b4b3 100644
+index 9ee80e1..69eccd0 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -15,7 +15,7 @@ CC?=gcc
+@@ -12,10 +12,11 @@ MODULES_DIR=$(INSTALL_PREFIX)$(ASTLIBDIR)
+ ASTETCDIR=$(INSTALL_PREFIX)/etc/asterisk
+ 
+ CC?=gcc
++PKG_CONFIG?=pkg-config
  OPTIMIZE=-O2
  DEBUG=-g
  
 -LIBS+=
-+LIBS+=-lpcre
++LIBS+=$(shell $(PKG_CONFIG) --libs libpcre2-8)
  CFLAGS+=-pipe -fPIC
  CFLAGS+=-Wall -Wextra -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations
  CFLAGS+=-Wno-format-truncation
+@@ -24,6 +25,7 @@ CFLAGS+=-Wno-sign-compare
+ CFLAGS+=-Wno-unused-parameter
+ CFLAGS+=-Wno-unused-variable
+ CFLAGS+=-D_REENTRANT -D_GNU_SOURCE -DODBC_STORAGE
++CFLAGS+=$(shell $(PKG_CONFIG) --cflags libpcre2-8) -DPCRE2_CODE_UNIT_WIDTH=8
+ 
+ all: _all
+ 	@echo " +-------- app_voicemail Build Complete --------+"
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index 9eca747..1ea3751 100644
+index 9eca747..c0a9aee 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
 @@ -112,6 +112,9 @@
@@ -29,7 +41,7 @@ index 9eca747..1ea3751 100644
  #endif
  
 +#include <ctype.h>
-+#include <pcre.h>
++#include <pcre2.h>
 +
  /*** DOCUMENTATION
  	<application name="VoiceMail" language="en_US">
@@ -43,11 +55,11 @@ index 9eca747..1ea3751 100644
  
  /*! Poll mailboxes for changes since there is something external to
   *  app_voicemail that may change them. */
-@@ -1177,6 +1182,114 @@ static int inprocess_count(const char *context, const char *mailbox, int delta)
+@@ -1177,6 +1182,134 @@ static int inprocess_count(const char *context, const char *mailbox, int delta)
  static int __has_voicemail(const char *context, const char *mailbox, const char *folder, int shortcircuit);
  #endif
  
-+/* sipwise pcre helper functions taken from contrib of pcre:
++/* Sipwise PCRE2 helper functions adapted from contrib of pcre:
 +
 +    Written by: Bert Driehuis <driehuis@playbeing.org>
 +        Copyright (c) 2000 Bert Driehuis
@@ -77,7 +89,8 @@ index 9eca747..1ea3751 100644
 +	int len = 0;
 +	int val;
 +	char *cp = (char *)rep;
-+	while(*cp) {
++
++	while (*cp) {
 +		if (*cp == '$' && isdigit(cp[1])) {
 +			val = strtoul(&cp[1], &cp, 10);
 +			if (val && val <= nmat)
@@ -89,6 +102,7 @@ index 9eca747..1ea3751 100644
 +			len++;
 +		}
 +	}
++
 +	return len;
 +}
 +
@@ -97,7 +111,8 @@ index 9eca747..1ea3751 100644
 +{
 +	int val;
 +	char *cp = (char *)rep;
-+	while(*cp) {
++
++	while (*cp) {
 +		if (*cp == '$' && isdigit(cp[1])) {
 +			val = strtoul(&cp[1], &cp, 10);
 +			if (val && val <= nmat) {
@@ -111,13 +126,14 @@ index 9eca747..1ea3751 100644
 +}
 +
 +static char *edit(const char *str, int len, const char *rep,
-+    int nmat, const int *ovec)
++    int nmat, const size_t *ovec)
 +{
 +	int i, slen, rlen;
-+	const int *mvec = ovec;
++	const size_t *mvec = ovec;
 +	char *res, *cp;
 +	int replen[MAXCAPTURE];
 +	const char *repstr[MAXCAPTURE];
++
 +	nmat--;
 +	ovec += 2;
 +	for (i = 0; i < nmat; i++) {
@@ -137,20 +153,36 @@ index 9eca747..1ea3751 100644
 +	if (mvec[1] < slen)
 +		strcpy(cp, &str[mvec[1]]);
 +	res[len] = 0;
++
 +	return res;
 +}
 +
-+static char *pcre_subst(const pcre *ppat, const pcre_extra *extra,
++static char *pcre_subst(const pcre2_code *ppat,
 +    const char *str, int len,
 +    int offset, int options, const char *rep)
 +{
 +	int nmat;
-+	int ovec[MAXCAPTURE * 3];
-+	nmat = pcre_exec(ppat, extra, str, len, offset, options,
-+		ovec, sizeof(ovec) / sizeof(*ovec));
-+	if (nmat <= 0)
++	pcre2_match_data *md;
++	size_t *ovec;
++
++	md = pcre2_match_data_create(MAXCAPTURE, NULL);
++	if (!md)
 +		return NULL;
-+	return(edit(str, len, rep, nmat, ovec));
++
++	nmat = pcre2_match(ppat, (PCRE2_SPTR8)str, len, offset, options,
++		md, NULL);
++	if (nmat <= 0) {
++		pcre2_match_data_free(md);
++		return NULL;
++	}
++
++	ovec = pcre2_get_ovector_pointer(md);
++	pcre2_match_data_free(md);
++
++	if (!ovec)
++		return NULL;
++
++	return edit(str, len, rep, nmat, ovec);
 +}
 +
 +/* end of pcre helper functions */
@@ -158,34 +190,28 @@ index 9eca747..1ea3751 100644
  /*!
   * \brief Strips control and non 7-bit clean characters from input string.
   *
-@@ -10793,6 +10906,11 @@ static int vm_authenticate(struct ast_channel *chan, char *mailbox, int mailbox_
+@@ -10793,6 +10926,10 @@ static int vm_authenticate(struct ast_channel *chan, char *mailbox, int mailbox_
  	int useadsi = 0, valid = 0, logretries = 0;
  	char password[AST_MAX_EXTENSION], *passptr = NULL;
  	struct ast_vm_user vmus, *vmu = NULL;
-+	const char *err;
-+	int erroffset;
-+	pcre_extra *extra = NULL;
-+	pcre *ppat = NULL;
++	int errcode;
++	size_t erroffset;
++	pcre2_code *ppat = NULL;
 +	char *normalized_mailbox;
  
  	/* If ADSI is supported, setup login screen */
  	adsi_begin(chan, &useadsi);
-@@ -10803,6 +10921,22 @@ static int vm_authenticate(struct ast_channel *chan, char *mailbox, int mailbox_
+@@ -10803,6 +10940,17 @@ static int vm_authenticate(struct ast_channel *chan, char *mailbox, int mailbox_
  		return -1;
  	}
  
-+	if(sw_normalize_user_match[0] != '\0' && sw_normalize_user_replace[0] != '\0') {
++	if (sw_normalize_user_match[0] != '\0' &&
++	    sw_normalize_user_replace[0] != '\0') {
 +		// TODO: could be done once on start
-+		ppat = pcre_compile(sw_normalize_user_match, 0, &err, &erroffset, NULL);
-+		if(ppat == NULL) {
-+			ast_log(LOG_WARNING, "Couldn't compile user match regex '%s': %s at offset %d\n",
-+					sw_normalize_user_match, err, erroffset);
-+			return -1;
-+		}
-+		extra = pcre_study(ppat, 0, &err);
-+		if(err) {
-+			ast_log(LOG_WARNING, "Couldn't study regex '%s': %s\n",
-+					sw_normalize_user_match, err);
++		ppat = pcre2_compile((PCRE2_SPTR8)sw_normalize_user_match, PCRE2_ZERO_TERMINATED, 0, &errcode, &erroffset, NULL);
++		if (ppat == NULL) {
++			ast_log(LOG_WARNING, "Couldn't compile user match regex '%s': %d at offset %zd\n",
++					sw_normalize_user_match, errcode, erroffset);
 +			return -1;
 +		}
 +	}
@@ -193,14 +219,14 @@ index 9eca747..1ea3751 100644
  	/* Authenticate them and get their mailbox/password */
  
  	while (!valid && (logretries < max_logins)) {
-@@ -10832,6 +10966,18 @@ static int vm_authenticate(struct ast_channel *chan, char *mailbox, int mailbox_
+@@ -10832,6 +10980,18 @@ static int vm_authenticate(struct ast_channel *chan, char *mailbox, int mailbox_
  		if (useadsi)
  			adsi_password(chan);
  
-+		if(ppat && extra) {
++		if (ppat) {
 +			ast_log(LOG_NOTICE, "Trying to rewrite user input '%s' using s/%s/%s/\n",
 +					mailbox, sw_normalize_user_match, sw_normalize_user_replace);
-+			normalized_mailbox = pcre_subst(ppat, extra, mailbox, strlen(mailbox), 0, 0, sw_normalize_user_replace);
++			normalized_mailbox = pcre_subst(ppat, mailbox, strlen(mailbox), 0, 0, sw_normalize_user_replace);
 +			if(normalized_mailbox) {
 +				ast_log(LOG_NOTICE, "Rewrote mailbox user input '%s' to %s\n",
 +						mailbox, normalized_mailbox);
@@ -212,7 +238,7 @@ index 9eca747..1ea3751 100644
  		if (!ast_strlen_zero(prefix)) {
  			char fullusername[80];
  
-@@ -13167,6 +13313,8 @@ static int actual_load_config(int reload, struct ast_config *cfg, struct ast_con
+@@ -13167,6 +13327,8 @@ static int actual_load_config(int reload, struct ast_config *cfg, struct ast_con
  	char secretfn[PATH_MAX] = "";
  	long tps_queue_low;
  	long tps_queue_high;
@@ -221,7 +247,7 @@ index 9eca747..1ea3751 100644
  
  #ifdef IMAP_STORAGE
  	ast_copy_string(imapparentfolder, "\0", sizeof(imapparentfolder));
-@@ -13231,6 +13379,19 @@ static int actual_load_config(int reload, struct ast_config *cfg, struct ast_con
+@@ -13231,6 +13393,19 @@ static int actual_load_config(int reload, struct ast_config *cfg, struct ast_con
  			ast_copy_string(odbc_table, val, sizeof(odbc_table));
  		}
  #endif

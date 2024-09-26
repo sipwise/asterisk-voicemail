@@ -7,10 +7,10 @@ Subject: sipwise_vm_pointers_malloc
  1 file changed, 2 insertions(+)
 
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index 8061ffc..7d7368e 100644
+index 631e9d3..d9a0637 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -11315,6 +11315,8 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
+@@ -11329,6 +11329,8 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
  
  	/* Add the vm_state to the active list and keep it active */
  	vms.lastmsg = -1;

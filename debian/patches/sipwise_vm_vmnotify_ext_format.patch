@@ -7,7 +7,7 @@ Subject: sipwise_vm_vmnotify_ext_format
  1 file changed, 97 insertions(+), 36 deletions(-)
 
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index fda2659..30cbd95 100644
+index ef7e47e..2830900 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
 @@ -1091,6 +1091,8 @@ static int vm_msg_move(const char *mailbox, const char *context, size_t num_msgs
@@ -19,7 +19,7 @@ index fda2659..30cbd95 100644
  #ifdef TEST_FRAMEWORK
  static int vm_test_destroy_user(const char *context, const char *mailbox);
  static int vm_test_create_user(const char *context, const char *mailbox);
-@@ -5632,7 +5634,7 @@ static int sendmail(char *srcemail,
+@@ -5652,7 +5654,7 @@ static int sendmail(char *srcemail,
  	return 0;
  }
  
@@ -28,7 +28,7 @@ index fda2659..30cbd95 100644
  {
  	char arguments[2048];
  	char date[256];
-@@ -5641,6 +5643,7 @@ static void run_externpager(char *pager, char *dialed_num, char *cidnum, int dur
+@@ -5661,6 +5663,7 @@ static void run_externpager(char *pager, char *dialed_num, char *cidnum, int dur
  	char dur[PATH_MAX];
  	struct ast_tm tm;
  	struct ast_str *str1 = ast_str_create(16);
@@ -36,7 +36,7 @@ index fda2659..30cbd95 100644
  
  	if (!str1) {
  		return;
-@@ -5656,8 +5659,14 @@ static void run_externpager(char *pager, char *dialed_num, char *cidnum, int dur
+@@ -5676,8 +5679,14 @@ static void run_externpager(char *pager, char *dialed_num, char *cidnum, int dur
  
  		snprintf(dur, sizeof(dur), "%d:%02d", duration / 60, duration % 60);
  
@@ -53,7 +53,7 @@ index fda2659..30cbd95 100644
  
  		if (pagerbody) {
  			struct ast_channel *ast;
-@@ -6212,9 +6221,11 @@ static int inboxcount(const char *mailbox, int *newmsgs, int *oldmsgs)
+@@ -6232,9 +6241,11 @@ static int inboxcount(const char *mailbox, int *newmsgs, int *oldmsgs)
  	return res;
  }
  
@@ -67,7 +67,7 @@ index fda2659..30cbd95 100644
  	char ext_context[256] = "";
  	char number[256] = "";
  	int newvoicemails = 0, oldvoicemails = 0, urgentvoicemails = 0;
-@@ -6254,10 +6265,20 @@ static void run_externnotify(const char *context, const char *extension, const c
+@@ -6274,10 +6285,20 @@ static void run_externnotify(const char *context, const char *extension, const c
  		} else if (ast_strlen_zero(number) || !strcmp(extension, number)) {
  			ast_log(AST_LOG_WARNING, "Missing user number to run externnotify on context '%s'\n", ext_context);
  		} else {
@@ -92,7 +92,7 @@ index fda2659..30cbd95 100644
  			ast_debug(1, "Executing %s\n", arguments);
  			ast_safe_system(arguments);
  		}
-@@ -7978,6 +7999,59 @@ static void queue_mwi_event(const char *channel_id, const char *box, int urgent,
+@@ -7998,6 +8019,59 @@ static void queue_mwi_event(const char *channel_id, const char *box, int urgent,
  	}
  }
  
@@ -152,7 +152,7 @@ index fda2659..30cbd95 100644
  /*!
   * \brief Sends email notification that a user has a new voicemail waiting for them.
   * \param chan
-@@ -7998,6 +8072,8 @@ static int notify_new_message(struct ast_channel *chan, struct ast_vm_user *vmu,
+@@ -8018,6 +8092,8 @@ static int notify_new_message(struct ast_channel *chan, struct ast_vm_user *vmu,
  	int newmsgs = 0, oldmsgs = 0, urgentmsgs = 0;
  	const char *category;
  	char *myserveremail = serveremail;
@@ -161,7 +161,7 @@ index fda2659..30cbd95 100644
  
  	ast_channel_lock(chan);
  	if ((category = pbx_builtin_getvar_helper(chan, "VM_CATEGORY"))) {
-@@ -8055,7 +8131,7 @@ static int notify_new_message(struct ast_channel *chan, struct ast_vm_user *vmu,
+@@ -8075,7 +8151,7 @@ static int notify_new_message(struct ast_channel *chan, struct ast_vm_user *vmu,
  	}
  
  	if (!ast_strlen_zero(vmu->pager)) {
@@ -170,7 +170,7 @@ index fda2659..30cbd95 100644
  	}
  
  	if (ast_test_flag(vmu, VM_DELETE))
-@@ -8066,7 +8142,7 @@ static int notify_new_message(struct ast_channel *chan, struct ast_vm_user *vmu,
+@@ -8086,7 +8162,7 @@ static int notify_new_message(struct ast_channel *chan, struct ast_vm_user *vmu,
  		ast_app_inboxcount2(ext_context, &urgentmsgs, &newmsgs, &oldmsgs);
  
  	queue_mwi_event(ast_channel_uniqueid(chan), ext_context, urgentmsgs, newmsgs, oldmsgs);
@@ -179,7 +179,7 @@ index fda2659..30cbd95 100644
  
  #ifdef IMAP_STORAGE
  	vm_delete(fn);  /* Delete the file, but not the IMAP message */
-@@ -8111,35 +8187,20 @@ static int play_message_category(struct ast_channel *chan, const char *category)
+@@ -8131,35 +8207,20 @@ static int play_message_category(struct ast_channel *chan, const char *category)
  static int play_message_datetime(struct ast_channel *chan, struct ast_vm_user *vmu, const char *origtime, const char *filename)
  {
  	int res = 0;
@@ -221,7 +221,7 @@ index fda2659..30cbd95 100644
  /* No internal variable parsing for now, so we'll comment it out for the time being */
  #if 0
  	/* Set the DIFF_* variables */
-@@ -8156,8 +8217,8 @@ static int play_message_datetime(struct ast_channel *chan, struct ast_vm_user *v
+@@ -8176,8 +8237,8 @@ static int play_message_datetime(struct ast_channel *chan, struct ast_vm_user *v
  
  	/* Can't think of how other diffs might be helpful, but I'm sure somebody will think of something. */
  #endif
@@ -232,7 +232,7 @@ index fda2659..30cbd95 100644
  	} else if (!strncasecmp(ast_channel_language(chan), "de", 2)) {     /* GERMAN syntax */
  		res = ast_say_date_with_format(chan, t, AST_DIGIT_ANY, ast_channel_language(chan), "'vm-received' Q 'digits/at' HM", NULL);
  	} else if (!strncasecmp(ast_channel_language(chan), "gr", 2)) {     /* GREEK syntax */
-@@ -11802,7 +11863,7 @@ out:
+@@ -11816,7 +11877,7 @@ out:
  		int new = 0, old = 0, urgent = 0;
  		snprintf(ext_context, sizeof(ext_context), "%s@%s", vms.username, vmu->context);
  		/* Urgent flag not passwd to externnotify here */
@@ -241,7 +241,7 @@ index fda2659..30cbd95 100644
  		ast_app_inboxcount2(ext_context, &urgent, &new, &old);
  		queue_mwi_event(ast_channel_uniqueid(chan), ext_context, urgent, new, old);
  	}
-@@ -15719,7 +15780,7 @@ static void notify_new_state(struct ast_vm_user *vmu)
+@@ -15733,7 +15794,7 @@ static void notify_new_state(struct ast_vm_user *vmu)
  	char ext_context[1024];
  
  	snprintf(ext_context, sizeof(ext_context), "%s@%s", vmu->mailbox, vmu->context);
