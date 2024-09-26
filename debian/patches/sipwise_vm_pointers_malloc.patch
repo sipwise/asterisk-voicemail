@@ -3,28 +3,19 @@ Date: Mon, 21 Feb 2022 14:17:23 +0100
 Subject: sipwise_vm_pointers_malloc
 
 ---
- apps/app_voicemail.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ apps/app_voicemail.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index 58d92fa..049453f 100644
+index 8061ffc..7d7368e 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -1268,7 +1268,7 @@ static char *edit(const char *str, int len, const char *rep,
- 	slen = len;
- 	len -= mvec[1] - mvec[0];
- 	len += rlen = findreplen(rep, nmat, replen);
--	cp = res = pcre_malloc(len + 1);
-+	cp = res = ast_malloc(len + 1);
- 	if (mvec[0] > 0) {
- 		strncpy(cp, str, mvec[0]);
- 		cp += mvec[0];
 @@ -11315,6 +11315,8 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
  
  	/* Add the vm_state to the active list and keep it active */
  	vms.lastmsg = -1;
-+    vms.deleted = NULL;
-+    vms.heard = NULL;
++	vms.deleted = NULL;
++	vms.heard = NULL;
  
  	ast_test_suite_event_notify("START", "Message: vm_execmain started");
  	if (ast_channel_state(chan) != AST_STATE_UP) {

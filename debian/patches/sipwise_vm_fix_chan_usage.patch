@@ -1,16 +1,16 @@
 From: Sipwise Development Team <support@sipwise.com>
 Date: Mon, 21 Feb 2022 14:17:23 +0100
-Subject: sipwise_fix_chan_usage
+Subject: sipwise_vm_fix_chan_usage
 
 ---
  apps/app_voicemail.c | 2 ++
  1 file changed, 2 insertions(+)
 
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index 9c1e5d3..b11c94d 100644
+index a303308..0e7fb6a 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -14385,7 +14385,9 @@ AST_TEST_DEFINE(test_voicemail_msgcount)
+@@ -14631,7 +14631,9 @@ AST_TEST_DEFINE(test_voicemail_msgcount)
  			break;
  		}
  		open_mailbox(&vms, vmu, folder2mbox[i]);

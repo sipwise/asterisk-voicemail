@@ -9,7 +9,7 @@ and currently ignored per user
  1 file changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index 472e697..0584ab1 100644
+index cf23e99..2c04ac6 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
 @@ -1435,8 +1435,6 @@ static void apply_option(struct ast_vm_user *vmu, const char *var, const char *v
@@ -21,7 +21,7 @@ index 472e697..0584ab1 100644
  	} else if (!strcasecmp(var, "moveheard")){
  		ast_set2_flag(vmu, ast_true(value), VM_MOVEHEARD);
  	} else if (!strcasecmp(var, "sayduration")){
-@@ -14973,7 +14971,7 @@ static int advanced_options(struct ast_channel *chan, struct ast_vm_user *vmu, s
+@@ -14993,7 +14991,7 @@ static int advanced_options(struct ast_channel *chan, struct ast_vm_user *vmu, s
  		context = ast_variable_retrieve(msg_cfg, "message", "macrocontext");
  	switch (option) {
  	case 3: /* Play message envelope */

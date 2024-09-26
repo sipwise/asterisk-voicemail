@@ -1,6 +1,16 @@
+From: Sipwise Development Team <support@sipwise.com>
+Date: Thu, 26 Sep 2024 01:07:31 +0200
+Subject: sipwise_vm_fix_double_menu
+
+---
+ apps/app_voicemail.c | 11 +----------
+ 1 file changed, 1 insertion(+), 10 deletions(-)
+
+diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
+index 5256865..7e4aad9 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -12218,16 +12218,7 @@ static int vm_execmain(struct ast_channe
+@@ -12218,16 +12218,7 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
  					if (!cmd)
  						cmd = vm_instructions(chan, vmu, &vms, 1, in_urgent, nodelete);
  					break;

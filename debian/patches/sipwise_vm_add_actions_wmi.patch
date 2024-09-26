@@ -1,3 +1,13 @@
+From: Sipwise Development Team <support@sipwise.com>
+Date: Thu, 26 Sep 2024 01:07:31 +0200
+Subject: sipwise_vm_add_actions_wmi
+
+---
+ apps/app_voicemail.c | 296 +++++++++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 277 insertions(+), 19 deletions(-)
+
+diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
+index 185feae..5256865 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
 @@ -1043,6 +1043,52 @@ static int adsiver = 1;
@@ -53,7 +63,7 @@
  /* Forward declarations - generic */
  #ifdef ODBC_STORAGE
  static struct ast_vm_user *find_user_realtime_by_alias(struct ast_vm_user *ivm, const char *context, const char *alias);
-@@ -1065,8 +1111,9 @@ static void read_password_from_file(cons
+@@ -1065,8 +1111,9 @@ static void read_password_from_file(const char *secretfn, char *password, int pa
  static int write_password_to_file(const char *secretfn, const char *password);
  static const char *substitute_escapes(const char *value);
  static int message_range_and_existence_check(struct vm_state *vms, const char *msg_ids [], size_t num_msgs, int *msg_nums, struct ast_vm_user *vmu);
@@ -64,7 +74,7 @@
  
  
  /*!
-@@ -4427,9 +4474,11 @@ static void copy_file(char *sdir, int sm
+@@ -4427,9 +4474,11 @@ static void copy_file(char *sdir, int smsg, char *ddir, int dmsg, char *dmailbox
  	char msgnums[20];
  	char msgnumd[20];
  	char msg_id[MSG_ID_LEN];
@@ -78,7 +88,7 @@
  
  	generate_msg_id(msg_id);
  	delete_file(ddir, dmsg);
-@@ -4441,7 +4490,10 @@ static void copy_file(char *sdir, int sm
+@@ -4441,7 +4490,10 @@ static void copy_file(char *sdir, int smsg, char *ddir, int dmsg, char *dmailbox
  
  	snprintf(msgnums, sizeof(msgnums), "%d", smsg);
  	snprintf(msgnumd, sizeof(msgnumd), "%d", dmsg);
@@ -90,16 +100,7 @@
  	stmt = ast_odbc_prepare_and_execute(obj, generic_prepare, &gps);
  	if (!stmt)
  		ast_log(AST_LOG_WARNING, "SQL Execute error!\n[%s] (You probably don't have MySQL 4.1 or later installed)\n\n", sql);
-@@ -4620,7 +4672,7 @@ static int store_file(const char *dir, c
- 		idata.data = fdm;
- 		idata.datalen = idata.indlen = fdlen;
- 
--		if ((call_id = pbx_builtin_getvar_helper(chan, "SIPCALLID"))) {
-+		if ((call_id = pbx_builtin_getvar_helper(chan, "IDENTIFIER"))) {
- 			if (!ast_strlen_zero(call_id))
- 				idata.call_id = ast_strdupa(call_id);
- 		}
-@@ -6261,8 +6313,9 @@ static int inboxcount(const char *mailbo
+@@ -6261,8 +6313,9 @@ static int inboxcount(const char *mailbox, int *newmsgs, int *oldmsgs)
  	return res;
  }
  
@@ -110,7 +111,7 @@
  	char arguments[2048];
  	char date[256];
  	struct ast_tm tm;
-@@ -6305,14 +6358,39 @@ static void run_externnotify(const char
+@@ -6305,14 +6358,39 @@ static void run_externnotify(const char *context, const char *extension, const c
  		} else if (ast_strlen_zero(number) || !strcmp(extension, number)) {
  			ast_log(AST_LOG_WARNING, "Missing user number to run externnotify on context '%s'\n", ext_context);
  		} else {
@@ -152,10 +153,10 @@
  						 oldvoicemails, urgentvoicemails,
 -						 msgnum, cidnum, date, duration);
 +						 msgnum, (cidnum == NULL?"-1":cidnum), date, duration, actions);
- 			} else { // original short notify
+ 			} else { // original short notify + extension
  				snprintf(arguments, sizeof(arguments), "%s %s %s %s %d %d %d &",
  						 externnotify, S_OR(context, "\"\""),
-@@ -6398,6 +6476,9 @@ static int msg_create_from_file(struct a
+@@ -6398,6 +6476,9 @@ static int msg_create_from_file(struct ast_vm_recording_data *recdata)
  	const char *category = NULL; /* pointless for now */
  	char msg_id[MSG_ID_LEN];
  
@@ -165,7 +166,7 @@
  	/* Start by checking to see if the file actually exists... */
  	if (!(ast_fileexists(recdata->recording_file, recdata->recording_ext, NULL))) {
  		ast_log(LOG_ERROR, "File: %s not found.\n", recdata->recording_file);
-@@ -6654,7 +6735,9 @@ static int msg_create_from_file(struct a
+@@ -6654,7 +6735,9 @@ static int msg_create_from_file(struct ast_vm_recording_data *recdata)
  			if (send_email) { /* We tried and failed. */
  				ast_log(LOG_WARNING, "Failed to allocate dummy channel, email will not be sent\n");
  			}
@@ -176,7 +177,7 @@
  		}
  	}
  
-@@ -8144,6 +8227,74 @@ static void load_vmu_timezone(struct ast
+@@ -8144,6 +8227,74 @@ static void load_vmu_timezone(struct ast_vm_user *vmu)
  	return;
  }
  
@@ -251,7 +252,7 @@
  /*!
   * \brief Sends email notification that a user has a new voicemail waiting for them.
   * \param chan
-@@ -8167,6 +8318,9 @@ static int notify_new_message(struct ast
+@@ -8167,6 +8318,9 @@ static int notify_new_message(struct ast_channel *chan, struct ast_vm_user *vmu,
  	struct timeval msg_time = ast_tvnow();
  	struct vm_zone *tz = get_vmu_timezone(vmu);
  
@@ -261,7 +262,7 @@
  	ast_channel_lock(chan);
  	if ((category = pbx_builtin_getvar_helper(chan, "VM_CATEGORY"))) {
  		category = ast_strdupa(category);
-@@ -8234,7 +8388,9 @@ static int notify_new_message(struct ast
+@@ -8234,7 +8388,9 @@ static int notify_new_message(struct ast_channel *chan, struct ast_vm_user *vmu,
  		ast_app_inboxcount2(ext_context, &urgentmsgs, &newmsgs, &oldmsgs);
  
  	queue_mwi_event(ast_channel_uniqueid(chan), ext_context, urgentmsgs, newmsgs, oldmsgs);
@@ -272,7 +273,7 @@
  
  #ifdef IMAP_STORAGE
  	vm_delete(fn);  /* Delete the file, but not the IMAP message */
-@@ -11406,12 +11562,15 @@ static int vm_execmain(struct ast_channe
+@@ -11406,6 +11562,9 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
  #ifdef IMAP_STORAGE
  	int deleted = 0;
  #endif
@@ -282,15 +283,7 @@
  
  	/* Add the vm_state to the active list and keep it active */
  	vms.curmsg = -1;
- 	vms.lastmsg = -1;
--    vms.deleted = NULL;
--    vms.heard = NULL;
-+	vms.deleted = NULL;
-+	vms.heard = NULL;
- 
- 	ast_test_suite_event_notify("START", "Message: vm_execmain started");
- 	if (ast_channel_state(chan) != AST_STATE_UP) {
-@@ -11596,6 +11755,11 @@ static int vm_execmain(struct ast_channe
+@@ -11596,6 +11755,11 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
  		if (vms.lastmsg == -1) {
  			in_urgent = 0;
  			cmd = vm_browse_messages(chan, &vms, vmu);
@@ -302,7 +295,7 @@
  			res = 0;
  			goto out;
  		}
-@@ -11671,6 +11835,11 @@ static int vm_execmain(struct ast_channe
+@@ -11671,6 +11835,11 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
  		case '5': /* Play current message */
  			ast_test_suite_event_notify("BROWSE", "Message: browsing message %d\r\nVoicemail: %d", vms.curmsg, vms.curmsg);
  			cmd = vm_browse_messages(chan, &vms, vmu);
@@ -314,7 +307,7 @@
  			break;
  		case '2': /* Change folders */
  			folder_change = 1;
-@@ -11761,6 +11930,11 @@ static int vm_execmain(struct ast_channe
+@@ -11761,6 +11930,11 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
  			if (vms.curmsg > 0) {
  				vms.curmsg--;
  				cmd = play_message(chan, vmu, &vms);
@@ -326,7 +319,7 @@
  			} else {
  				/* Check if we were listening to new
  				   messages.  If so, go to Urgent messages
-@@ -11783,6 +11957,11 @@ static int vm_execmain(struct ast_channe
+@@ -11783,6 +11957,11 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
  				} else if (ast_test_flag(vmu, VM_MESSAGEWRAP) && vms.lastmsg > 0) {
  					vms.curmsg = vms.lastmsg;
  					cmd = play_message(chan, vmu, &vms);
@@ -338,7 +331,7 @@
  				} else {
  					cmd = ast_play_and_wait(chan, "vm-nomore");
  				}
-@@ -11793,6 +11972,11 @@ static int vm_execmain(struct ast_channe
+@@ -11793,6 +11972,11 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
  			if (vms.curmsg < vms.lastmsg) {
  				vms.curmsg++;
  				cmd = play_message(chan, vmu, &vms);
@@ -350,7 +343,7 @@
  			} else {
  				if (in_urgent && vms.newmessages > 0) {
  					/* Check if we were listening to urgent
-@@ -11814,6 +11998,11 @@ static int vm_execmain(struct ast_channe
+@@ -11814,6 +11998,11 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
  				} else if (ast_test_flag(vmu, VM_MESSAGEWRAP) && vms.lastmsg > 0) {
  					vms.curmsg = 0;
  					cmd = play_message(chan, vmu, &vms);
@@ -362,7 +355,7 @@
  				} else {
  					cmd = ast_play_and_wait(chan, "vm-nomore");
  				}
-@@ -11835,6 +12024,9 @@ static int vm_execmain(struct ast_channe
+@@ -11835,6 +12024,9 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
  					else if (play_folder == 1)
  						vms.oldmessages--;
  					cmd = ast_play_and_wait(chan, "vm-deleted");
@@ -372,7 +365,7 @@
  				} else {
  					if (play_folder == 0) {
  						if (in_urgent) {
-@@ -11846,14 +12038,27 @@ static int vm_execmain(struct ast_channe
+@@ -11846,14 +12038,27 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
  					else if (play_folder == 1)
  						vms.oldmessages++;
  					cmd = ast_play_and_wait(chan, "vm-undeleted");
@@ -400,7 +393,7 @@
  					} else {
  						/* Check if we were listening to urgent
  						   messages.  If so, go to regular new messages
-@@ -11904,6 +12109,29 @@ static int vm_execmain(struct ast_channe
+@@ -11904,6 +12109,29 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
  			} else if (cmd > 0) {
  				box = cmd = cmd - '0';
  				cmd = save_to_folder(vmu, &vms, vms.curmsg, cmd, NULL, 0);
@@ -430,7 +423,7 @@
  				if (cmd == ERROR_LOCK_PATH) {
  					res = cmd;
  					goto out;
-@@ -11935,9 +12163,19 @@ static int vm_execmain(struct ast_channe
+@@ -11935,9 +12163,19 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
  				if (vms.curmsg < vms.lastmsg) {
  					vms.curmsg++;
  					cmd = play_message(chan, vmu, &vms);
@@ -475,7 +468,7 @@
  	ast_app_inboxcount2(ext_context, &urgent, &new, &old);
  	queue_mwi_event(NULL, ext_context, urgent, new, old);
  }
-@@ -16008,6 +16246,9 @@ static int vm_msg_forward(const char *fr
+@@ -16008,6 +16246,9 @@ static int vm_msg_forward(const char *from_mailbox,
  	int i;
  	int *msg_nums;
  
@@ -496,7 +489,7 @@
  	}
  
  	free_user(vmu);
-@@ -16145,6 +16388,9 @@ static int vm_msg_move(const char *mailb
+@@ -16145,6 +16388,9 @@ static int vm_msg_move(const char *mailbox,
  	int i;
  	int *old_msg_nums;
  
@@ -517,7 +510,7 @@
  	}
  
  	free_user(vmu);
-@@ -16247,6 +16495,9 @@ static int vm_msg_remove(const char *mai
+@@ -16247,6 +16495,9 @@ static int vm_msg_remove(const char *mailbox,
  	int i;
  	int *msg_nums;
  
@@ -538,7 +531,7 @@
  	}
  
  	free_user(vmu);
-@@ -16349,6 +16602,9 @@ static int vm_msg_play(struct ast_channe
+@@ -16349,6 +16602,9 @@ static int vm_msg_play(struct ast_channel *chan,
  	int duration = 0;
  	const char *value;
  

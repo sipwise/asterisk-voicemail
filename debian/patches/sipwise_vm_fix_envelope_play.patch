@@ -3,36 +3,26 @@ Date: Mon, 21 Feb 2022 14:17:23 +0100
 Subject: sipwise_vm_fix_envelope_play
 
 ---
- apps/app_voicemail.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ apps/app_voicemail.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index 3bcd05d..58d92fa 100644
+index 0e7fb6a..9105e1a 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -11615,11 +11615,25 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
- 			vms.repeats = 0;
- 			while ((cmd > -1) && (cmd != 't') && (cmd != '#')) {
- 				switch (cmd) {
-+				case '3': // Envelope
-+					if (vms.lastmsg > -1 && !vms.starting) {
-+						ast_safe_sleep(chan,500);
-+						cmd = advanced_options(chan, vmu, &vms, vms.curmsg, 3, record_gain);
-+						if (cmd == ERROR_LOCK_PATH) {
-+							res = cmd;
-+							goto out;
-+						}
-+					} else {
-+						cmd = ast_play_and_wait(chan, "vm-sorry");
-+					}
-+					cmd = 't';
-+					break;
- 				case '*': /* Return to main menu */
- 					cmd = 't';
+@@ -11809,6 +11809,7 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
+ 					break;
+ 				case '3': /* Envelope */
+ 					if (vms.lastmsg > -1 && !vms.starting) {
++						ast_safe_sleep(chan, 500);
+ 						cmd = advanced_options(chan, vmu, &vms, vms.curmsg, 3, record_gain);
+ 						if (cmd == ERROR_LOCK_PATH) {
+ 							res = cmd;
+@@ -11850,6 +11851,7 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
  					break;
  
  				default:
-+					ast_safe_sleep(chan,500);
++					ast_safe_sleep(chan, 500);
  					cmd = 0;
- 					if (!cmd && !vms.starting) {
- 						cmd = ast_play_and_wait(chan, "vm-tohearenv");
+ 					if (!vms.starting) {
+ 						cmd = ast_play_and_wait(chan, "vm-toreply");

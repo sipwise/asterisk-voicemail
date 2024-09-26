@@ -7,7 +7,7 @@ Subject: sipwise_vm_store_message_add_diag_info
  1 file changed, 13 insertions(+), 1 deletion(-)
 
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index b11c94d..3bcd05d 100644
+index f4ca726..8061ffc 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
 @@ -4478,6 +4478,10 @@ static SQLHSTMT insert_data_cb(struct odbc_obj *obj, void *vdata)

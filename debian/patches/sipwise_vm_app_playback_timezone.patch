@@ -1,6 +1,6 @@
 From: Sipwise Development Team <support@sipwise.com>
 Date: Mon, 21 Feb 2022 14:17:23 +0100
-Subject: sipwise_app_playback_timezone
+Subject: sipwise_vm_app_playback_timezone
 
 ---
  apps/app_playback.c | 44 +++++++++++++++++++++++++++++++++++++++++++-

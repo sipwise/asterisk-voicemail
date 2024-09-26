@@ -7,7 +7,7 @@ Subject: sipwise_vm_ast_load_realtime_use_uuid
  1 file changed, 18 insertions(+), 5 deletions(-)
 
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index 1ec826c..7bed701 100644
+index 753e3c2..f4ca726 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
 @@ -1752,7 +1752,7 @@ static int is_valid_dtmf(const char *key)
@@ -46,7 +46,7 @@ index 1ec826c..7bed701 100644
  #endif
  	}
  	if (!vmu && !ast_strlen_zero(aliasescontext)) {
-@@ -4131,6 +4137,7 @@ static struct ast_vm_user *find_user_realtime_by_alias(struct ast_vm_user *ivm,
+@@ -4133,6 +4139,7 @@ static struct ast_vm_user *find_user_realtime_by_alias(struct ast_vm_user *ivm,
  		"where customer_id = ?";
  	struct generic_prepare_struct gps_uuid = { .sql = sql_uuid, .argc = 1, .argv = argv };
  	struct odbc_obj *obj = NULL;
@@ -54,7 +54,7 @@ index 1ec826c..7bed701 100644
  	SQLHSTMT stmt = NULL;
  
  	obj = ast_odbc_request_obj(odbc_database, 0);
-@@ -4145,6 +4152,8 @@ static struct ast_vm_user *find_user_realtime_by_alias(struct ast_vm_user *ivm,
+@@ -4147,6 +4154,8 @@ static struct ast_vm_user *find_user_realtime_by_alias(struct ast_vm_user *ivm,
  		ast_log(LOG_NOTICE, "Failed to fetch mailbox for uuid '%s', falling back to alias search\n", alias);
  		SQLFreeHandle (SQL_HANDLE_STMT, stmt);
  
@@ -63,7 +63,7 @@ index 1ec826c..7bed701 100644
  		stmt = ast_odbc_prepare_and_execute(obj, generic_prepare, &gps);
  		if (!stmt) {
  			ast_log(LOG_WARNING, "SQL Execute error!\n[%s]\n\n", sql);
-@@ -4171,7 +4180,11 @@ static struct ast_vm_user *find_user_realtime_by_alias(struct ast_vm_user *ivm,
+@@ -4173,7 +4182,11 @@ static struct ast_vm_user *find_user_realtime_by_alias(struct ast_vm_user *ivm,
  	ast_odbc_release_obj(obj);
  
  	ast_log(LOG_NOTICE, "Found mailbox '%s' for alias '%s'\n", mailbox, alias);

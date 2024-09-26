@@ -1,0 +1,49 @@
+From: Sipwise Development Team <support@sipwise.com>
+Date: Mon, 21 Feb 2022 14:17:23 +0100
+Subject: sipwise_fix_compile_warnings
+
+Silence some warnings for now. And initialize a couple of struct
+members.
+---
+ Makefile             | 5 +++++
+ apps/app_voicemail.c | 4 ++--
+ 2 files changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 393aefc..9ee80e1 100644
+--- a/Makefile
++++ b/Makefile
+@@ -18,6 +18,11 @@ DEBUG=-g
+ LIBS+=
+ CFLAGS+=-pipe -fPIC
+ CFLAGS+=-Wall -Wextra -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations
++CFLAGS+=-Wno-format-truncation
++CFLAGS+=-Wno-missing-field-initializers
++CFLAGS+=-Wno-sign-compare
++CFLAGS+=-Wno-unused-parameter
++CFLAGS+=-Wno-unused-variable
+ CFLAGS+=-D_REENTRANT -D_GNU_SOURCE -DODBC_STORAGE
+ 
+ all: _all
+diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
+index 69371b0..8cc4c93 100644
+--- a/apps/app_voicemail.c
++++ b/apps/app_voicemail.c
+@@ -4800,7 +4800,7 @@ static void prep_email_sub_vars(struct ast_channel *ast, struct ast_vm_user *vmu
+ 	}
+ 
+ 	if ((origtime = ast_variable_retrieve(msg_cfg, "message", "origtime")) && sscanf(origtime, "%30d", &inttime) == 1) {
+-		struct timeval tv = { inttime, };
++		struct timeval tv = { inttime, 0 };
+ 		struct ast_tm tm;
+ 		ast_localtime(&tv, &tm, NULL);
+ 		ast_strftime_locale(origdate, sizeof(origdate), emaildateformat, &tm, S_OR(vmu->locale, NULL));
+@@ -5201,7 +5201,7 @@ static void make_email_file(FILE *p,
+ 				/* You might be tempted to do origdate, except that a) it's in the wrong
+ 				 * format, and b) it's missing for IMAP recordings. */
+ 				if ((v = ast_variable_retrieve(msg_cfg, "message", "origtime")) && sscanf(v, "%30d", &inttime) == 1) {
+-					struct timeval tv = { inttime, };
++					struct timeval tv = { inttime, 0 };
+ 					struct ast_tm tm;
+ 					ast_localtime(&tv, &tm, NULL);
+ 					ast_strftime_locale(origdate, sizeof(origdate), emaildateformat, &tm, S_OR(vmu->locale, NULL));
