@@ -9,6 +9,7 @@ Build-Depends:
  asterisk-dev,
  debhelper-compat (= 13),
  libpcre2-dev,
+ pkgconf,
  quilt,
  unixodbc-dev,
 
