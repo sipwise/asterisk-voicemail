@@ -7,10 +7,10 @@ Subject: sipwise_vm_store_message_add_diag_info
  1 file changed, 13 insertions(+), 1 deletion(-)
 
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index 3a1bf19..631e9d3 100644
+index 606079c..48724c4 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -4498,6 +4498,10 @@ static SQLHSTMT insert_data_cb(struct odbc_obj *obj, void *vdata)
+@@ -4502,6 +4502,10 @@ static SQLHSTMT insert_data_cb(struct odbc_obj *obj, void *vdata)
  	int res;
  	SQLHSTMT stmt;
  
@@ -21,7 +21,7 @@ index 3a1bf19..631e9d3 100644
  	res = SQLAllocHandle(SQL_HANDLE_STMT, obj->con, &stmt);
  	if (!SQL_SUCCEEDED(res)) {
  		ast_log(AST_LOG_WARNING, "SQL Alloc Handle failed!\n");
-@@ -4524,7 +4528,8 @@ static SQLHSTMT insert_data_cb(struct odbc_obj *obj, void *vdata)
+@@ -4528,7 +4532,8 @@ static SQLHSTMT insert_data_cb(struct odbc_obj *obj, void *vdata)
  	}
  	res = ast_odbc_execute_sql(obj, stmt, data->sql);
  	if (!SQL_SUCCEEDED(res)) {
@@ -31,7 +31,7 @@ index 3a1bf19..631e9d3 100644
  		SQLFreeHandle(SQL_HANDLE_STMT, stmt);
  		return NULL;
  	}
-@@ -4657,6 +4662,13 @@ static int store_file(const char *dir, const char *mailboxuser, const char *mail
+@@ -4661,6 +4666,13 @@ static int store_file(const char *dir, const char *mailboxuser, const char *mail
  			SQLFreeHandle(SQL_HANDLE_STMT, stmt);
  		} else {
  			ast_log(AST_LOG_WARNING, "SQL Execute error!\n[%s]\n\n", sql);

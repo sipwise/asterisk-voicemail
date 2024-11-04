@@ -33,7 +33,7 @@ index 9ee80e1..69eccd0 100644
  all: _all
  	@echo " +-------- app_voicemail Build Complete --------+"
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index 9eca747..c0a9aee 100644
+index d863f12..7833ae1 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
 @@ -112,6 +112,9 @@
@@ -190,7 +190,7 @@ index 9eca747..c0a9aee 100644
  /*!
   * \brief Strips control and non 7-bit clean characters from input string.
   *
-@@ -10793,6 +10926,10 @@ static int vm_authenticate(struct ast_channel *chan, char *mailbox, int mailbox_
+@@ -10797,6 +10930,10 @@ static int vm_authenticate(struct ast_channel *chan, char *mailbox, int mailbox_
  	int useadsi = 0, valid = 0, logretries = 0;
  	char password[AST_MAX_EXTENSION], *passptr = NULL;
  	struct ast_vm_user vmus, *vmu = NULL;
@@ -201,7 +201,7 @@ index 9eca747..c0a9aee 100644
  
  	/* If ADSI is supported, setup login screen */
  	adsi_begin(chan, &useadsi);
-@@ -10803,6 +10940,17 @@ static int vm_authenticate(struct ast_channel *chan, char *mailbox, int mailbox_
+@@ -10807,6 +10944,17 @@ static int vm_authenticate(struct ast_channel *chan, char *mailbox, int mailbox_
  		return -1;
  	}
  
@@ -219,7 +219,7 @@ index 9eca747..c0a9aee 100644
  	/* Authenticate them and get their mailbox/password */
  
  	while (!valid && (logretries < max_logins)) {
-@@ -10832,6 +10980,18 @@ static int vm_authenticate(struct ast_channel *chan, char *mailbox, int mailbox_
+@@ -10836,6 +10984,18 @@ static int vm_authenticate(struct ast_channel *chan, char *mailbox, int mailbox_
  		if (useadsi)
  			adsi_password(chan);
  
@@ -238,7 +238,7 @@ index 9eca747..c0a9aee 100644
  		if (!ast_strlen_zero(prefix)) {
  			char fullusername[80];
  
-@@ -13167,6 +13327,8 @@ static int actual_load_config(int reload, struct ast_config *cfg, struct ast_con
+@@ -13171,6 +13331,8 @@ static int actual_load_config(int reload, struct ast_config *cfg, struct ast_con
  	char secretfn[PATH_MAX] = "";
  	long tps_queue_low;
  	long tps_queue_high;
@@ -247,7 +247,7 @@ index 9eca747..c0a9aee 100644
  
  #ifdef IMAP_STORAGE
  	ast_copy_string(imapparentfolder, "\0", sizeof(imapparentfolder));
-@@ -13231,6 +13393,19 @@ static int actual_load_config(int reload, struct ast_config *cfg, struct ast_con
+@@ -13235,6 +13397,19 @@ static int actual_load_config(int reload, struct ast_config *cfg, struct ast_con
  			ast_copy_string(odbc_table, val, sizeof(odbc_table));
  		}
  #endif
