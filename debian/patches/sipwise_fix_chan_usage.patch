@@ -7,10 +7,10 @@ Subject: sipwise_fix_chan_usage
  1 file changed, 2 insertions(+)
 
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index df669f9..565f873 100644
+index 691b730..8320012 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -15456,7 +15456,9 @@ AST_TEST_DEFINE(test_voicemail_msgcount)
+@@ -15460,7 +15460,9 @@ AST_TEST_DEFINE(test_voicemail_msgcount)
  			break;
  		}
  		open_mailbox(&vms, vmu, folder2mbox[i]);
