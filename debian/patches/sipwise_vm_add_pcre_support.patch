@@ -21,7 +21,7 @@ index 67ec08d..ad0c960 100644
  CFLAGS+=-Wall -Wextra -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations
  CFLAGS+=-D_REENTRANT -D_GNU_SOURCE -DODBC_STORAGE
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index 8769654..692e796 100644
+index 94ba82f..211c4af 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
 @@ -50,6 +50,7 @@
@@ -166,7 +166,7 @@ index 8769654..692e796 100644
  /*!
   * \brief Strips control and non 7-bit clean characters from input string.
   *
-@@ -8011,6 +8125,8 @@ static int get_folder2(struct ast_channel *chan, char *fn, int start)
+@@ -8015,6 +8129,8 @@ static int get_folder2(struct ast_channel *chan, char *fn, int start)
   * This is invoked from forward_message() when performing a forward operation (option 8 from main menu).
   * \return zero on success, -1 on error.
   */
@@ -175,7 +175,7 @@ index 8769654..692e796 100644
  static int vm_forwardoptions(struct ast_channel *chan, struct ast_vm_user *vmu, char *curdir, int curmsg, char *vm_fmts,
  			char *context, signed char record_gain, long *duration, struct vm_state *vms, char *flag)
  {
-@@ -8172,6 +8288,7 @@ static int vm_forwardoptions(struct ast_channel *chan, struct ast_vm_user *vmu,
+@@ -8176,6 +8292,7 @@ static int vm_forwardoptions(struct ast_channel *chan, struct ast_vm_user *vmu,
  		cmd = 0;
  	return cmd;
  }
@@ -183,7 +183,7 @@ index 8769654..692e796 100644
  
  static void queue_mwi_event(const char *channel_id, const char *box, int urgent, int new, int old)
  {
-@@ -8332,6 +8449,8 @@ static int notify_new_message(struct ast_channel *chan, struct ast_vm_user *vmu,
+@@ -8336,6 +8453,8 @@ static int notify_new_message(struct ast_channel *chan, struct ast_vm_user *vmu,
   *
   * \return zero on success, -1 on error.
   */
@@ -192,7 +192,7 @@ index 8769654..692e796 100644
  static int forward_message(struct ast_channel *chan, char *context, struct vm_state *vms, struct ast_vm_user *sender, char *fmt, int is_new_message, signed char record_gain, int urgent)
  {
  #ifdef IMAP_STORAGE
-@@ -8671,6 +8790,7 @@ static int forward_message(struct ast_channel *chan, char *context, struct vm_st
+@@ -8675,6 +8794,7 @@ static int forward_message(struct ast_channel *chan, char *context, struct vm_st
  	}
  	return res ? res : cmd;
  }
@@ -200,7 +200,7 @@ index 8769654..692e796 100644
  
  static int wait_file2(struct ast_channel *chan, struct vm_state *vms, char *file)
  {
-@@ -11421,6 +11541,11 @@ static int vm_authenticate(struct ast_channel *chan, char *mailbox, int mailbox_
+@@ -11425,6 +11545,11 @@ static int vm_authenticate(struct ast_channel *chan, char *mailbox, int mailbox_
  	int useadsi = 0, valid = 0, logretries = 0;
  	char password[AST_MAX_EXTENSION], *passptr = NULL;
  	struct ast_vm_user vmus, *vmu = NULL;
@@ -212,7 +212,7 @@ index 8769654..692e796 100644
  
  	/* If ADSI is supported, setup login screen */
  	adsi_begin(chan, &useadsi);
-@@ -11431,6 +11556,22 @@ static int vm_authenticate(struct ast_channel *chan, char *mailbox, int mailbox_
+@@ -11435,6 +11560,22 @@ static int vm_authenticate(struct ast_channel *chan, char *mailbox, int mailbox_
  		return -1;
  	}
  
@@ -235,7 +235,7 @@ index 8769654..692e796 100644
  	/* Authenticate them and get their mailbox/password */
  
  	while (!valid && (logretries < max_logins)) {
-@@ -11460,6 +11601,18 @@ static int vm_authenticate(struct ast_channel *chan, char *mailbox, int mailbox_
+@@ -11464,6 +11605,18 @@ static int vm_authenticate(struct ast_channel *chan, char *mailbox, int mailbox_
  		if (useadsi)
  			adsi_password(chan);
  
@@ -254,7 +254,7 @@ index 8769654..692e796 100644
  		if (!ast_strlen_zero(prefix)) {
  			char fullusername[80];
  
-@@ -14057,6 +14210,8 @@ static int actual_load_config(int reload, struct ast_config *cfg, struct ast_con
+@@ -14061,6 +14214,8 @@ static int actual_load_config(int reload, struct ast_config *cfg, struct ast_con
  	char secretfn[PATH_MAX] = "";
  	long tps_queue_low;
  	long tps_queue_high;
@@ -263,7 +263,7 @@ index 8769654..692e796 100644
  
  #ifdef IMAP_STORAGE
  	ast_copy_string(imapparentfolder, "\0", sizeof(imapparentfolder));
-@@ -14121,6 +14276,19 @@ static int actual_load_config(int reload, struct ast_config *cfg, struct ast_con
+@@ -14125,6 +14280,19 @@ static int actual_load_config(int reload, struct ast_config *cfg, struct ast_con
  			ast_copy_string(odbc_table, val, sizeof(odbc_table));
  		}
  #endif
