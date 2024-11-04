@@ -3,11 +3,11 @@ Date: Mon, 4 Nov 2024 15:37:29 +0100
 Subject: sipwise_vm_find_user_by_alias
 
 ---
- apps/app_voicemail.c | 67 ++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 67 insertions(+)
+ apps/app_voicemail.c | 71 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 71 insertions(+)
 
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index 3cecd23..8769654 100644
+index 3cecd23..94ba82f 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
 @@ -1139,6 +1139,9 @@ static char emaildateformat[32] = "%A, %B %d, %Y at %r";
@@ -33,7 +33,7 @@ index 3cecd23..8769654 100644
  	}
  	if (!vmu && !ast_strlen_zero(aliasescontext)) {
  		struct alias_mailbox_mapping *mapping;
-@@ -4090,6 +4098,65 @@ bail:
+@@ -4090,6 +4098,69 @@ bail:
  	return x - 1;
  }
  
@@ -55,6 +55,10 @@ index 3cecd23..8769654 100644
 +	SQLHSTMT stmt = NULL;
 +
 +	obj = ast_odbc_request_obj(odbc_database, 0);
++	if (!obj) {
++		ast_log(LOG_WARNING, "Failed to obtain database object for '%s'!\n", odbc_database);
++		return NULL;
++	}
 +	stmt = ast_odbc_prepare_and_execute(obj, generic_prepare, &gps);
 +	if (!stmt) {
 +		ast_log(LOG_WARNING, "SQL Execute error!\n[%s]\n\n", sql);

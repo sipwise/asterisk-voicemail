@@ -7,10 +7,10 @@ Subject: sipwise_vm_add_arabic_support
  1 file changed, 94 insertions(+), 2 deletions(-)
 
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index 305f558..12f80af 100644
+index c969cc2..70efc6c 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -9273,8 +9273,10 @@ static int play_message(struct ast_channel *chan, struct ast_vm_user *vmu, struc
+@@ -9277,8 +9277,10 @@ static int play_message(struct ast_channel *chan, struct ast_vm_user *vmu, struc
  	make_file(vms->fn, sizeof(vms->fn), vms->curdir, vms->curmsg);
  	adsi_message(chan, vms);
  
@@ -23,7 +23,7 @@ index 305f558..12f80af 100644
  		if (!vms->curmsg) {
  			res = wait_file2(chan, vms, "vm-first");	/* "First" */
  		} else if (vms->curmsg == vms->lastmsg) {
-@@ -9322,6 +9324,18 @@ static int play_message(struct ast_channel *chan, struct ast_vm_user *vmu, struc
+@@ -9326,6 +9328,18 @@ static int play_message(struct ast_channel *chan, struct ast_vm_user *vmu, struc
  			}
  			if (!res)
  				res = wait_file2(chan, vms, "vm-message");
@@ -42,7 +42,7 @@ index 305f558..12f80af 100644
  		/* HEBREW syntax */
  		} else if (!strncasecmp(ast_channel_language(chan), "he", 2)) {
  			if (!vms->curmsg) {
-@@ -9764,6 +9778,8 @@ static int vm_play_folder_name(struct ast_channel *chan, char *box)
+@@ -9768,6 +9782,8 @@ static int vm_play_folder_name(struct ast_channel *chan, char *box)
  		return cmd ? cmd : ast_play_and_wait(chan, box);
  	} else if (!strncasecmp(ast_channel_language(chan), "gr", 2)) {
  		return vm_play_folder_name_gr(chan, box);
@@ -51,7 +51,7 @@ index 305f558..12f80af 100644
  	} else if (!strncasecmp(ast_channel_language(chan), "he", 2)) {  /* Hebrew syntax */
  		return ast_play_and_wait(chan, box);
  	} else if (!strncasecmp(ast_channel_language(chan), "ja", 2)) {  /* Japanese syntax */
-@@ -9925,6 +9941,59 @@ static int vm_intro_multilang(struct ast_channel *chan, struct vm_state *vms, co
+@@ -9929,6 +9945,59 @@ static int vm_intro_multilang(struct ast_channel *chan, struct vm_state *vms, co
  	return res;
  }
  
@@ -111,7 +111,7 @@ index 305f558..12f80af 100644
  /* Default Hebrew syntax */
  static int vm_intro_he(struct ast_channel *chan, struct vm_state *vms)
  {
-@@ -10910,6 +10979,8 @@ static int vm_intro(struct ast_channel *chan, struct ast_vm_user *vmu, struct vm
+@@ -10914,6 +10983,8 @@ static int vm_intro(struct ast_channel *chan, struct ast_vm_user *vmu, struct vm
  		return vm_intro_fr(chan, vms);
  	} else if (!strncasecmp(ast_channel_language(chan), "gr", 2)) {  /* GREEK syntax */
  		return vm_intro_gr(chan, vms);
@@ -120,7 +120,7 @@ index 305f558..12f80af 100644
  	} else if (!strncasecmp(ast_channel_language(chan), "he", 2)) {  /* HEBREW syntax */
  		return vm_intro_he(chan, vms);
  	} else if (!strncasecmp(ast_channel_language(chan), "is", 2)) {  /* ICELANDIC syntax */
-@@ -11516,6 +11587,23 @@ static int vm_browse_messages_gr(struct ast_channel *chan, struct vm_state *vms,
+@@ -11520,6 +11591,23 @@ static int vm_browse_messages_gr(struct ast_channel *chan, struct vm_state *vms,
  	return cmd;
  }
  
@@ -144,7 +144,7 @@ index 305f558..12f80af 100644
  /* Hebrew Syntax */
  static int vm_browse_messages_he(struct ast_channel *chan, struct vm_state *vms, struct ast_vm_user *vmu)
  {
-@@ -11754,6 +11842,8 @@ static int vm_browse_messages(struct ast_channel *chan, struct vm_state *vms, st
+@@ -11758,6 +11846,8 @@ static int vm_browse_messages(struct ast_channel *chan, struct vm_state *vms, st
  		return vm_browse_messages_es(chan, vms, vmu);
  	} else if (!strncasecmp(ast_channel_language(chan), "gr", 2)) {  /* GREEK */
  		return vm_browse_messages_gr(chan, vms, vmu);
@@ -153,7 +153,7 @@ index 305f558..12f80af 100644
  	} else if (!strncasecmp(ast_channel_language(chan), "he", 2)) {  /* HEBREW */
  		return vm_browse_messages_he(chan, vms, vmu);
  	} else if (!strncasecmp(ast_channel_language(chan), "it", 2)) {  /* ITALIAN */
-@@ -12816,6 +12906,8 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
+@@ -12820,6 +12910,8 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
  			if (folder_change && vms.lastmsg == -1) {
  				if(!strcasecmp(ast_channel_language(chan), "ro")) {
  					ast_play_and_wait(chan, "vm-dir-empty");
