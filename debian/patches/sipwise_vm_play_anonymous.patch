@@ -1,6 +1,16 @@
+From: Sipwise Development Team <support@sipwise.com>
+Date: Mon, 4 Nov 2024 15:37:29 +0100
+Subject: sipwise_vm_play_anonymous
+
+---
+ apps/app_voicemail.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
+index ddf4e9c..47a7e55 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -9045,7 +9045,7 @@ static int play_message_callerid(struct
+@@ -8921,7 +8921,7 @@ static int play_message_callerid(struct ast_channel *chan, struct vm_state *vms,
  	/* Strip off caller ID number from name */
  	ast_debug(1, "VM-CID: composite caller ID received: %s, context: %s\n", cid, context);
  	ast_callerid_parse(cid, &name, &callerid);

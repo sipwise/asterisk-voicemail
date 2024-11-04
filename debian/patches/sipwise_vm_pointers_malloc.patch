@@ -1,6 +1,16 @@
+From: Sipwise Development Team <support@sipwise.com>
+Date: Mon, 4 Nov 2024 15:37:29 +0100
+Subject: sipwise_vm_pointers_malloc
+
+---
+ apps/app_voicemail.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
+index 21515f8..6510b8f 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -1363,7 +1363,7 @@ static char *edit(const char *str, int l
+@@ -1373,7 +1373,7 @@ static char *edit(const char *str, int len, const char *rep,
  	slen = len;
  	len -= mvec[1] - mvec[0];
  	len += rlen = findreplen(rep, nmat, replen);
@@ -9,7 +19,7 @@
  	if (mvec[0] > 0) {
  		strncpy(cp, str, mvec[0]);
  		cp += mvec[0];
-@@ -12183,6 +12183,8 @@ static int vm_execmain(struct ast_channe
+@@ -12109,6 +12109,8 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
  
  	/* Add the vm_state to the active list and keep it active */
  	vms.lastmsg = -1;
