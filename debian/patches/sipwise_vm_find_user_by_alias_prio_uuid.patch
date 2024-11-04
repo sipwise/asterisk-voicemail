@@ -7,13 +7,13 @@ Subject: sipwise_vm_find_user_by_alias_prio_uuid
  1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index 6fb44ad..d2ed8d6 100644
+index fb2359c..523a725 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -4240,26 +4240,26 @@ static struct ast_vm_user *find_user_realtime_by_alias(struct ast_vm_user *ivm,
- 	SQLHSTMT stmt = NULL;
- 
- 	obj = ast_odbc_request_obj(odbc_database, 0);
+@@ -4244,26 +4244,26 @@ static struct ast_vm_user *find_user_realtime_by_alias(struct ast_vm_user *ivm,
+ 		ast_log(LOG_WARNING, "Failed to obtain database object for '%s'!\n", odbc_database);
+ 		return NULL;
+ 	}
 -	stmt = ast_odbc_prepare_and_execute(obj, generic_prepare, &gps);
 +	stmt = ast_odbc_prepare_and_execute(obj, generic_prepare, &gps_uuid);
  	if (!stmt) {
