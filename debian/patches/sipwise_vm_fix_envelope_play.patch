@@ -1,6 +1,16 @@
+From: Sipwise Development Team <support@sipwise.com>
+Date: Mon, 4 Nov 2024 15:37:29 +0100
+Subject: sipwise_vm_fix_envelope_play
+
+---
+ apps/app_voicemail.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
+index 0b78238..aabb725 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -12503,8 +12503,10 @@ static int vm_execmain(struct ast_channe
+@@ -12438,8 +12438,10 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
  					}
  					cmd = 't';
  					break;
@@ -11,7 +21,7 @@
  						cmd = advanced_options(chan, vmu, &vms, vms.curmsg, 3, record_gain);
  						if (cmd == ERROR_LOCK_PATH) {
  							res = cmd;
-@@ -12515,6 +12517,7 @@ static int vm_execmain(struct ast_channe
+@@ -12450,6 +12452,7 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
  					}
  					cmd = 't';
  					break;
@@ -19,7 +29,7 @@
  				case '4': // Dialout
  					if (!ast_strlen_zero(vmu->dialout)) {
  						cmd = dialout(chan, vmu, NULL, vmu->dialout);
-@@ -12547,6 +12550,7 @@ static int vm_execmain(struct ast_channe
+@@ -12482,6 +12485,7 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
  					break;
  
  				default:
