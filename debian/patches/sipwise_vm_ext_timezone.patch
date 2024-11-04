@@ -7,7 +7,7 @@ Subject: sipwise_vm_ext_timezone
  1 file changed, 67 insertions(+)
 
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index 03eb8bc..84ad5e9 100644
+index 79cb895..10034f7 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
 @@ -1031,6 +1031,8 @@ static int passwordlocation;
@@ -36,7 +36,7 @@ index 03eb8bc..84ad5e9 100644
  #ifdef IMAP_STORAGE
  		} else if (!strcasecmp(var->name, "imapuser")) {
  			ast_copy_string(retval->imapuser, var->value, sizeof(retval->imapuser));
-@@ -8468,6 +8473,58 @@ static struct vm_zone * get_vmu_timezone(struct ast_vm_user *vmu)
+@@ -8472,6 +8477,58 @@ static struct vm_zone * get_vmu_timezone(struct ast_vm_user *vmu)
  	return tz;
  }
  
@@ -95,7 +95,7 @@ index 03eb8bc..84ad5e9 100644
  /*!
   * \brief Sends email notification that a user has a new voicemail waiting for them.
   * \param chan
-@@ -14363,6 +14420,9 @@ static int actual_load_config(int reload, struct ast_config *cfg, struct ast_con
+@@ -14367,6 +14424,9 @@ static int actual_load_config(int reload, struct ast_config *cfg, struct ast_con
  	long tps_queue_high;
  	const char *ast_sw_normalize_user_match = NULL;
  	const char *ast_sw_normalize_user_replace = NULL;
@@ -105,7 +105,7 @@ index 03eb8bc..84ad5e9 100644
  
  #ifdef IMAP_STORAGE
  	ast_copy_string(imapparentfolder, "\0", sizeof(imapparentfolder));
-@@ -14440,6 +14500,13 @@ static int actual_load_config(int reload, struct ast_config *cfg, struct ast_con
+@@ -14444,6 +14504,13 @@ static int actual_load_config(int reload, struct ast_config *cfg, struct ast_con
  			sw_normalize_user_replace[0] = '\0';
  		}
  

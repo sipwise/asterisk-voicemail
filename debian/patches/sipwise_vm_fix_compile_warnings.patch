@@ -22,10 +22,10 @@ index ad0c960..fc52c48 100644
  
  all: _all
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index 84ad5e9..122bcff 100644
+index 10034f7..fb2e82e 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -5059,16 +5059,11 @@ static int vm_delete(char *file)
+@@ -5063,16 +5063,11 @@ static int vm_delete(char *file)
  
  static void prep_pager_sub_vars(struct ast_channel *ast, struct ast_vm_user *vmu, char *cidnum, char *dur, char *date)
  {
@@ -42,7 +42,7 @@ index 84ad5e9..122bcff 100644
  }
  
  static void prep_email_sub_vars(struct ast_channel *ast, struct ast_vm_user *vmu, int msgnum, char *context, char *mailbox, const char *fromfolder, char *cidnum, char *cidname, char *dur, char *date, const char *category, const char *flag)
-@@ -5117,7 +5112,7 @@ static void prep_email_sub_vars(struct ast_channel *ast, struct ast_vm_user *vmu
+@@ -5121,7 +5116,7 @@ static void prep_email_sub_vars(struct ast_channel *ast, struct ast_vm_user *vmu
  	}
  
  	if ((origtime = ast_variable_retrieve(msg_cfg, "message", "origtime")) && sscanf(origtime, "%30d", &inttime) == 1) {
@@ -51,7 +51,7 @@ index 84ad5e9..122bcff 100644
  		struct ast_tm tm;
  		ast_localtime(&tv, &tm, NULL);
  		ast_strftime_locale(origdate, sizeof(origdate), emaildateformat, &tm, S_OR(vmu->locale, NULL));
-@@ -5518,7 +5513,7 @@ static void make_email_file(FILE *p,
+@@ -5522,7 +5517,7 @@ static void make_email_file(FILE *p,
  				/* You might be tempted to do origdate, except that a) it's in the wrong
  				 * format, and b) it's missing for IMAP recordings. */
  				if ((v = ast_variable_retrieve(msg_cfg, "message", "origtime")) && sscanf(v, "%30d", &inttime) == 1) {
