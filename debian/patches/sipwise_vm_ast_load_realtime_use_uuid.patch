@@ -7,7 +7,7 @@ Subject: sipwise_vm_ast_load_realtime_use_uuid
  1 file changed, 18 insertions(+), 5 deletions(-)
 
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index 2510889..3a1bf19 100644
+index a3d1687..606079c 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
 @@ -1772,7 +1772,7 @@ static int is_valid_dtmf(const char *key)
@@ -54,7 +54,7 @@ index 2510889..3a1bf19 100644
  	SQLHSTMT stmt = NULL;
  
  	obj = ast_odbc_request_obj(odbc_database, 0);
-@@ -4167,6 +4174,8 @@ static struct ast_vm_user *find_user_realtime_by_alias(struct ast_vm_user *ivm,
+@@ -4171,6 +4178,8 @@ static struct ast_vm_user *find_user_realtime_by_alias(struct ast_vm_user *ivm,
  		ast_log(LOG_NOTICE, "Failed to fetch mailbox for uuid '%s', falling back to alias search\n", alias);
  		SQLFreeHandle (SQL_HANDLE_STMT, stmt);
  
@@ -63,7 +63,7 @@ index 2510889..3a1bf19 100644
  		stmt = ast_odbc_prepare_and_execute(obj, generic_prepare, &gps);
  		if (!stmt) {
  			ast_log(LOG_WARNING, "SQL Execute error!\n[%s]\n\n", sql);
-@@ -4193,7 +4202,11 @@ static struct ast_vm_user *find_user_realtime_by_alias(struct ast_vm_user *ivm,
+@@ -4197,7 +4206,11 @@ static struct ast_vm_user *find_user_realtime_by_alias(struct ast_vm_user *ivm,
  	ast_odbc_release_obj(obj);
  
  	ast_log(LOG_NOTICE, "Found mailbox '%s' for alias '%s'\n", mailbox, alias);
