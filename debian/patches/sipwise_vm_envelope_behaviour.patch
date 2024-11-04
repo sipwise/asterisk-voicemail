@@ -1,6 +1,16 @@
+From: Sipwise Development Team <support@sipwise.com>
+Date: Mon, 4 Nov 2024 15:37:29 +0100
+Subject: sipwise_vm_envelope_behaviour
+
+---
+ apps/app_voicemail.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
+index 47a7e55..ce6fb78 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -1527,8 +1527,10 @@ static void apply_option(struct ast_vm_u
+@@ -1537,8 +1537,10 @@ static void apply_option(struct ast_vm_user *vmu, const char *var, const char *v
  		ast_set2_flag(vmu, ast_true(value), VM_MESSAGEWRAP);
  	} else if (!strcasecmp(var, "operator")) {
  		ast_set2_flag(vmu, ast_true(value), VM_OPERATOR);
@@ -13,7 +23,7 @@
  	} else if (!strcasecmp(var, "moveheard")){
  		ast_set2_flag(vmu, ast_true(value), VM_MOVEHEARD);
  	} else if (!strcasecmp(var, "sayduration")){
-@@ -15952,7 +15954,7 @@ static int advanced_options(struct ast_c
+@@ -15892,7 +15894,7 @@ static int advanced_options(struct ast_channel *chan, struct ast_vm_user *vmu, s
  		context = ast_variable_retrieve(msg_cfg, "message", "macrocontext");
  	switch (option) {
  	case 3: /* Play message envelope */

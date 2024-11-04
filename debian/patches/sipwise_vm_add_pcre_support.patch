@@ -1,3 +1,14 @@
+From: Sipwise Development Team <support@sipwise.com>
+Date: Mon, 4 Nov 2024 15:37:29 +0100
+Subject: sipwise_vm_add_pcre_support
+
+---
+ Makefile             |   2 +-
+ apps/app_voicemail.c | 168 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 169 insertions(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index 67ec08d..ad0c960 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -15,7 +15,7 @@ CC?=gcc
@@ -9,12 +20,14 @@
  CFLAGS+=-pipe -fPIC
  CFLAGS+=-Wall -Wextra -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations
  CFLAGS+=-D_REENTRANT -D_GNU_SOURCE -DODBC_STORAGE
+diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
+index 8769654..692e796 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
 @@ -50,6 +50,7 @@
- 	<defaultenabled>yes</defaultenabled>
  	<use type="module">res_adsi</use>
  	<use type="module">res_smdi</use>
+ 	<defaultenabled>yes</defaultenabled>
 +	<depend>pcre</depend>
  	<support_level>core</support_level>
   ***/
@@ -29,7 +42,7 @@
  /*** DOCUMENTATION
  	<application name="VoiceMail" language="en_US">
  		<synopsis>
-@@ -1014,6 +1018,8 @@ static int maxlogins = 3;
+@@ -1024,6 +1028,8 @@ static int maxlogins = 3;
  static int minpassword = MINPASSWORD;
  static int passwordlocation;
  static char aliasescontext[MAX_VM_CONTEXT_LEN];
@@ -38,7 +51,7 @@
  
  /*! Poll mailboxes for changes since there is something external to
   *  app_voicemail that may change them. */
-@@ -1270,6 +1276,114 @@ static int inprocess_count(const char *c
+@@ -1280,6 +1286,114 @@ static int inprocess_count(const char *context, const char *mailbox, int delta)
  static int __has_voicemail(const char *context, const char *mailbox, const char *folder, int shortcircuit);
  #endif
  
@@ -153,7 +166,7 @@
  /*!
   * \brief Strips control and non 7-bit clean characters from input string.
   *
-@@ -8136,6 +8250,8 @@ static int get_folder2(struct ast_channe
+@@ -8011,6 +8125,8 @@ static int get_folder2(struct ast_channel *chan, char *fn, int start)
   * This is invoked from forward_message() when performing a forward operation (option 8 from main menu).
   * \return zero on success, -1 on error.
   */
@@ -162,7 +175,7 @@
  static int vm_forwardoptions(struct ast_channel *chan, struct ast_vm_user *vmu, char *curdir, int curmsg, char *vm_fmts,
  			char *context, signed char record_gain, long *duration, struct vm_state *vms, char *flag)
  {
-@@ -8297,6 +8413,7 @@ static int vm_forwardoptions(struct ast_
+@@ -8172,6 +8288,7 @@ static int vm_forwardoptions(struct ast_channel *chan, struct ast_vm_user *vmu,
  		cmd = 0;
  	return cmd;
  }
@@ -170,7 +183,7 @@
  
  static void queue_mwi_event(const char *channel_id, const char *box, int urgent, int new, int old)
  {
-@@ -8457,6 +8574,8 @@ static int notify_new_message(struct ast
+@@ -8332,6 +8449,8 @@ static int notify_new_message(struct ast_channel *chan, struct ast_vm_user *vmu,
   *
   * \return zero on success, -1 on error.
   */
@@ -179,7 +192,7 @@
  static int forward_message(struct ast_channel *chan, char *context, struct vm_state *vms, struct ast_vm_user *sender, char *fmt, int is_new_message, signed char record_gain, int urgent)
  {
  #ifdef IMAP_STORAGE
-@@ -8795,6 +8914,7 @@ static int forward_message(struct ast_ch
+@@ -8671,6 +8790,7 @@ static int forward_message(struct ast_channel *chan, char *context, struct vm_st
  	}
  	return res ? res : cmd;
  }
@@ -187,7 +200,7 @@
  
  static int wait_file2(struct ast_channel *chan, struct vm_state *vms, char *file)
  {
-@@ -11496,6 +11616,11 @@ static int vm_authenticate(struct ast_ch
+@@ -11421,6 +11541,11 @@ static int vm_authenticate(struct ast_channel *chan, char *mailbox, int mailbox_
  	int useadsi = 0, valid = 0, logretries = 0;
  	char password[AST_MAX_EXTENSION], *passptr = NULL;
  	struct ast_vm_user vmus, *vmu = NULL;
@@ -199,7 +212,7 @@
  
  	/* If ADSI is supported, setup login screen */
  	adsi_begin(chan, &useadsi);
-@@ -11506,6 +11631,22 @@ static int vm_authenticate(struct ast_ch
+@@ -11431,6 +11556,22 @@ static int vm_authenticate(struct ast_channel *chan, char *mailbox, int mailbox_
  		return -1;
  	}
  
@@ -222,7 +235,7 @@
  	/* Authenticate them and get their mailbox/password */
  
  	while (!valid && (logretries < max_logins)) {
-@@ -11535,6 +11676,18 @@ static int vm_authenticate(struct ast_ch
+@@ -11460,6 +11601,18 @@ static int vm_authenticate(struct ast_channel *chan, char *mailbox, int mailbox_
  		if (useadsi)
  			adsi_password(chan);
  
@@ -241,7 +254,7 @@
  		if (!ast_strlen_zero(prefix)) {
  			char fullusername[80];
  
-@@ -14117,6 +14270,8 @@ static int actual_load_config(int reload
+@@ -14057,6 +14210,8 @@ static int actual_load_config(int reload, struct ast_config *cfg, struct ast_con
  	char secretfn[PATH_MAX] = "";
  	long tps_queue_low;
  	long tps_queue_high;
@@ -250,7 +263,7 @@
  
  #ifdef IMAP_STORAGE
  	ast_copy_string(imapparentfolder, "\0", sizeof(imapparentfolder));
-@@ -14181,6 +14336,19 @@ static int actual_load_config(int reload
+@@ -14121,6 +14276,19 @@ static int actual_load_config(int reload, struct ast_config *cfg, struct ast_con
  			ast_copy_string(odbc_table, val, sizeof(odbc_table));
  		}
  #endif
