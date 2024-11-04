@@ -1,6 +1,16 @@
+From: Sipwise Development Team <support@sipwise.com>
+Date: Mon, 4 Nov 2024 15:37:29 +0100
+Subject: sipwise_vm_fix_prev_message
+
+---
+ apps/app_voicemail.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
+index 12f80af..64f59b5 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -12276,6 +12276,7 @@ static int vm_execmain(struct ast_channe
+@@ -12202,6 +12202,7 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
  #endif
  
  	/* Add the vm_state to the active list and keep it active */

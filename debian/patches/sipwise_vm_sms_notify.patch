@@ -1,6 +1,16 @@
+From: Sipwise Development Team <support@sipwise.com>
+Date: Mon, 4 Nov 2024 15:37:29 +0100
+Subject: sipwise_vm_sms_notify
+
+---
+ apps/app_voicemail.c | 81 +++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 80 insertions(+), 1 deletion(-)
+
+diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
+index ce6fb78..83def1d 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -1007,6 +1007,7 @@ static int silencethreshold = 128;
+@@ -1017,6 +1017,7 @@ static int silencethreshold = 128;
  static char serveremail[80] = ASTERISK_USERNAME;
  static char mailcmd[160] = SENDMAIL;	/* Configurable mail cmd */
  static char externnotify[160];
@@ -8,8 +18,8 @@
  static struct ast_smdi_interface *smdi_iface = NULL;
  static char vmfmts[80] = "wav";
  static double volgain;
-@@ -5184,6 +5185,20 @@ static int base_encode(char *filename, F
- 	return 1;
+@@ -5049,6 +5050,20 @@ static int vm_delete(char *file)
+ 	return ast_filedelete(file, NULL);
  }
  
 +static void prep_pager_sub_vars(struct ast_channel *ast, struct ast_vm_user *vmu, char *cidnum, char *dur, char *date)
@@ -29,7 +39,7 @@
  static void prep_email_sub_vars(struct ast_channel *ast, struct ast_vm_user *vmu, int msgnum, char *context, char *mailbox, const char *fromfolder, char *cidnum, char *cidname, char *dur, char *date, const char *category, const char *flag)
  {
  	char callerid[256];
-@@ -5861,6 +5876,59 @@ static int sendmail(char *srcemail,
+@@ -5726,6 +5741,59 @@ static int sendmail(char *srcemail,
  	return 0;
  }
  
@@ -89,7 +99,7 @@
  static int sendpage(char *srcemail, char *pager, int msgnum, char *context, char *mailbox, const char *fromfolder, char *cidnum, char *cidname, int duration, struct ast_vm_user *vmu, const char *category, const char *flag)
  {
  	char enc_cidnum[256], enc_cidname[256];
-@@ -5874,6 +5942,8 @@ static int sendpage(char *srcemail, char
+@@ -5739,6 +5807,8 @@ static int sendpage(char *srcemail, char *pager, int msgnum, char *context, char
  	FILE *p;
  	struct ast_str *str1 = ast_str_create(16), *str2 = ast_str_create(16);
  
@@ -98,7 +108,7 @@
  	if (!str1 || !str2) {
  		ast_free(str1);
  		ast_free(str2);
-@@ -6006,6 +6076,7 @@ static int sendpage(char *srcemail, char
+@@ -5871,6 +5941,7 @@ static int sendpage(char *srcemail, char *pager, int msgnum, char *context, char
  	ast_free(str2);
  	return 0;
  }
@@ -106,7 +116,7 @@
  
  /*!
   * \brief Gets the current date and time, as formatted string.
-@@ -8525,7 +8596,8 @@ static int notify_new_message(struct ast
+@@ -8400,7 +8471,8 @@ static int notify_new_message(struct ast_channel *chan, struct ast_vm_user *vmu,
  	}
  
  	if (!ast_strlen_zero(vmu->pager)) {
@@ -116,7 +126,7 @@
  	}
  
  	if (ast_test_flag(vmu, VM_DELETE))
-@@ -14533,6 +14605,13 @@ static int actual_load_config(int reload
+@@ -14473,6 +14545,13 @@ static int actual_load_config(int reload, struct ast_config *cfg, struct ast_con
  			externnotify[0] = '\0';
  		}
  
