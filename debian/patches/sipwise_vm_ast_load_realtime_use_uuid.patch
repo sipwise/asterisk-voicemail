@@ -7,7 +7,7 @@ Subject: sipwise_vm_ast_load_realtime_use_uuid
  1 file changed, 18 insertions(+), 5 deletions(-)
 
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index a3d1687..606079c 100644
+index d61a30e..beaff3a 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
 @@ -1772,7 +1772,7 @@ static int is_valid_dtmf(const char *key)

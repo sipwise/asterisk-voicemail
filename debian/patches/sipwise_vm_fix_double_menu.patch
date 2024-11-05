@@ -7,7 +7,7 @@ Subject: sipwise_vm_fix_double_menu
  1 file changed, 1 insertion(+), 10 deletions(-)
 
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index afee86d..5664ced 100644
+index dbf21ca..33ac414 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
 @@ -12236,16 +12236,7 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
