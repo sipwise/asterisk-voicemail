@@ -7,7 +7,7 @@ Subject: sipwise_vm_add_arabic_support
  1 file changed, 93 insertions(+), 2 deletions(-)
 
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index 3064599..8373605 100644
+index 7c914b8..beda819 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
 @@ -8511,8 +8511,9 @@ static int play_message(struct ast_channel *chan, struct ast_vm_user *vmu, struc
