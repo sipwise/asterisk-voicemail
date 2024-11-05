@@ -7,7 +7,7 @@ Subject: sipwise_vm_add_callid
  1 file changed, 16 insertions(+), 6 deletions(-)
 
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index f9a9d1d..a3d1687 100644
+index 951a9cc..d61a30e 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
 @@ -858,7 +858,7 @@ static char odbc_database[80] = "asterisk";
