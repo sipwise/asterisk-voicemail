@@ -7,7 +7,7 @@ Subject: sipwise_vm_ext_timezone
  1 file changed, 67 insertions(+)
 
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index f2d3583..9b1f435 100644
+index f2d3583..ca52dbc 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
 @@ -948,6 +948,8 @@ static int passwordlocation;
@@ -49,7 +49,7 @@ index f2d3583..9b1f435 100644
 +	struct odbc_obj *obj = NULL;
 +	SQLHSTMT stmt = NULL;
 +
-+	if (vmu->mailbox == NULL || ast_strlen_zero(sw_timezone_table))
++	if (ast_strlen_zero(sw_timezone_table))
 +		return;
 +
 +	snprintf(sql, sizeof(sql),

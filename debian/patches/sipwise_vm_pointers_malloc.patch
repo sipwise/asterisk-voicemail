@@ -7,7 +7,7 @@ Subject: sipwise_vm_pointers_malloc
  1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index 1d2170b..b617d0e 100644
+index 758fdf1..677baa0 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
 @@ -1268,7 +1268,7 @@ static char *edit(const char *str, int len, const char *rep,
