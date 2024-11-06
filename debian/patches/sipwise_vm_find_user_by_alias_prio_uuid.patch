@@ -7,7 +7,7 @@ Subject: sipwise_vm_find_user_by_alias_prio_uuid
  1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index 26bd50e..d1b2f99 100644
+index 9c22f42..6198446 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
 @@ -4138,26 +4138,26 @@ static struct ast_vm_user *find_user_realtime_by_alias(struct ast_vm_user *ivm,

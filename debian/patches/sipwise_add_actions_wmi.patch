@@ -7,7 +7,7 @@ Subject: sipwise_add_actions_wmi
  1 file changed, 280 insertions(+), 22 deletions(-)
 
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index 0dbe9cb..35228e6 100644
+index 28c2c5b..dd5616e 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
 @@ -1043,6 +1043,52 @@ static int adsiver = 1;
