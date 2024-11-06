@@ -7,7 +7,7 @@ Subject: sipwise_vm_fix_odbc_retreive_file
  1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index 7bed701..9c1e5d3 100644
+index c7b55a5..6a7e6b9 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
 @@ -4092,7 +4092,9 @@ static int retrieve_file(char *dir, int msgnum)
@@ -21,7 +21,7 @@ index 7bed701..9c1e5d3 100644
  				goto bail_with_handle;
  			}
  			if (strcasecmp(coltitle, "msgnum") && strcasecmp(coltitle, "dir")) {
-@@ -8619,7 +8621,9 @@ static int play_message(struct ast_channel *chan, struct ast_vm_user *vmu, struc
+@@ -8623,7 +8625,9 @@ static int play_message(struct ast_channel *chan, struct ast_vm_user *vmu, struc
  		}
  #endif
  		if ((res = wait_file(chan, vms, vms->fn)) < 0) {
