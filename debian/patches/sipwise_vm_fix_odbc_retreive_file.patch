@@ -7,7 +7,7 @@ Subject: sipwise_vm_fix_odbc_retreive_file
  1 file changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index f6432de..691b730 100644
+index 1889220..efa0e20 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
 @@ -4028,7 +4028,7 @@ static void odbc_update_msg_id(char *dir, int msg_num, char *msg_id)

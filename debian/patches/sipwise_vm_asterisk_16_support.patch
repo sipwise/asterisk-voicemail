@@ -39,7 +39,7 @@ index 2e85d4c..e7ad660 100644
  #include "asterisk/file.h"
  #include "asterisk/pbx.h"
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index d89fd8b..80688c8 100644
+index 1964bec..0fe8673 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
 @@ -80,6 +80,9 @@
