@@ -22,7 +22,7 @@ index ad0c960..fc52c48 100644
  
  all: _all
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index 10034f7..fb2e82e 100644
+index af86182..817c32c 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
 @@ -5063,16 +5063,11 @@ static int vm_delete(char *file)
