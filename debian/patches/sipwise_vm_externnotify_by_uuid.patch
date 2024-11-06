@@ -7,7 +7,7 @@ Subject: sipwise_vm_externnotify_by_uuid
  1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index 97359f8..c825fee 100644
+index df175fe..581af06 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
 @@ -6570,15 +6570,15 @@ static void run_externnotify(char *context, char *extension, const char *flag, c

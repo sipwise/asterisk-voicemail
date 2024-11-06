@@ -7,7 +7,7 @@ Subject: sipwise_vm_fix_envelope_play
  1 file changed, 4 insertions(+)
 
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index 4bb1321..d89fd8b 100644
+index e11ec69..1964bec 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
 @@ -12442,8 +12442,10 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
