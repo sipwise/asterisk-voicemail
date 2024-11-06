@@ -7,7 +7,7 @@ Subject: sipwise_fix_app_voicemail_bugs
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index 049453f..b7db74c 100644
+index b617d0e..209b825 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
 @@ -1221,7 +1221,7 @@ static int findreplen(const char *rep, int nmat, const int *replen)
