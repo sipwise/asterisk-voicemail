@@ -1,3 +1,11 @@
+ngcp-asterisk-voicemail (20.1.0+0~mr13.0.1.2) unstable; urgency=medium
+
+  [ Victor Seva ]
+  * [e16c28b] MT#61440 sipwise_vm_find_user_by_alias: don't crash if odbc fails
+  * [4dbf1a0] MT#61444 sipwise_vm_ext_timezone: remove build warning
+
+ -- Sipwise Jenkins Builder <jenkins@sipwise.com>  Tue, 12 Nov 2024 09:14:46 +0100
+
 ngcp-asterisk-voicemail (20.1.0+0~mr13.0.1.1) unstable; urgency=medium
 
   [ Victor Seva ]
