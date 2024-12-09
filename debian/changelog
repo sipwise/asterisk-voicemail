@@ -1,3 +1,12 @@
+ngcp-asterisk-voicemail (20.1.0+0~mr13.2.0.0) unstable; urgency=medium
+
+  [ Victor Seva ]
+  * [940a1ff] MT#61185 debian/control: add missing pkg-config
+  * [d21e211] MT#61440 sipwise_vm_find_user_by_alias: don't crash if odbc fails
+  * [271f51e] MT#61444 sipwise_vm_ext_timezone: remove build warning
+
+ -- Sipwise Jenkins Builder <jenkins@sipwise.com>  Mon, 09 Dec 2024 11:24:47 +0100
+
 ngcp-asterisk-voicemail (20.1.0+0~mr13.1.0.0) unstable; urgency=medium
 
   [ Guillem Jover ]
