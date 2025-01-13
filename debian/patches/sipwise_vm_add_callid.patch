@@ -3,84 +3,282 @@ Date: Mon, 21 Feb 2022 14:17:23 +0100
 Subject: sipwise_vm_add_callid
 
 ---
- apps/app_voicemail.c | 22 ++++++++++++++++------
- 1 file changed, 16 insertions(+), 6 deletions(-)
+ apps/app_voicemail.c | 69 +++++++++++++++++++++++++++++-----------------------
+ 1 file changed, 39 insertions(+), 30 deletions(-)
 
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index 951a9cc..d61a30e 100644
+index 801b682..4ec7b83 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -858,7 +858,7 @@ static char odbc_database[80] = "asterisk";
- static char odbc_table[80] = "voicemessages";
- #define RETRIEVE(a,b,c,d) retrieve_file(a,b)
- #define DISPOSE(a,b) remove_file(a,b)
--#define STORE(a,b,c,d,e,f,g,h,i,j,k) store_file(a,b,c,d)
-+#define STORE(a,b,c,d,e,f,g,h,i,j,k) store_file(a,b,c,d,e)
- #define EXISTS(a,b,c,d) (message_exists(a,b))
- #define RENAME(a,b,c,d,e,f,g,h) (rename_file(a,b,c,d,e,f))
- #define COPY(a,b,c,d,e,f,g,h) (copy_file(a,b,c,d,e,f))
-@@ -4480,6 +4480,7 @@ struct insert_data {
+@@ -993,9 +993,9 @@ static char odbc_table[80] = "voicemessages";
+ size_t odbc_table_len = sizeof(odbc_table);
+ #define COUNT(a, b) odbc_count_messages(a,b)
+ #define LAST_MSG_INDEX(a) odbc_last_message_index(a)
+-#define RETRIEVE(a,b,c,d) odbc_retrieve_message(a,b)
++#define RETRIEVE(a,b,c,d,e) odbc_retrieve_message(a,b,e)
+ #define DISPOSE(a,b) odbc_remove_files(a,b)
+-#define STORE(a,b,c,d,e,f,g,h,i,j,k) odbc_store_message(a,b,c,d)
++#define STORE(a,b,c,d,e,f,g,h,i,j,k) odbc_store_message(a,b,c,d,e)
+ #define EXISTS(a,b,c,d) (odbc_message_exists(a,b))
+ #define RENAME(a,b,c,d,e,f,g,h) (odbc_rename_message(a,b,c,d,e,f))
+ #define COPY(a,b,c,d,e,f,g,h) (odbc_copy_message(a,b,c,d,e,f))
+@@ -1005,7 +1005,7 @@ size_t odbc_table_len = sizeof(odbc_table);
+ #ifdef IMAP_STORAGE
+ #define DISPOSE(a,b) (imap_remove_file(a,b))
+ #define STORE(a,b,c,d,e,f,g,h,i,j,k) (imap_store_file(a,b,c,d,e,f,g,h,i,j,k))
+-#define RETRIEVE(a,b,c,d) imap_retrieve_file(a,b,c,d)
++#define RETRIEVE(a,b,c,d,e) imap_retrieve_file(a,b,c,d)
+ #define EXISTS(a,b,c,d) (ast_fileexists(c,NULL,d) > 0)
+ #define RENAME(a,b,c,d,e,f,g,h) (rename_file(g,h));
+ #define COPY(a,b,c,d,e,f,g,h) (copy_file(g,h));
+@@ -1014,7 +1014,7 @@ size_t odbc_table_len = sizeof(odbc_table);
+ #else
+ #define COUNT(a, b) count_messages(a,b)
+ #define LAST_MSG_INDEX(a) last_message_index(a)
+-#define RETRIEVE(a,b,c,d)
++#define RETRIEVE(a,b,c,d,e)
+ #define DISPOSE(a,b)
+ #define STORE(a,b,c,d,e,f,g,h,i,j,k)
+ #define EXISTS(a,b,c,d) (ast_fileexists(c,NULL,d) > 0)
+@@ -4327,7 +4327,7 @@ static void odbc_update_set_audmagic(char *dir, int msg_num)
+ 	SCOPE_EXIT_RTN("Done\n");
+ }
+ 
+-static int odbc_store_message(const char *dir, const char *mailboxuser, const char *mailboxcontext, int msgnum);
++static int odbc_store_message(const char *dir, const char *mailboxuser, const char *mailboxcontext, int msgnum, struct ast_channel *chan);
+ 
+ /*!
+  * \brief Retrieves a file from an ODBC data store.
+@@ -4343,7 +4343,7 @@ static int odbc_store_message(const char *dir, const char *mailboxuser, const ch
+  *
+  * \return 0 on success, -1 on error.
+  */
+-static int odbc_retrieve_message(char *dir, int msgnum)
++static int odbc_retrieve_message(char *dir, int msgnum, struct ast_channel *chan)
+ {
+ 	int x = 0;
+ 	int res;
+@@ -4552,7 +4552,7 @@ bail:
+ 			 * into the database overwriting the AUDIO_ON_DISK_MAGIC
+ 			 * magic number.
+ 			 */
+-			SCOPE_CALL(-1, odbc_store_message, dir, mailboxuser, mailboxcontext, msgnum);
++			SCOPE_CALL(-1, odbc_store_message, dir, mailboxuser, mailboxcontext, msgnum, chan);
+ 		}
+ 	}
+ 
+@@ -4912,14 +4912,15 @@ struct insert_data {
  	const char *category;
  	const char *flag;
  	const char *msg_id;
 +	const char *call_id;
  };
  
- static SQLHSTMT insert_data_cb(struct odbc_obj *obj, void *vdata)
-@@ -4508,6 +4509,9 @@ static SQLHSTMT insert_data_cb(struct odbc_obj *obj, void *vdata)
- 	SQLBindParameter(stmt, 12, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_CHAR, strlen(data->msg_id), 0, (void *) data->msg_id, 0, NULL);
+ #define STORE_SQL_FMT_CAT "INSERT INTO %s (dir, msgnum, recording, context, callerid, " \
+-	"origtime, duration, mailboxuser, mailboxcontext, flag, msg_id, category) " \
+-	"VALUES (?,?,?,?,?,?,?,?,?,?,?,?)"
++	"origtime, duration, mailboxuser, mailboxcontext, flag, msg_id, callid, category) " \
++	"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)"
+ #define STORE_SQL_FMT "INSERT INTO %s (dir, msgnum, recording, context, callerid, "\
+-	"origtime, duration, mailboxuser, mailboxcontext, flag, msg_id) "\
+-	"VALUES (?,?,?,?,?,?,?,?,?,?,?)"
++	"origtime, duration, mailboxuser, mailboxcontext, flag, msg_id, callid) "\
++	"VALUES (?,?,?,?,?,?,?,?,?,?,?,?)"
+ 
+ static SQLHSTMT odbc_insert_data_cb(struct odbc_obj *obj, void *vdata)
+ {
+@@ -4965,6 +4966,7 @@ static SQLHSTMT odbc_insert_data_cb(struct odbc_obj *obj, void *vdata)
+ 	SQLBindParameter(stmt, 9, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_CHAR, strlen(data->mailboxcontext), 0, (void *) data->mailboxcontext, 0, NULL);
+ 	SQLBindParameter(stmt, 10, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_CHAR, strlen(data->flag), 0, (void *) data->flag, 0, NULL);
+ 	SQLBindParameter(stmt, 11, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_CHAR, strlen(data->msg_id), 0, (void *) data->msg_id, 0, NULL);
++	SQLBindParameter(stmt, 12, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_CHAR, strlen(data->call_id), 0, (void *) data->call_id, 0, NULL);
  	if (!ast_strlen_zero(data->category)) {
- 		SQLBindParameter(stmt, 13, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_CHAR, strlen(data->category), 0, (void *) data->category, 0, NULL);
-+		SQLBindParameter(stmt, 14, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_CHAR, strlen(data->call_id), 0, (void *) data->call_id, 0, NULL);
-+	} else {
-+		SQLBindParameter(stmt, 13, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_CHAR, strlen(data->call_id), 0, (void *) data->call_id, 0, NULL);
- 	}
- 	res = ast_odbc_execute_sql(obj, stmt, data->sql);
- 	if (!SQL_SUCCEEDED(res)) {
-@@ -4532,7 +4536,7 @@ static SQLHSTMT insert_data_cb(struct odbc_obj *obj, void *vdata)
+ 		insert_sql = MAKE_SQL_PTRA(STORE_SQL_FMT_CAT);
+ 		SQLBindParameter(stmt, 12, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_CHAR, strlen(data->category), 0, (void *) data->category, 0, NULL);
+@@ -4995,7 +4997,7 @@ static SQLHSTMT odbc_insert_data_cb(struct odbc_obj *obj, void *vdata)
   *
   * \return the zero on success -1 on error.
   */
--static int store_file(const char *dir, const char *mailboxuser, const char *mailboxcontext, int msgnum)
-+static int store_file(const char *dir, const char *mailboxuser, const char *mailboxcontext, int msgnum, struct ast_channel *chan)
+-static int odbc_store_message(const char *dir, const char *mailboxuser, const char *mailboxcontext, int msgnum)
++static int odbc_store_message(const char *dir, const char *mailboxuser, const char *mailboxcontext, int msgnum, struct ast_channel *chan)
  {
  	int res = 0;
  	int fd = -1;
-@@ -4547,8 +4551,9 @@ static int store_file(const char *dir, const char *mailboxuser, const char *mail
+@@ -5009,8 +5011,9 @@ static int odbc_store_message(const char *dir, const char *mailboxuser, const ch
  	char *c;
  	struct ast_config *cfg = NULL;
  	struct odbc_obj *obj;
 +	const char *call_id;
- 	struct insert_data idata = { .sql = sql, .msgnums = msgnums, .dir = dir, .mailboxuser = mailboxuser, .mailboxcontext = mailboxcontext,
--		.context = "", .macrocontext = "", .callerid = "", .origtime = "", .duration = "", .category = "", .flag = "", .msg_id = "" };
-+		.context = "", .macrocontext = "", .callerid = "", .origtime = "", .duration = "", .category = "", .flag = "", .msg_id = "", call_id = "" };
+ 	struct insert_data idata = { .msgnums = msgnums, .dir = dir, .mailboxuser = mailboxuser, .mailboxcontext = mailboxcontext,
+-		.context = "", .callerid = "", .origtime = "", .duration = "", .category = "", .flag = "", .msg_id = "" };
++		.context = "", .callerid = "", .origtime = "", .duration = "", .category = "", .flag = "", .msg_id = "", call_id = "" };
  	struct ast_flags config_flags = { CONFIG_FLAG_NOCACHE };
+ 	SCOPE_ENTER(3, "dir: %s user: %s context: %s msgnum: %d  msgtype: %s\n",
+ 		dir, mailboxuser, mailboxcontext, msgnum, msgnum < 0 ? "Greeting" : "Message");
+@@ -5082,6 +5085,7 @@ static int odbc_store_message(const char *dir, const char *mailboxuser, const ch
+ 			}
+ 		}
  
- 	delete_file(dir, msgnum);
-@@ -4621,10 +4626,15 @@ static int store_file(const char *dir, const char *mailboxuser, const char *mail
- 		idata.data = fdm;
- 		idata.datalen = idata.indlen = fdlen;
++
+ 		if (fd < 0) {
+ 			ast_trace(-1, "Audio stored on disk.  Not reading sound file '%s' but setting magic number.\n", full_fn);
+ 			idata.data = AUDIO_ON_DISK_MAGIC;
+@@ -5104,6 +5108,11 @@ static int odbc_store_message(const char *dir, const char *mailboxuser, const ch
+ 			idata.datalen = idata.indlen = fdlen;
+ 		}
  
 +		if ((call_id = pbx_builtin_getvar_helper(chan, "IDENTIFIER"))) {
 +			if (!ast_strlen_zero(call_id))
 +				idata.call_id = ast_strdupa(call_id);
 +		}
 +
- 		if (!ast_strlen_zero(idata.category))
--			snprintf(sql, sizeof(sql), "INSERT INTO %s (dir,msgnum,recording,context,macrocontext,callerid,origtime,duration,mailboxuser,mailboxcontext,flag,msg_id,category) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)", odbc_table);
-+			snprintf(sql, sizeof(sql), "INSERT INTO %s (dir,msgnum,recording,context,macrocontext,callerid,origtime,duration,mailboxuser,mailboxcontext,flag,msg_id,category,call_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", odbc_table);
- 		else
--			snprintf(sql, sizeof(sql), "INSERT INTO %s (dir,msgnum,recording,context,macrocontext,callerid,origtime,duration,mailboxuser,mailboxcontext,flag,msg_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", odbc_table);
-+			snprintf(sql, sizeof(sql), "INSERT INTO %s (dir,msgnum,recording,context,macrocontext,callerid,origtime,duration,mailboxuser,mailboxcontext,flag,msg_id,call_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)", odbc_table);
- 
  		if (ast_strlen_zero(idata.origtime)) {
  			idata.origtime = "0";
-@@ -6857,7 +6867,7 @@ static int leave_voicemail(struct ast_channel *chan, char *ext, struct leave_vm_
+ 		}
+@@ -6243,7 +6252,7 @@ static int invent_message(struct ast_channel *chan, char *context, char *ext, ch
+ 		return -1;
+ 	}
+ 
+-	RETRIEVE(fn, -1, ext, context);
++	RETRIEVE(fn, -1, ext, context, chan);
+ 	if (ast_fileexists(fn, NULL, NULL) > 0) {
+ 		res = ast_stream_and_wait(chan, fn, ecodes);
+ 		if (res) {
+@@ -7282,7 +7291,7 @@ static int leave_voicemail(struct ast_channel *chan, char *ext, struct leave_vm_
+ 		SCOPE_EXIT_LOG_RTN_VALUE(-1, LOG_WARNING,
+ 			"%s: Exten: %s: Failed to make directory (%s)\n", ast_channel_name(chan), ext, tempfile);
+ 	}
+-	SCOPE_CALL(-1, RETRIEVE, tempfile, -1, vmu->mailbox, vmu->context);
++	SCOPE_CALL(-1, RETRIEVE, tempfile, -1, vmu->mailbox, vmu->context, chan);
+ 	if (ast_fileexists(tempfile, NULL, NULL) > 0) {
+ 		ast_copy_string(prefile, tempfile, sizeof(prefile));
+ 		ast_trace(-1, "new prefile: %s\n", prefile);
+@@ -7341,9 +7350,9 @@ static int leave_voicemail(struct ast_channel *chan, char *ext, struct leave_vm_
+ 	/* Play the beginning intro if desired */
+ 	if (!ast_strlen_zero(prefile)) {
+ #if defined(ODBC_STORAGE)
+-		int success = SCOPE_CALL_WITH_INT_RESULT(-1, RETRIEVE, prefile, -1, vmu->mailbox, context);
++		int success = SCOPE_CALL_WITH_INT_RESULT(-1, RETRIEVE, prefile, -1, vmu->mailbox, context, chan);
+ #elif defined(IMAP_STORAGE)
+-        SCOPE_CALL(-1, RETRIEVE, prefile, -1, vmu->mailbox, context);
++        SCOPE_CALL(-1, RETRIEVE, prefile, -1, vmu->mailbox, context, chan);
+ #endif
+ 
+ 		if (ast_fileexists(prefile, NULL, NULL) > 0) {
+@@ -7359,7 +7368,7 @@ static int leave_voicemail(struct ast_channel *chan, char *ext, struct leave_vm_
  			if (success == -1) {
  				/* We couldn't retrieve the file from the database, but we found it on the file system. Let's put it in the database. */
- 				ast_debug(1, "Greeting not retrieved from database, but found in file storage. Inserting into database\n");
--				store_file(prefile, vmu->mailbox, vmu->context, -1);
-+				store_file(prefile, vmu->mailbox, vmu->context, -1, chan);
+ 				ast_trace(-1, "Greeting '%s' not retrieved from database, but found in file storage. Inserting into database\n", prefile);
+-				SCOPE_CALL(-1, odbc_store_message, prefile, vmu->mailbox, vmu->context, -1);
++				SCOPE_CALL(-1, odbc_store_message, prefile, vmu->mailbox, vmu->context, -1, chan);
  			}
  #endif
  		} else {
+@@ -8713,7 +8722,7 @@ static int notify_new_message(struct ast_channel *chan, struct ast_vm_user *vmu,
+ #endif
+ 
+ 		if (attach_user_voicemail)
+-			RETRIEVE(todir, msgnum, vmu->mailbox, vmu->context);
++			RETRIEVE(todir, msgnum, vmu->mailbox, vmu->context, chan);
+ 
+ 		/* XXX possible imap issue, should category be NULL XXX */
+ 		sendmail(myserveremail, vmu, msgnum, vmu->context, vmu->mailbox, mbox(vmu, 0), cidnum, cidname, fn, NULL, fmt, duration, attach_user_voicemail, chan, category, flag, msg_id);
+@@ -8995,7 +9004,7 @@ static int play_message(struct ast_channel *chan, struct ast_vm_user *vmu, struc
+ 	}
+ 
+ 	snprintf(filename, sizeof(filename), "%s.txt", vms->fn);
+-	SCOPE_CALL(-1, RETRIEVE, vms->curdir, vms->curmsg, vmu->mailbox, vmu->context);
++	SCOPE_CALL(-1, RETRIEVE, vms->curdir, vms->curmsg, vmu->mailbox, vmu->context, chan);
+ 	msg_cfg = ast_config_load(filename, config_flags);
+ 	if (!valid_config(msg_cfg)) {
+ 		ast_log(LOG_WARNING, "No message attribute file?!! (%s)\n", filename);
+@@ -10599,7 +10608,7 @@ static int vm_intro(struct ast_channel *chan, struct ast_vm_user *vmu, struct vm
+ 	/* Notify the user that the temp greeting is set and give them the option to remove it */
+ 	snprintf(prefile, sizeof(prefile), "%s%s/%s/temp", VM_SPOOL_DIR, vmu->context, vmu->mailbox);
+ 	if (ast_test_flag(vmu, VM_TEMPGREETWARN)) {
+-		RETRIEVE(prefile, -1, vmu->mailbox, vmu->context);
++		RETRIEVE(prefile, -1, vmu->mailbox, vmu->context, chan);
+ 		if (ast_fileexists(prefile, NULL, NULL) > 0) {
+ 			ast_play_and_wait(chan, "vm-tempgreetactive");
+ 		}
+@@ -11078,7 +11087,7 @@ static int vm_options(struct ast_channel *chan, struct ast_vm_user *vmu, struct
+ 		default:
+ 			cmd = 0;
+ 			snprintf(prefile, sizeof(prefile), "%s%s/%s/temp", VM_SPOOL_DIR, vmu->context, vmu->mailbox);
+-			SCOPE_CALL(-1, RETRIEVE, prefile, -1, vmu->mailbox, vmu->context);
++			SCOPE_CALL(-1, RETRIEVE, prefile, -1, vmu->mailbox, vmu->context, chan);
+ 			if (ast_fileexists(prefile, NULL, NULL)) {
+ 				cmd = ast_play_and_wait(chan, "vm-tmpexists");
+ 			}
+@@ -11143,7 +11152,7 @@ static int vm_tempgreeting(struct ast_channel *chan, struct ast_vm_user *vmu, st
+ 	while ((cmd >= 0) && (cmd != 't')) {
+ 		if (cmd)
+ 			retries = 0;
+-		RETRIEVE(prefile, -1, vmu->mailbox, vmu->context);
++		RETRIEVE(prefile, -1, vmu->mailbox, vmu->context, chan);
+ 		if (ast_fileexists(prefile, NULL, NULL) <= 0) {
+ 			cmd = play_record_review(chan, "vm-rec-temp", prefile, maxgreet, fmtc, 0, vmu, &duration, NULL, NULL, record_gain, vms, NULL, NULL, 0);
+ 			if (cmd == -1) {
+@@ -11661,7 +11670,7 @@ static int play_message_by_id_helper(struct ast_channel *chan,
+ 		wait_file(chan, vms, vms->introfn);
+ 	}
+ #endif
+-	RETRIEVE(vms->curdir,vms->curmsg,vmu->mailbox, vmu->context);
++	RETRIEVE(vms->curdir,vms->curmsg,vmu->mailbox, vmu->context, chan);
+ 
+ 	if ((wait_file(chan, vms, vms->fn)) < 0) {
+ 		ast_log(AST_LOG_WARNING, "Playback of message %s failed\n", vms->fn);
+@@ -15276,7 +15285,7 @@ static int sayname(struct ast_channel *chan, const char *mailbox, const char *co
+ 	char dir[PATH_MAX];
+ 	snprintf(dir, sizeof(dir), "%s%s/%s/greet", VM_SPOOL_DIR, context, mailbox);
+ 	ast_debug(2, "About to try retrieving name file %s\n", dir);
+-	RETRIEVE(dir, -1, mailbox, context);
++	RETRIEVE(dir, -1, mailbox, context, chan);
+ 	if (ast_fileexists(dir, NULL, NULL)) {
+ 		res = ast_stream_and_wait(chan, dir, AST_DIGIT_ANY);
+ 	}
+@@ -16248,7 +16257,7 @@ static int advanced_options(struct ast_channel *chan, struct ast_vm_user *vmu, s
+ 
+ 	/* Retrieve info from VM attribute file */
+ 	snprintf(filename, sizeof(filename), "%s.txt", vms->fn);
+-	RETRIEVE(vms->curdir, vms->curmsg, vmu->mailbox, vmu->context);
++	RETRIEVE(vms->curdir, vms->curmsg, vmu->mailbox, vmu->context, chan);
+ 	msg_cfg = ast_config_load(filename, config_flags);
+ 	DISPOSE(vms->curdir, vms->curmsg);
+ 	if (!valid_config(msg_cfg)) {
+@@ -16777,7 +16786,7 @@ static int vm_msg_snapshot_create(struct ast_vm_user *vmu,
+ 		/* Find the msg */
+ 		make_file(vms->fn, sizeof(vms->fn), vms->curdir, vms->curmsg);
+ 		snprintf(filename, sizeof(filename), "%s.txt", vms->fn);
+-		RETRIEVE(vms->curdir, vms->curmsg, vmu->mailbox, vmu->context);
++		RETRIEVE(vms->curdir, vms->curmsg, vmu->mailbox, vmu->context, NULL);
+ 		msg_cfg = ast_config_load(filename, config_flags);
+ 		if (!msg_cfg || msg_cfg == CONFIG_STATUS_FILEINVALID) {
+ 			DISPOSE(vms->curdir, vms->curmsg);
+@@ -17038,7 +17047,7 @@ static int message_range_and_existence_check(struct vm_state *vms, const char *m
+ 
+ 			make_file(vms->fn, sizeof(vms->fn), vms->curdir, vms->curmsg);
+ 			snprintf(filename, sizeof(filename), "%s.txt", vms->fn);
+-			RETRIEVE(vms->curdir, vms->curmsg, vmu->mailbox, vmu->context);
++			RETRIEVE(vms->curdir, vms->curmsg, vmu->mailbox, vmu->context, NULL);
+ 			msg_cfg = ast_config_load(filename, config_flags);
+ 			if (!msg_cfg || msg_cfg == CONFIG_STATUS_FILEINVALID) {
+ 				DISPOSE(vms->curdir, vms->curmsg);
+@@ -17177,7 +17186,7 @@ static int vm_msg_forward(const char *from_mailbox,
+ 
+ 		make_file(from_vms.fn, sizeof(from_vms.fn), from_vms.curdir, cur_msg);
+ 		snprintf(filename, sizeof(filename), "%s.txt", from_vms.fn);
+-		RETRIEVE(from_vms.curdir, cur_msg, vmu->mailbox, vmu->context);
++		RETRIEVE(from_vms.curdir, cur_msg, vmu->mailbox, vmu->context, NULL);
+ 		msg_cfg = ast_config_load(filename, config_flags);
+ 		/* XXX This likely will not fail since we previously ensured that the
+ 		 * message we are looking for exists. However, there still could be some
+@@ -17489,7 +17498,7 @@ static int vm_msg_play(struct ast_channel *chan,
+ 	/* Find the msg */
+ 	make_file(vms.fn, sizeof(vms.fn), vms.curdir, vms.curmsg);
+ 	snprintf(filename, sizeof(filename), "%s.txt", vms.fn);
+-	RETRIEVE(vms.curdir, vms.curmsg, vmu->mailbox, vmu->context);
++	RETRIEVE(vms.curdir, vms.curmsg, vmu->mailbox, vmu->context, chan);
+ 
+ 	msg_cfg = ast_config_load(filename, config_flags);
+ 	if (!msg_cfg || msg_cfg == CONFIG_STATUS_FILEINVALID) {

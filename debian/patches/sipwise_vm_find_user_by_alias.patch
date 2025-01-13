@@ -7,10 +7,10 @@ Subject: sipwise_vm_find_user_by_alias
  1 file changed, 71 insertions(+)
 
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index 446bb5d..d863f12 100644
+index 1ea9580..7667ae1 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -1036,6 +1036,9 @@ static char emaildateformat[32] = "%A, %B %d, %Y at %r";
+@@ -1175,6 +1175,9 @@ static char emaildateformat[32] = "%A, %B %d, %Y at %r";
  static char pagerdateformat[32] = "%A, %B %d, %Y at %r";
  
  /* Forward declarations - generic */
@@ -20,7 +20,7 @@ index 446bb5d..d863f12 100644
  static int open_mailbox(struct vm_state *vms, struct ast_vm_user *vmu, int box);
  static int close_mailbox(struct vm_state *vms, struct ast_vm_user *vmu);
  static int advanced_options(struct ast_channel *chan, struct ast_vm_user *vmu, struct vm_state *vms, int msg, int option, signed char record_gain);
-@@ -1709,7 +1712,12 @@ static struct ast_vm_user *find_user(struct ast_vm_user *ivm, const char *contex
+@@ -1981,7 +1984,12 @@ static struct ast_vm_user *find_user(struct ast_vm_user *ivm, const char *contex
  	AST_LIST_UNLOCK(&users);
  	if (!vmu) {
  		ast_log(LOG_DEBUG,"call find_user_realtime for '%s@%s'\n", mailbox, context);
@@ -33,8 +33,8 @@ index 446bb5d..d863f12 100644
  	}
  	if (!vmu && !ast_strlen_zero(aliasescontext)) {
  		struct alias_mailbox_mapping *mapping;
-@@ -3991,6 +3999,69 @@ bail:
- 	return x - 1;
+@@ -4412,6 +4420,69 @@ bail:
+ 	SCOPE_EXIT_RTN_VALUE(x - 1, "Done.  msg_id: %s RC: %d\n", msg_id, x - 1);
  }
  
 +#ifdef ODBC_STORAGE
@@ -102,4 +102,4 @@ index 446bb5d..d863f12 100644
 +
  /*!
   * \brief Determines the highest message number in use for a given user and mailbox folder.
-  * \param vmu
+  * \param dir the folder the mailbox folder to look for messages. Used to construct the SQL where clause.

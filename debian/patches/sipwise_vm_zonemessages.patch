@@ -7,10 +7,10 @@ Subject: sipwise_vm_zonemessages
  1 file changed, 19 insertions(+), 15 deletions(-)
 
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index 33dc99c..70478fa 100644
+index e3182eb..0d63f1e 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -8135,7 +8135,7 @@ static int play_message_category(struct ast_channel *chan, const char *category)
+@@ -8646,7 +8646,7 @@ static int play_message_category(struct ast_channel *chan, const char *category)
  static int play_message_datetime(struct ast_channel *chan, struct ast_vm_user *vmu, const char *origtime, const char *filename)
  {
  	int res = 0;
@@ -19,7 +19,7 @@ index 33dc99c..70478fa 100644
  	time_t t;
  
  	if (ast_get_time_t(origtime, &t, 0, NULL)) {
-@@ -8150,13 +8150,20 @@ static int play_message_datetime(struct ast_channel *chan, struct ast_vm_user *v
+@@ -8661,13 +8661,20 @@ static int play_message_datetime(struct ast_channel *chan, struct ast_vm_user *v
  		AST_LIST_LOCK(&zones);
  		AST_LIST_TRAVERSE(&zones, z, list) {
  			if (!strcmp(z->name, vmu->zonetag)) {
@@ -41,7 +41,7 @@ index 33dc99c..70478fa 100644
  /* No internal variable parsing for now, so we'll comment it out for the time being */
  #if 0
  	/* Set the DIFF_* variables */
-@@ -8173,8 +8180,8 @@ static int play_message_datetime(struct ast_channel *chan, struct ast_vm_user *v
+@@ -8684,8 +8691,8 @@ static int play_message_datetime(struct ast_channel *chan, struct ast_vm_user *v
  
  	/* Can't think of how other diffs might be helpful, but I'm sure somebody will think of something. */
  #endif
@@ -52,7 +52,7 @@ index 33dc99c..70478fa 100644
  	} else if (!strncasecmp(ast_channel_language(chan), "de", 2)) {     /* GERMAN syntax */
  		res = ast_say_date_with_format(chan, t, AST_DIGIT_ANY, ast_channel_language(chan), "'vm-received' Q 'digits/at' HM", NULL);
  	} else if (!strncasecmp(ast_channel_language(chan), "gr", 2)) {     /* GREEK syntax */
-@@ -13210,17 +13217,14 @@ static void load_zonemessages(struct ast_config *cfg)
+@@ -14385,17 +14392,14 @@ static void load_zonemessages(struct ast_config *cfg)
  			strcpy(storage, var->value); /* safe */
  			msg_format = storage;
  			tzone = strsep(&msg_format, "|,");

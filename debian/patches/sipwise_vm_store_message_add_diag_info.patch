@@ -3,45 +3,31 @@ Date: Mon, 21 Feb 2022 14:17:23 +0100
 Subject: sipwise_vm_store_message_add_diag_info
 
 ---
- apps/app_voicemail.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ apps/app_voicemail.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index beaff3a..c365407 100644
+index e5bdf95..d12f57d 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -4502,6 +4502,10 @@ static SQLHSTMT insert_data_cb(struct odbc_obj *obj, void *vdata)
+@@ -4942,6 +4942,9 @@ static SQLHSTMT odbc_insert_data_cb(struct odbc_obj *obj, void *vdata)
+ 	char *delete_sql;
  	int res;
  	SQLHSTMT stmt;
- 
 +	SQLSMALLINT msg_len = 0;
 +	SQLCHAR sql_state[6], message[256];
 +	SQLINTEGER native_error = 0;
-+
- 	res = SQLAllocHandle(SQL_HANDLE_STMT, obj->con, &stmt);
- 	if (!SQL_SUCCEEDED(res)) {
- 		ast_log(AST_LOG_WARNING, "SQL Alloc Handle failed!\n");
-@@ -4528,7 +4532,8 @@ static SQLHSTMT insert_data_cb(struct odbc_obj *obj, void *vdata)
+ 	SCOPE_ENTER(3, "dir: %s msgnums: %s msg_id: %s\n", data->dir, data->msgnums,
+ 		data->msg_id);
+ 
+@@ -4988,8 +4991,8 @@ static SQLHSTMT odbc_insert_data_cb(struct odbc_obj *obj, void *vdata)
  	}
- 	res = ast_odbc_execute_sql(obj, stmt, data->sql);
+ 	res = ast_odbc_execute_sql(obj, stmt, insert_sql);
  	if (!SQL_SUCCEEDED(res)) {
--		ast_log(AST_LOG_WARNING, "SQL Direct Execute failed!\n");
+-		ast_log(AST_LOG_WARNING, "SQL Execute error!\n[%s]\n", insert_sql);
+-		ast_odbc_print_errors(SQL_HANDLE_STMT, stmt, "SQL Execute");
 +		res = SQLGetDiagRec(SQL_HANDLE_STMT, stmt, 1, sql_state, &native_error, message, sizeof(message), &msg_len);
 +		ast_log(AST_LOG_WARNING, "SQL Direct Execute failed: code: %d msg: %s!\n", (int)native_error, message);
  		SQLFreeHandle(SQL_HANDLE_STMT, stmt);
- 		return NULL;
+ 		stmt = NULL;
  	}
-@@ -4661,6 +4666,13 @@ static int store_file(const char *dir, const char *mailboxuser, const char *mail
- 			SQLFreeHandle(SQL_HANDLE_STMT, stmt);
- 		} else {
- 			ast_log(AST_LOG_WARNING, "SQL Execute error!\n[%s]\n\n", sql);
-+			/*
-+			if (!ast_strlen_zero(idata.category)) {
-+				ast_log(AST_LOG_WARNING, "INSERT INTO %s (dir,msgnum,recording,context,macrocontext,callerid,origtime,duration,mailboxuser,mailboxcontext,flag,msg_id,category) VALUES (%s,%s,<recording>,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", odbc_table, idata.dir, idata.msgnums, idata.context, idata.macrocontext, idata.callerid, idata.origtime, idata.duration, idata.mailboxuser, idata.mailboxcontext, idata.flag, idata.msg_id, idata.category);
-+			} else {
-+				ast_log(AST_LOG_WARNING, "INSERT INTO %s (dir,msgnum,recording,context,macrocontext,callerid,origtime,duration,mailboxuser,mailboxcontext,flag,msg_id) VALUES (%s,%s,<recording>,%s,%s,%s,%s,%s,%s,%s,%s,%s)", odbc_table, idata.dir, idata.msgnums, idata.context, idata.macrocontext, idata.callerid, idata.origtime, idata.duration, idata.mailboxuser, idata.mailboxcontext, idata.flag, idata.msg_id);
-+			}
-+			*/
- 			res = -1;
- 		}
- 	} while (0);

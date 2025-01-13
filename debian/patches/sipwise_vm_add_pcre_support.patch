@@ -33,7 +33,7 @@ index 9ee80e1..69eccd0 100644
  all: _all
  	@echo " +-------- app_voicemail Build Complete --------+"
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index d863f12..7833ae1 100644
+index 7667ae1..e9d5ec3 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
 @@ -112,6 +112,9 @@
@@ -46,7 +46,7 @@ index d863f12..7833ae1 100644
  /*** DOCUMENTATION
  	<application name="VoiceMail" language="en_US">
  		<synopsis>
-@@ -942,6 +945,8 @@ static int maxlogins = 3;
+@@ -1081,6 +1084,8 @@ static int maxlogins = 3;
  static int minpassword = MINPASSWORD;
  static int passwordlocation;
  static char aliasescontext[MAX_VM_CONTEXT_LEN];
@@ -55,7 +55,7 @@ index d863f12..7833ae1 100644
  
  /*! Poll mailboxes for changes since there is something external to
   *  app_voicemail that may change them. */
-@@ -1177,6 +1182,134 @@ static int inprocess_count(const char *context, const char *mailbox, int delta)
+@@ -1317,6 +1322,134 @@ static int inprocess_count(const char *context, const char *mailbox, int delta)
  static int __has_voicemail(const char *context, const char *mailbox, const char *folder, int shortcircuit);
  #endif
  
@@ -190,7 +190,7 @@ index d863f12..7833ae1 100644
  /*!
   * \brief Strips control and non 7-bit clean characters from input string.
   *
-@@ -10797,6 +10930,10 @@ static int vm_authenticate(struct ast_channel *chan, char *mailbox, int mailbox_
+@@ -11317,6 +11450,10 @@ static int vm_authenticate(struct ast_channel *chan, char *mailbox, int mailbox_
  	int useadsi = 0, valid = 0, logretries = 0;
  	char password[AST_MAX_EXTENSION], *passptr = NULL;
  	struct ast_vm_user vmus, *vmu = NULL;
@@ -201,7 +201,7 @@ index d863f12..7833ae1 100644
  
  	/* If ADSI is supported, setup login screen */
  	adsi_begin(chan, &useadsi);
-@@ -10807,6 +10944,17 @@ static int vm_authenticate(struct ast_channel *chan, char *mailbox, int mailbox_
+@@ -11327,6 +11464,17 @@ static int vm_authenticate(struct ast_channel *chan, char *mailbox, int mailbox_
  		return -1;
  	}
  
@@ -219,7 +219,7 @@ index d863f12..7833ae1 100644
  	/* Authenticate them and get their mailbox/password */
  
  	while (!valid && (logretries < max_logins)) {
-@@ -10836,6 +10984,18 @@ static int vm_authenticate(struct ast_channel *chan, char *mailbox, int mailbox_
+@@ -11356,6 +11504,18 @@ static int vm_authenticate(struct ast_channel *chan, char *mailbox, int mailbox_
  		if (useadsi)
  			adsi_password(chan);
  
@@ -238,7 +238,7 @@ index d863f12..7833ae1 100644
  		if (!ast_strlen_zero(prefix)) {
  			char fullusername[80];
  
-@@ -13171,6 +13331,8 @@ static int actual_load_config(int reload, struct ast_config *cfg, struct ast_con
+@@ -14349,6 +14509,8 @@ static int actual_load_config(int reload, struct ast_config *cfg, struct ast_con
  	char secretfn[PATH_MAX] = "";
  	long tps_queue_low;
  	long tps_queue_high;
@@ -247,9 +247,9 @@ index d863f12..7833ae1 100644
  
  #ifdef IMAP_STORAGE
  	ast_copy_string(imapparentfolder, "\0", sizeof(imapparentfolder));
-@@ -13235,6 +13397,19 @@ static int actual_load_config(int reload, struct ast_config *cfg, struct ast_con
- 			ast_copy_string(odbc_table, val, sizeof(odbc_table));
- 		}
+@@ -14421,6 +14583,19 @@ static int actual_load_config(int reload, struct ast_config *cfg, struct ast_con
+ 		ast_set2_flag((&globalflags), ast_true(val), VM_ODBC_AUDIO_ON_DISK);
+ 
  #endif
 +
 +		/* sipwise sw_normalize_user_match/replace */

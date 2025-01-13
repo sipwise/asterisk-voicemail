@@ -3,14 +3,14 @@ Date: Mon, 21 Feb 2022 14:17:23 +0100
 Subject: sipwise_vm_sms_notify
 
 ---
- apps/app_voicemail.c | 173 ++++++++++++++-------------------------------------
- 1 file changed, 48 insertions(+), 125 deletions(-)
+ apps/app_voicemail.c | 176 ++++++++++++++-------------------------------------
+ 1 file changed, 48 insertions(+), 128 deletions(-)
 
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index 14c3922..33dc99c 100644
+index 8dcbc73..e3182eb 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -934,6 +934,7 @@ static int silencethreshold = 128;
+@@ -1073,6 +1073,7 @@ static int silencethreshold = 128;
  static char serveremail[80] = ASTERISK_USERNAME;
  static char mailcmd[160] = SENDMAIL;	/* Configurable mail cmd */
  static char externnotify[160];
@@ -18,8 +18,8 @@ index 14c3922..33dc99c 100644
  static struct ast_smdi_interface *smdi_iface = NULL;
  static char vmfmts[80] = "wav";
  static double volgain;
-@@ -4969,6 +4970,15 @@ static int vm_delete(char *file)
- 	return ast_filedelete(file, NULL);
+@@ -5458,6 +5459,15 @@ static int vm_delete(char *file)
+ 	SCOPE_EXIT_RTN_VALUE(res, "Done. RC: %d\n", res);
  }
  
 +static void prep_pager_sub_vars(struct ast_channel *ast, struct ast_vm_user *vmu, char *cidnum, char *dur, char *date)
@@ -34,7 +34,7 @@ index 14c3922..33dc99c 100644
  static void prep_email_sub_vars(struct ast_channel *ast, struct ast_vm_user *vmu, int msgnum, char *context, char *mailbox, const char *fromfolder, char *cidnum, char *cidname, char *dur, char *date, const char *category, const char *flag)
  {
  	char callerid[256];
-@@ -5646,150 +5656,56 @@ static int sendmail(char *srcemail,
+@@ -6135,153 +6145,56 @@ static int sendmail(char *srcemail,
  	return 0;
  }
  
@@ -54,14 +54,14 @@ index 14c3922..33dc99c 100644
  	struct ast_tm tm;
 -	FILE *p;
 -	struct ast_str *str1 = ast_str_create(16), *str2 = ast_str_create(16);
-+	struct ast_str *str1 = ast_str_create(16);
- 
+-
 -	if (!str1 || !str2) {
 -		ast_free(str1);
 -		ast_free(str2);
 -		return -1;
 -	}
--
++	struct ast_str *str1 = ast_str_create(16);
+ 
 -	if (cidnum) {
 -		strip_control_and_high(cidnum, enc_cidnum, sizeof(enc_cidnum));
 -	}
@@ -179,12 +179,15 @@ index 14c3922..33dc99c 100644
  		}
 -	} else {
 -		if (ast_strlen_zero(flag)) {
--			fprintf(p, "Subject: New VM\n\n");
+-			fprintf(p, "Subject: New VM" ENDL);
 -		} else {
--			fprintf(p, "Subject: New %s VM\n\n", flag);
+-			fprintf(p, "Subject: New %s VM" ENDL, flag);
 -		}
 -	}
  
+-	/* End of headers */
+-	fputs(ENDL, p);
+-
 -	if (pagerbody) {
 -		struct ast_channel *ast;
 -		if ((ast = ast_dummy_channel_alloc())) {
@@ -215,7 +218,7 @@ index 14c3922..33dc99c 100644
  }
  
  /*!
-@@ -8163,7 +8079,7 @@ static int notify_new_message(struct ast_channel *chan, struct ast_vm_user *vmu,
+@@ -8677,7 +8590,7 @@ static int notify_new_message(struct ast_channel *chan, struct ast_vm_user *vmu,
  	}
  
  	if (!ast_strlen_zero(vmu->pager)) {
@@ -224,7 +227,7 @@ index 14c3922..33dc99c 100644
  	}
  
  	if (ast_test_flag(vmu, VM_DELETE))
-@@ -13590,6 +13506,13 @@ static int actual_load_config(int reload, struct ast_config *cfg, struct ast_con
+@@ -14776,6 +14689,13 @@ static int actual_load_config(int reload, struct ast_config *cfg, struct ast_con
  			externnotify[0] = '\0';
  		}
  

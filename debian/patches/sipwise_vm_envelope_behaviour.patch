@@ -9,10 +9,10 @@ and currently ignored per user
  1 file changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index 5070326..14c3922 100644
+index 77d81df..8dcbc73 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -1455,8 +1455,6 @@ static void apply_option(struct ast_vm_user *vmu, const char *var, const char *v
+@@ -1727,8 +1727,6 @@ static void apply_option(struct ast_vm_user *vmu, const char *var, const char *v
  		ast_set2_flag(vmu, ast_true(value), VM_MESSAGEWRAP);
  	} else if (!strcasecmp(var, "operator")) {
  		ast_set2_flag(vmu, ast_true(value), VM_OPERATOR);
@@ -21,8 +21,8 @@ index 5070326..14c3922 100644
  	} else if (!strcasecmp(var, "moveheard")){
  		ast_set2_flag(vmu, ast_true(value), VM_MOVEHEARD);
  	} else if (!strcasecmp(var, "sayduration")){
-@@ -15011,7 +15009,7 @@ static int advanced_options(struct ast_channel *chan, struct ast_vm_user *vmu, s
- 		context = ast_variable_retrieve(msg_cfg, "message", "macrocontext");
+@@ -16216,7 +16214,7 @@ static int advanced_options(struct ast_channel *chan, struct ast_vm_user *vmu, s
+ 	context = ast_variable_retrieve(msg_cfg, "message", "context");
  	switch (option) {
  	case 3: /* Play message envelope */
 -		if (!res) {

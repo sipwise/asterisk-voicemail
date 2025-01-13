@@ -7,11 +7,11 @@ Subject: sipwise_vm_fix_prev_message
  1 file changed, 1 insertion(+)
 
 diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index beda819..8f4f3af 100644
+index da26b2b..6823da2 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -11426,6 +11426,7 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
- #endif
+@@ -12313,6 +12313,7 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
+ 	SCOPE_ENTER(3, "%s:\n", ast_channel_name(chan));
  
  	/* Add the vm_state to the active list and keep it active */
 +	vms.curmsg = -1;

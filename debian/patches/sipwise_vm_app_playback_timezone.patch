@@ -7,10 +7,10 @@ Subject: sipwise_vm_app_playback_timezone
  1 file changed, 43 insertions(+), 1 deletion(-)
 
 diff --git a/apps/app_playback.c b/apps/app_playback.c
-index b9caab5..e7ad660 100644
+index 613e8c8..0a73b39 100644
 --- a/apps/app_playback.c
 +++ b/apps/app_playback.c
-@@ -237,6 +237,15 @@ static int do_say(say_args_t *a, const char *s, const char *options, int depth)
+@@ -244,6 +244,15 @@ static int do_say(say_args_t *a, const char *s, const char *options, int depth)
  	}
  	AST_LIST_INSERT_HEAD(&head, n, entries);
  
@@ -26,7 +26,7 @@ index b9caab5..e7ad660 100644
  	/* scan the body, one piece at a time */
  	while ( !ret && (x = strsep(&rule, ",")) ) { /* exit on key */
  		char fn[128];
-@@ -250,6 +259,15 @@ static int do_say(say_args_t *a, const char *s, const char *options, int depth)
+@@ -257,6 +266,15 @@ static int do_say(say_args_t *a, const char *s, const char *options, int depth)
  		pbx_substitute_variables_varshead(&head, x, fn, sizeof(fn));
  		ast_debug(2, "doing [%s]\n", fn);
  
@@ -42,7 +42,7 @@ index b9caab5..e7ad660 100644
  		/* locate prefix and data, if any */
  		fmt = strchr(fn, ':');
  		if (!fmt || fmt == fn)	{	/* regular filename */
-@@ -333,10 +351,34 @@ static int say_date_generic(struct ast_channel *chan, time_t t,
+@@ -340,10 +358,34 @@ static int say_date_generic(struct ast_channel *chan, time_t t,
  	struct ast_tm tm;
  	struct timeval when = { t, 0 };
  	say_args_t a = { chan, ints, lang, -1, -1 };
@@ -77,7 +77,7 @@ index b9caab5..e7ad660 100644
  	snprintf(buf, sizeof(buf), "%s:%s:%04d%02d%02d%02d%02d.%02d-%d-%3d",
  		prefix,
  		format,
-@@ -348,7 +390,7 @@ static int say_date_generic(struct ast_channel *chan, time_t t,
+@@ -355,7 +397,7 @@ static int say_date_generic(struct ast_channel *chan, time_t t,
  		tm.tm_sec,
  		tm.tm_wday,
  		tm.tm_yday);
