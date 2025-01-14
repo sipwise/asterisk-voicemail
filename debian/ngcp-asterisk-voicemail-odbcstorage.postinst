@@ -7,3 +7,5 @@ GROUP=asterisk
 LOGDIR=/var/log/asterisk
 
 chown -R $USER:$GROUP "$LOGDIR"
+
+#DEBHELPER#

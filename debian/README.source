@@ -1,0 +1,12 @@
+apps/app_*.c
+============
+
+Are copies from asterisk repository. We need to keep in sync with
+the version installed in the system. For now asterisk is out of Debian stable
+so we keep our version at https://gitlab.sipwise.com/dev/backports/asterisk/
+
+Sipwise changes
+===============
+
+Our changes are managed via patches. Managing them via ``gbp pq`` is quite useful.
+Please keep `sipwise_` prefix as indication that it comes from us.
