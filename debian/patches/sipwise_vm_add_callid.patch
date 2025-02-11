@@ -77,12 +77,12 @@ index 801b682..4ec7b83 100644
  #define STORE_SQL_FMT_CAT "INSERT INTO %s (dir, msgnum, recording, context, callerid, " \
 -	"origtime, duration, mailboxuser, mailboxcontext, flag, msg_id, category) " \
 -	"VALUES (?,?,?,?,?,?,?,?,?,?,?,?)"
-+	"origtime, duration, mailboxuser, mailboxcontext, flag, msg_id, callid, category) " \
++	"origtime, duration, mailboxuser, mailboxcontext, flag, msg_id, call_id, category) " \
 +	"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)"
  #define STORE_SQL_FMT "INSERT INTO %s (dir, msgnum, recording, context, callerid, "\
 -	"origtime, duration, mailboxuser, mailboxcontext, flag, msg_id) "\
 -	"VALUES (?,?,?,?,?,?,?,?,?,?,?)"
-+	"origtime, duration, mailboxuser, mailboxcontext, flag, msg_id, callid) "\
++	"origtime, duration, mailboxuser, mailboxcontext, flag, msg_id, call_id) "\
 +	"VALUES (?,?,?,?,?,?,?,?,?,?,?,?)"
  
  static SQLHSTMT odbc_insert_data_cb(struct odbc_obj *obj, void *vdata)
