@@ -1,3 +1,10 @@
+ngcp-asterisk-voicemail (22.1.1+0~mr13.2.1.2) unstable; urgency=medium
+
+  [ Kirill Solomko ]
+  * [9064e64] MT#62075 fix STORE_SQL_FMT_CAT sql callid column name
+
+ -- Sipwise Jenkins Builder <jenkins@sipwise.com>  Tue, 18 Feb 2025 17:05:52 +0100
+
 ngcp-asterisk-voicemail (22.1.1+0~mr13.2.1.1) unstable; urgency=medium
 
   * New release.
