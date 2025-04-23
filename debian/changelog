@@ -1,3 +1,9 @@
+ngcp-asterisk-voicemail (22.1.1+0~mr13.3.2.0) unstable; urgency=medium
+
+  * New release.
+
+ -- Sipwise Jenkins Builder <jenkins@sipwise.com>  Wed, 23 Apr 2025 10:36:08 +0200
+
 ngcp-asterisk-voicemail (22.1.1+0~mr13.3.1.0) unstable; urgency=medium
 
   [ Kirill Solomko ]
