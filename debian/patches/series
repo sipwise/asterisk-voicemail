@@ -26,3 +26,4 @@ sipwise_vm_add_arabic_support.patch
 sipwise_vm_fix_prev_message.patch
 sipwise_vm_add_actions_wmi.patch
 sipwise_vm_fix_double_menu.patch
+sipwise_vm_extra_mail_headers.patch

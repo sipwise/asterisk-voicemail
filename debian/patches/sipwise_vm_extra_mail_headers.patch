@@ -1,0 +1,26 @@
+--- a/apps/app_voicemail.c
++++ b/apps/app_voicemail.c
+@@ -5900,17 +5900,17 @@
+ 
+ 	fprintf(p, "Message-ID: <Asterisk-%d-%u-%s-%d@%s>" ENDL, msgnum + 1,
+ 		(unsigned int) ast_random(), mailbox, (int) getpid(), host);
++#ifdef IMAP_STORAGE
++	fprintf(p, "X-Asterisk-VM-Extension: %s" ENDL, (!ast_strlen_zero(vmu->imapvmshareid) ? vmu->imapvmshareid : mailbox));
++#else
++	fprintf(p, "X-Asterisk-VM-Extension: %s" ENDL, mailbox);
++#endif
++	fprintf(p, "X-Asterisk-VM-Message-Num: %d" ENDL, msgnum + 1);
+ 	if (imap) {
+ 		/* additional information needed for IMAP searching */
+-		fprintf(p, "X-Asterisk-VM-Message-Num: %d" ENDL, msgnum + 1);
+ 		/* fprintf(p, "X-Asterisk-VM-Orig-Mailbox: %s" ENDL, ext); */
+ 		fprintf(p, "X-Asterisk-VM-Server-Name: %s" ENDL, fromstring);
+ 		fprintf(p, "X-Asterisk-VM-Context: %s" ENDL, context);
+-#ifdef IMAP_STORAGE
+-		fprintf(p, "X-Asterisk-VM-Extension: %s" ENDL, (!ast_strlen_zero(vmu->imapvmshareid) ? vmu->imapvmshareid : mailbox));
+-#else
+-		fprintf(p, "X-Asterisk-VM-Extension: %s" ENDL, mailbox);
+-#endif
+ 		/* flag added for Urgent */
+ 		fprintf(p, "X-Asterisk-VM-Flag: %s" ENDL, S_OR(flag, ""));
+ 		fprintf(p, "X-Asterisk-VM-Priority: %d" ENDL, chan ? ast_channel_priority(chan) : 0);
