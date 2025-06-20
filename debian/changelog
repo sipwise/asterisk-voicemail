@@ -1,3 +1,10 @@
+ngcp-asterisk-voicemail (22.1.1+0~mr13.5.0.0) unstable; urgency=medium
+
+  [ Richard Fuchs ]
+  * [c4f6f39] MT#62544 add extra headers to email
+
+ -- Sipwise Jenkins Builder <jenkins@sipwise.com>  Fri, 20 Jun 2025 10:42:00 +0200
+
 ngcp-asterisk-voicemail (22.1.1+0~mr13.4.0.0) unstable; urgency=medium
 
   [ Kirill Solomko ]
