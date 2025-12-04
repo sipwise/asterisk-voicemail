@@ -2,12 +2,16 @@ Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Source: https://github.com/sipwise/asterisk-voicemail.git
 Upstream-Name: ngcp-asterisk-voicemail
 
-Files: *
-Copyright: 2013-2023 Sipwise GmbH, Austria
+Files:
+ *
+Copyright:
+ 2013-2025 Sipwise GmbH, Austria
 License: GPL-2
 
-Files: apps/app_voicemail.c
-Copyright: 1999-2015, Digium, Inc
+Files:
+ apps/app_voicemail.c
+Copyright:
+ 1999-2015 Digium, Inc
 License: GPL-2
 
 License: GPL-2

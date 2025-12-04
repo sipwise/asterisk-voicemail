@@ -2,7 +2,7 @@
 # -*- makefile -*-
 
 DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
-export ASTLIBDIR=/usr/lib/${DEB_HOST_MULTIARCH}/asterisk/modules
+export ASTLIBDIR = /usr/lib/${DEB_HOST_MULTIARCH}/asterisk/modules
 
 %:
-	dh $@ --with quilt --with asterisk
+	dh $@ --with quilt
