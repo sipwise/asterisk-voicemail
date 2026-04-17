@@ -1,0 +1,11 @@
+--- a/apps/app_voicemail.c
++++ b/apps/app_voicemail.c
+@@ -6219,7 +6219,7 @@
+ 	} else {
+ 		make_email_file(p, srcemail, vmu, msgnum, context, mailbox, fromfolder, cidnum, cidname, attach, attach2, format, duration, attach_user_voicemail, chan, category, 0, flag, msg_id);
+ 		fclose(p);
+-		snprintf(tmp2, sizeof(tmp2), "( %s < %s ; rm -f %s ) &", mailcmd, tmp, tmp);
++		snprintf(tmp2, sizeof(tmp2), "( %s -f %s < %s ; rm -f %s ) &", mailcmd, srcemail, tmp, tmp);
+ 		ast_safe_system(tmp2);
+ 		ast_debug(1, "Sent mail to %s with command '%s'\n", vmu->email, mailcmd);
+ 	}
