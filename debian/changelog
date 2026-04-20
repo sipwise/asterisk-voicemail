@@ -1,3 +1,10 @@
+ngcp-asterisk-voicemail (22.1.1+0~mr26.0.1.0) unstable; urgency=medium
+
+  [ Richard Fuchs ]
+  * [0ea22f6] MT#64938 set sendmail envelope
+
+ -- Sipwise Jenkins Builder <jenkins@sipwise.com>  Mon, 20 Apr 2026 10:29:14 +0200
+
 ngcp-asterisk-voicemail (22.1.1+0~mr26.0.0.0) unstable; urgency=medium
 
   * New release.
