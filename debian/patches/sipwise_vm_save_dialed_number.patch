@@ -1,0 +1,10 @@
+--- a/apps/app_voicemail.c
++++ b/apps/app_voicemail.c
+@@ -5072,6 +5072,7 @@ static void prep_email_sub_vars(struct a
+ 	pbx_builtin_setvar_helper(ast, "VM_CONTEXT", context);
+ 	pbx_builtin_setvar_helper(ast, "VM_MAILBOX", vmu->dialed_num);
+ 	pbx_builtin_setvar_helper(ast, "VM_UUID", vmu->mailbox);
++	pbx_builtin_setvar_helper(ast, "VM_DIALED", mailbox);
+ 	pbx_builtin_setvar_helper(ast, "VM_CALLERID", (!ast_strlen_zero(cidname) || !ast_strlen_zero(cidnum)) ?
+ 		ast_callerid_merge(callerid, sizeof(callerid), cidname, cidnum, NULL) : "an unknown caller");
+ 	pbx_builtin_setvar_helper(ast, "VM_CIDNAME", (!ast_strlen_zero(cidname) ? cidname : "an unknown caller"));
