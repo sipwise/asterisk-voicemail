@@ -1,3 +1,10 @@
+ngcp-asterisk-voicemail (22.8.2+0~mr26.2.0.0) unstable; urgency=medium
+
+  [ Donat Zenichev ]
+  * [a9e0cc4] MT#64961 voicebox: add dialed number to variable
+
+ -- Sipwise Jenkins Builder <jenkins@sipwise.com>  Mon, 15 Jun 2026 15:30:06 +0200
+
 ngcp-asterisk-voicemail (22.8.2+0~mr26.1.0.1) unstable; urgency=medium
 
   [ Donat Zenichev ]
