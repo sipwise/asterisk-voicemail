@@ -111,6 +111,9 @@
 
 /*** DOCUMENTATION
 	<application name="VoiceMail" language="en_US">
+		<since>
+			<version>0.1.0</version>
+		</since>
 		<synopsis>
 			Leave a Voicemail message.
 		</synopsis>
@@ -200,6 +203,9 @@
 		</see-also>
 	</application>
 	<application name="VoiceMailMain" language="en_US">
+		<since>
+			<version>0.1.0</version>
+		</since>
 		<synopsis>
 			Check Voicemail messages.
 		</synopsis>
@@ -265,6 +271,9 @@
 		</see-also>
 	</application>
 	<application name="VMAuthenticate" language="en_US">
+		<since>
+			<version>1.2.0</version>
+		</since>
 		<synopsis>
 			Authenticate with Voicemail passwords.
 		</synopsis>
@@ -297,6 +306,9 @@
 		</description>
 	</application>
 	<application name="VoiceMailPlayMsg" language="en_US">
+		<since>
+			<version>11.0.0</version>
+		</since>
 		<synopsis>
 			Play a single voice mail msg from a mailbox by msg id.
 		</synopsis>
@@ -321,6 +333,9 @@
 		</description>
 	</application>
 	<application name="VMSayName" language="en_US">
+		<since>
+			<version>1.8.0</version>
+		</since>
 		<synopsis>
 			Play the name of a voicemail user
 		</synopsis>
@@ -339,6 +354,9 @@
 		</description>
 	</application>
 	<function name="VM_INFO" language="en_US">
+		<since>
+			<version>11.0.0</version>
+		</since>
 		<synopsis>
 			Returns the selected attribute from a mailbox.
 		</synopsis>
@@ -392,6 +410,9 @@
 		</description>
 	</function>
 	<manager name="VoicemailUsersList" language="en_US">
+		<since>
+			<version>1.6.0</version>
+		</since>
 		<synopsis>
 			List All Voicemail User Information.
 		</synopsis>
@@ -402,6 +423,9 @@
 		</description>
 	</manager>
 	<manager name="VoicemailUserStatus" language="en_US">
+		<since>
+			<version>16.0.0</version>
+		</since>
 		<synopsis>
 			Show the status of given voicemail user's info.
 		</synopsis>
@@ -419,6 +443,9 @@
 		</description>
 	</manager>
 	<manager name="VoicemailRefresh" language="en_US">
+		<since>
+			<version>12.0.0</version>
+		</since>
 		<synopsis>
 			Tell Asterisk to poll mailboxes for a change
 		</synopsis>
@@ -446,6 +473,10 @@
 		</description>
 	</manager>
 	<manager name="VoicemailBoxSummary" language="en_US">
+		<since>
+			<version>20.5.0</version>
+			<version>18.20.0</version>
+		</since>
 		<synopsis>
 			Show the mailbox contents of given voicemail user.
 		</synopsis>
@@ -463,6 +494,10 @@
 		</description>
 	</manager>
 	<manager name="VoicemailMove" language="en_US">
+		<since>
+			<version>20.5.0</version>
+			<version>18.20.0</version>
+		</since>
 		<synopsis>
 			Move Voicemail between mailbox folders of given user.
 		</synopsis>
@@ -489,6 +524,10 @@
 		</description>
 	</manager>
 	<manager name="VoicemailRemove" language="en_US">
+		<since>
+			<version>20.5.0</version>
+			<version>18.20.0</version>
+		</since>
 		<synopsis>
 			Remove Voicemail from mailbox folder.
 		</synopsis>
@@ -512,6 +551,10 @@
 		</description>
 	</manager>
 	<manager name="VoicemailForward" language="en_US">
+		<since>
+			<version>20.5.0</version>
+			<version>18.20.0</version>
+		</since>
 		<synopsis>
 			Forward Voicemail from one mailbox folder to another between given users.
 		</synopsis>
@@ -548,6 +591,11 @@
 	</manager>
 	<managerEvent language="en_US" name="VoicemailPasswordChange">
 		<managerEventInstance class="EVENT_FLAG_USER">
+			<since>
+				<version>18.21.0</version>
+				<version>20.6.0</version>
+				<version>21.1.0</version>
+			</since>
 			<synopsis>Raised in response to a mailbox password change.</synopsis>
 			<syntax>
 				<parameter name="Context">
@@ -2079,7 +2127,7 @@ static void vm_change_password(struct ast_vm_user *vmu, const char *newpassword)
 		if ((cfg = ast_config_load(VOICEMAIL_CONFIG, config_flags)) && valid_config(cfg)) {
 			while ((category = ast_category_browse(cfg, category))) {
 				if (!strcasecmp(category, vmu->context)) {
-					char *value = NULL;
+					const char *value = NULL;
 					char *new = NULL;
 					if (!(tmp = ast_variable_retrieve(cfg, category, vmu->mailbox))) {
 						ast_log(AST_LOG_WARNING, "We could not find the mailbox.\n");
@@ -7482,16 +7530,34 @@ static int leave_voicemail(struct ast_channel *chan, char *ext, struct leave_vm_
 					if (chmod(txtfile, VOICEMAIL_FILE_MODE) < 0)
 						ast_log(AST_LOG_ERROR, "Couldn't set permissions on voicemail text file %s: %s", txtfile, strerror(errno));
 
-					ast_unlock_path(dir);
 					if (ast_check_realtime("voicemail_data")) {
 						snprintf(tmpdur, sizeof(tmpdur), "%d", duration);
 						ast_update_realtime("voicemail_data", "filename", tmptxtfile, "filename", fn, "duration", tmpdur, SENTINEL);
 					}
 					/* We must store the file first, before copying the message, because
 					 * ODBC storage does the entire copy with SQL.
+					 * Hold the path lock until after STORE so that concurrent callers
+					 * cannot read the same LAST_MSG_INDEX before the INSERT is committed.
 					 */
 					if (ast_fileexists(fn, NULL, NULL) > 0) {
+#ifdef ODBC_STORAGE
+						int store_failed;
+						store_failed = odbc_store_message(dir, vmu->mailbox, vmu->context, msgnum);
+						ast_unlock_path(dir);
+						if (store_failed) {
+							ast_log(LOG_ERROR, "Failed to store voicemail for %s/%s msgnum %d, skipping notification\n", vmu->context, vmu->mailbox, msgnum);
+							if (ast_check_realtime("voicemail_data")) {
+								ast_destroy_realtime("voicemail_data", "filename", fn, SENTINEL);
+							}
+							pbx_builtin_setvar_helper(chan, "VMSTATUS", "FAILED");
+							goto leave_vm_out;
+						}
+#else
+						ast_unlock_path(dir);
 						SCOPE_CALL(-1, STORE, dir, vmu->mailbox, vmu->context, msgnum, chan, vmu, fmt, duration, vms, flag, msg_id);
+#endif
+					} else {
+						ast_unlock_path(dir);
 					}
 
 					/* Are there to be more recipients of this message? */
