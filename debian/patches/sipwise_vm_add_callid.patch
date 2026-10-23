@@ -3,8 +3,8 @@ Date: Mon, 21 Feb 2022 14:17:23 +0100
 Subject: sipwise_vm_add_callid
 
 ---
- apps/app_voicemail.c | 69 +++++++++++++++++++++++++++++-----------------------
- 1 file changed, 39 insertions(+), 30 deletions(-)
+ apps/app_voicemail.c |   71 ++++++++++++++++++++++++++++-----------------------
+ 1 file changed, 40 insertions(+), 31 deletions(-)
 
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
@@ -172,6 +172,15 @@ Subject: sipwise_vm_add_callid
  			}
  #endif
  		} else {
+@@ -7717,7 +7726,7 @@ static int leave_voicemail(struct ast_ch
+ 					if (ast_fileexists(fn, NULL, NULL) > 0) {
+ #ifdef ODBC_STORAGE
+ 						int store_failed;
+-						store_failed = odbc_store_message(dir, vmu->mailbox, vmu->context, msgnum);
++						store_failed = odbc_store_message(dir, vmu->mailbox, vmu->context, msgnum, chan);
+ 						ast_unlock_path(dir);
+ 						if (store_failed) {
+ 							ast_log(LOG_ERROR, "Failed to store voicemail for %s/%s msgnum %d, skipping notification\n", vmu->context, vmu->mailbox, msgnum);
 @@ -8779,7 +8788,7 @@ static int notify_new_message(struct ast
  #endif
  
