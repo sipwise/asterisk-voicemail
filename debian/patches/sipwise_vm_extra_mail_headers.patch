@@ -1,6 +1,6 @@
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -5900,17 +5900,17 @@
+@@ -5948,17 +5948,17 @@ static void make_email_file(FILE *p,
  
  	fprintf(p, "Message-ID: <Asterisk-%d-%u-%s-%d@%s>" ENDL, msgnum + 1,
  		(unsigned int) ast_random(), mailbox, (int) getpid(), host);

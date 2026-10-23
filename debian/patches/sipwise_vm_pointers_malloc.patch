@@ -6,11 +6,9 @@ Subject: sipwise_vm_pointers_malloc
  apps/app_voicemail.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index d12f57d..21341bc 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -12220,6 +12220,8 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
+@@ -12286,6 +12286,8 @@ static int vm_execmain(struct ast_channe
  
  	/* Add the vm_state to the active list and keep it active */
  	vms.lastmsg = -1;

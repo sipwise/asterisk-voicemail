@@ -6,11 +6,9 @@ Subject: sipwise_vm_sms_notify
  apps/app_voicemail.c | 176 ++++++++++++++-------------------------------------
  1 file changed, 48 insertions(+), 128 deletions(-)
 
-diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index 8dcbc73..e3182eb 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -1073,6 +1073,7 @@ static int silencethreshold = 128;
+@@ -1121,6 +1121,7 @@ static int silencethreshold = 128;
  static char serveremail[80] = ASTERISK_USERNAME;
  static char mailcmd[160] = SENDMAIL;	/* Configurable mail cmd */
  static char externnotify[160];
@@ -18,7 +16,7 @@ index 8dcbc73..e3182eb 100644
  static struct ast_smdi_interface *smdi_iface = NULL;
  static char vmfmts[80] = "wav";
  static double volgain;
-@@ -5458,6 +5459,15 @@ static int vm_delete(char *file)
+@@ -5506,6 +5507,15 @@ static int vm_delete(char *file)
  	SCOPE_EXIT_RTN_VALUE(res, "Done. RC: %d\n", res);
  }
  
@@ -34,7 +32,7 @@ index 8dcbc73..e3182eb 100644
  static void prep_email_sub_vars(struct ast_channel *ast, struct ast_vm_user *vmu, int msgnum, char *context, char *mailbox, const char *fromfolder, char *cidnum, char *cidname, char *dur, char *date, const char *category, const char *flag)
  {
  	char callerid[256];
-@@ -6135,153 +6145,56 @@ static int sendmail(char *srcemail,
+@@ -6183,153 +6193,56 @@ static int sendmail(char *srcemail,
  	return 0;
  }
  
@@ -54,14 +52,14 @@ index 8dcbc73..e3182eb 100644
  	struct ast_tm tm;
 -	FILE *p;
 -	struct ast_str *str1 = ast_str_create(16), *str2 = ast_str_create(16);
--
++	struct ast_str *str1 = ast_str_create(16);
+ 
 -	if (!str1 || !str2) {
 -		ast_free(str1);
 -		ast_free(str2);
 -		return -1;
 -	}
-+	struct ast_str *str1 = ast_str_create(16);
- 
+-
 -	if (cidnum) {
 -		strip_control_and_high(cidnum, enc_cidnum, sizeof(enc_cidnum));
 -	}
@@ -218,7 +216,7 @@ index 8dcbc73..e3182eb 100644
  }
  
  /*!
-@@ -8677,7 +8590,7 @@ static int notify_new_message(struct ast_channel *chan, struct ast_vm_user *vmu,
+@@ -8743,7 +8656,7 @@ static int notify_new_message(struct ast
  	}
  
  	if (!ast_strlen_zero(vmu->pager)) {
@@ -227,7 +225,7 @@ index 8dcbc73..e3182eb 100644
  	}
  
  	if (ast_test_flag(vmu, VM_DELETE))
-@@ -14776,6 +14689,13 @@ static int actual_load_config(int reload, struct ast_config *cfg, struct ast_con
+@@ -14842,6 +14755,13 @@ static int actual_load_config(int reload
  			externnotify[0] = '\0';
  		}
  

@@ -1,6 +1,6 @@
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -6219,7 +6219,7 @@
+@@ -6267,7 +6267,7 @@ static int sendmail(char *srcemail,
  	} else {
  		make_email_file(p, srcemail, vmu, msgnum, context, mailbox, fromfolder, cidnum, cidname, attach, attach2, format, duration, attach_user_voicemail, chan, category, 0, flag, msg_id);
  		fclose(p);

@@ -6,11 +6,9 @@ Subject: sipwise_vm_play_prompt_on_change_to_empty_folder
  apps/app_voicemail.c | 12 ++++++++++++
  1 file changed, 12 insertions(+)
 
-diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index e9d5ec3..fe73841 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -12149,6 +12149,7 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
+@@ -12215,6 +12215,7 @@ static int vm_execmain(struct ast_channe
  	signed char record_gain = 0;
  	int play_auto = 0;
  	int play_folder = 0;
@@ -18,7 +16,7 @@ index e9d5ec3..fe73841 100644
  	int in_urgent = 0;
  	int nodelete = 0;
  #ifdef IMAP_STORAGE
-@@ -12431,6 +12432,7 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
+@@ -12497,6 +12498,7 @@ static int vm_execmain(struct ast_channe
  			cmd = vm_browse_messages(chan, &vms, vmu);
  			break;
  		case '2': /* Change folders */
@@ -26,7 +24,7 @@ index e9d5ec3..fe73841 100644
  			ast_test_suite_event_notify("CHANGEFOLDER", "Message: browsing to a different folder");
  			if (useadsi)
  				adsi_folders(chan, 0, "Change to folder...");
-@@ -12787,6 +12789,16 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
+@@ -12853,6 +12855,16 @@ static int vm_execmain(struct ast_channe
  			vms.starting = 1;
   			break;
  		default:	/* Nothing */

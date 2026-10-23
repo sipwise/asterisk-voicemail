@@ -1,6 +1,6 @@
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -5568,6 +5568,7 @@ static void prep_email_sub_vars(struct a
+@@ -5616,6 +5616,7 @@ static void prep_email_sub_vars(struct a
  	pbx_builtin_setvar_helper(ast, "VM_CONTEXT", context);
  	pbx_builtin_setvar_helper(ast, "VM_MAILBOX", vmu->dialed_num);
  	pbx_builtin_setvar_helper(ast, "VM_UUID", vmu->mailbox);
