@@ -7,8 +7,6 @@ Subject: sipwise_define_module
  apps/app_voicemail.c | 3 +++
  2 files changed, 6 insertions(+)
 
-diff --git a/apps/app_playback.c b/apps/app_playback.c
-index 6b93b03..613e8c8 100644
 --- a/apps/app_playback.c
 +++ b/apps/app_playback.c
 @@ -29,6 +29,9 @@
@@ -21,8 +19,6 @@ index 6b93b03..613e8c8 100644
  #include "asterisk.h"
  
  #include "asterisk/file.h"
-diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index 714e4d9..e7d0be2 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
 @@ -46,6 +46,9 @@

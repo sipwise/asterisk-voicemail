@@ -6,11 +6,9 @@ Subject: sipwise_vm_store_message_add_diag_info
  apps/app_voicemail.c | 7 +++++--
  1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index e5bdf95..d12f57d 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -4942,6 +4942,9 @@ static SQLHSTMT odbc_insert_data_cb(struct odbc_obj *obj, void *vdata)
+@@ -4990,6 +4990,9 @@ static SQLHSTMT odbc_insert_data_cb(stru
  	char *delete_sql;
  	int res;
  	SQLHSTMT stmt;
@@ -20,7 +18,7 @@ index e5bdf95..d12f57d 100644
  	SCOPE_ENTER(3, "dir: %s msgnums: %s msg_id: %s\n", data->dir, data->msgnums,
  		data->msg_id);
  
-@@ -4988,8 +4991,8 @@ static SQLHSTMT odbc_insert_data_cb(struct odbc_obj *obj, void *vdata)
+@@ -5036,8 +5039,8 @@ static SQLHSTMT odbc_insert_data_cb(stru
  	}
  	res = ast_odbc_execute_sql(obj, stmt, insert_sql);
  	if (!SQL_SUCCEEDED(res)) {
