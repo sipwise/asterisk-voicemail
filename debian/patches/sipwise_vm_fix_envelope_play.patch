@@ -6,11 +6,9 @@ Subject: sipwise_vm_fix_envelope_play
  apps/app_voicemail.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index 5fdf7f0..425f599 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
-@@ -12743,6 +12743,7 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
+@@ -12809,6 +12809,7 @@ static int vm_execmain(struct ast_channe
  					break;
  				case '3': /* Envelope */
  					if (vms.lastmsg > -1 && !vms.starting) {
@@ -18,7 +16,7 @@ index 5fdf7f0..425f599 100644
  						cmd = advanced_options(chan, vmu, &vms, vms.curmsg, 3, record_gain);
  						if (cmd == ERROR_LOCK_PATH) {
  							res = cmd;
-@@ -12787,6 +12788,7 @@ static int vm_execmain(struct ast_channel *chan, const char *data)
+@@ -12853,6 +12854,7 @@ static int vm_execmain(struct ast_channe
  					break;
  
  				default:
