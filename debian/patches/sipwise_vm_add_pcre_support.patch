@@ -7,11 +7,9 @@ Subject: sipwise_vm_add_pcre_support
  apps/app_voicemail.c | 175 +++++++++++++++++++++++++++++++++++++++++++++++++++
  2 files changed, 178 insertions(+), 1 deletion(-)
 
-diff --git a/Makefile b/Makefile
-index 9ee80e1..69eccd0 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -12,10 +12,11 @@ MODULES_DIR=$(INSTALL_PREFIX)$(ASTLIBDIR)
+@@ -12,10 +12,11 @@ MODULES_DIR=$(INSTALL_PREFIX)$(ASTLIBDIR
  ASTETCDIR=$(INSTALL_PREFIX)/etc/asterisk
  
  CC?=gcc
@@ -32,8 +30,6 @@ index 9ee80e1..69eccd0 100644
  
  all: _all
  	@echo " +-------- app_voicemail Build Complete --------+"
-diff --git a/apps/app_voicemail.c b/apps/app_voicemail.c
-index 7667ae1..e9d5ec3 100644
 --- a/apps/app_voicemail.c
 +++ b/apps/app_voicemail.c
 @@ -112,6 +112,9 @@
@@ -45,8 +41,8 @@ index 7667ae1..e9d5ec3 100644
 +
  /*** DOCUMENTATION
  	<application name="VoiceMail" language="en_US">
- 		<synopsis>
-@@ -1081,6 +1084,8 @@ static int maxlogins = 3;
+ 		<since>
+@@ -1129,6 +1132,8 @@ static int maxlogins = 3;
  static int minpassword = MINPASSWORD;
  static int passwordlocation;
  static char aliasescontext[MAX_VM_CONTEXT_LEN];
@@ -55,7 +51,7 @@ index 7667ae1..e9d5ec3 100644
  
  /*! Poll mailboxes for changes since there is something external to
   *  app_voicemail that may change them. */
-@@ -1317,6 +1322,134 @@ static int inprocess_count(const char *context, const char *mailbox, int delta)
+@@ -1365,6 +1370,134 @@ static int inprocess_count(const char *c
  static int __has_voicemail(const char *context, const char *mailbox, const char *folder, int shortcircuit);
  #endif
  
@@ -190,7 +186,7 @@ index 7667ae1..e9d5ec3 100644
  /*!
   * \brief Strips control and non 7-bit clean characters from input string.
   *
-@@ -11317,6 +11450,10 @@ static int vm_authenticate(struct ast_channel *chan, char *mailbox, int mailbox_
+@@ -11383,6 +11516,10 @@ static int vm_authenticate(struct ast_ch
  	int useadsi = 0, valid = 0, logretries = 0;
  	char password[AST_MAX_EXTENSION], *passptr = NULL;
  	struct ast_vm_user vmus, *vmu = NULL;
@@ -201,7 +197,7 @@ index 7667ae1..e9d5ec3 100644
  
  	/* If ADSI is supported, setup login screen */
  	adsi_begin(chan, &useadsi);
-@@ -11327,6 +11464,17 @@ static int vm_authenticate(struct ast_channel *chan, char *mailbox, int mailbox_
+@@ -11393,6 +11530,17 @@ static int vm_authenticate(struct ast_ch
  		return -1;
  	}
  
@@ -219,7 +215,7 @@ index 7667ae1..e9d5ec3 100644
  	/* Authenticate them and get their mailbox/password */
  
  	while (!valid && (logretries < max_logins)) {
-@@ -11356,6 +11504,18 @@ static int vm_authenticate(struct ast_channel *chan, char *mailbox, int mailbox_
+@@ -11422,6 +11570,18 @@ static int vm_authenticate(struct ast_ch
  		if (useadsi)
  			adsi_password(chan);
  
@@ -238,7 +234,7 @@ index 7667ae1..e9d5ec3 100644
  		if (!ast_strlen_zero(prefix)) {
  			char fullusername[80];
  
-@@ -14349,6 +14509,8 @@ static int actual_load_config(int reload, struct ast_config *cfg, struct ast_con
+@@ -14415,6 +14575,8 @@ static int actual_load_config(int reload
  	char secretfn[PATH_MAX] = "";
  	long tps_queue_low;
  	long tps_queue_high;
@@ -247,7 +243,7 @@ index 7667ae1..e9d5ec3 100644
  
  #ifdef IMAP_STORAGE
  	ast_copy_string(imapparentfolder, "\0", sizeof(imapparentfolder));
-@@ -14421,6 +14583,19 @@ static int actual_load_config(int reload, struct ast_config *cfg, struct ast_con
+@@ -14487,6 +14649,19 @@ static int actual_load_config(int reload
  		ast_set2_flag((&globalflags), ast_true(val), VM_ODBC_AUDIO_ON_DISK);
  
  #endif
