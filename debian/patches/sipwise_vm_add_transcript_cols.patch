@@ -1,0 +1,15 @@
+--- a/apps/app_voicemail.c
++++ b/apps/app_voicemail.c
+@@ -4961,8 +4961,10 @@
+  * This method is used for the COPY macro when mailboxes are stored in an ODBC back end.
+  */
+ #define COPY_SQL_FMT "INSERT INTO %s (dir, msgnum, msg_id, context, callerid, origtime, " \
+-	"duration, recording, flag, mailboxuser, mailboxcontext, call_id) " \
+-	"SELECT ?,?,msg_id,context,callerid,origtime,duration,recording,flag,?,?,? " \
++	"duration, recording, flag, mailboxuser, mailboxcontext, call_id, " \
++	"transcript_status, transcript) " \
++	"SELECT ?,?,msg_id,context,callerid,origtime,duration,recording,flag,?,?,?," \
++	"transcript_status,transcript " \
+ 		"FROM %s WHERE dir=? AND msgnum=?"
+ static void odbc_copy_message(char *sdir, int smsg, char *ddir, int dmsg, char *dmailboxuser, char *dmailboxcontext)
+ {
