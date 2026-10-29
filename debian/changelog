@@ -1,6 +1,13 @@
 ngcp-asterisk-voicemail (22.10.0+0~mr26.0.1.4) unstable; urgency=medium
 
   [ Bit-Savva Mikhail ]
+  * [f57e7e8] MT#65823 fixup for: support trixie 22.10.0+dfsg+~cs6.17.60671434-3~bpo13+1
+
+ -- Sipwise Jenkins Builder <jenkins@sipwise.com>  Thu, 29 Oct 2026 11:36:55 +0100
+
+ngcp-asterisk-voicemail (22.10.0+0~mr26.0.1.4) unstable; urgency=medium
+
+  [ Bit-Savva Mikhail ]
   * [9537f01] MT#65823 support trixie 22.10.0+dfsg+~cs6.17.60671434-3~bpo13+1
 
  -- Sipwise Jenkins Builder <jenkins@sipwise.com>  Wed, 28 Oct 2026 14:01:02 +0100
